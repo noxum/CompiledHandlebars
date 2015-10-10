@@ -6,7 +6,7 @@ namespace CompiledHandlebars.Compiler.Visitors
   /// This is the interface for a hierarchical Visitor that visits all elements of a Handlebars-AST
   /// Hierarchical Visitors are described here: http://c2.com/cgi/wiki?HierarchicalVisitorPattern
   /// </summary>
-  interface IASTVisitor
+  internal interface IASTVisitor
   {
 
     void Visit(YieldStatement astLeaf);

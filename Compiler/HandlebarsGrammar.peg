@@ -1,21 +1,22 @@
 ﻿@namespace CompiledHandlebars.Compiler
 @classname HbsParser
-@accessibility internal
 @using CompiledHandlebars.Compiler.AST
 @using CompiledHandlebars.Compiler.AST.Expressions
 
 Template<HandlebarsTemplate> 
     = model:ModelNode items:Element EOF {new HandlebarsTemplate(items, model)}
 
-ModelNode <string>
-    = Opening ModelKeyword value:(!Closing .)* Closing { string.Concat(value) }
+ModelNode <MemberExpression>
+    = Opening ModelKeyword value:MemberExpression Closing { value }
+    / Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}"); }}
+    / .* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template");} }
 
 //------------------------------
 //        ASTElements
 //------------------------------
 
 Element 
-    = (Token) +
+    = (Token)*
 
 Token <ASTElementBase>
     = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
@@ -78,6 +79,11 @@ ParentContextName <IdentifierElement>
 
 ChildContextName <IdentifierElement>
     = value:NameIdentifier NameDelimiter next:MemberPath {new Identifier(value, next)}
+    / value:NameIdentifier NameDelimiter NameDelimiter . 
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!");}}
+    / value:NameIdentifier NameDelimiter . 
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!");}}
+      
 
 NameIdentifier <string>
     = val:Identifier {string.Concat(val)}

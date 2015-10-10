@@ -1,17 +1,18 @@
-﻿using CompiledHandlebars.Compiler.Visitors;
+﻿using CompiledHandlebars.Compiler.AST.Expressions;
+using CompiledHandlebars.Compiler.Visitors;
 using System.Collections.Generic;
 
 namespace CompiledHandlebars.Compiler.AST
 {
 
-  internal class HandlebarsTemplate
+  public class HandlebarsTemplate
   {
-    internal string Model { get; set; }
+    internal MemberExpression Model { get; set; }
     internal string Name { get; set; }
     internal string Namespace { get; set; }
-    protected IList<ASTElementBase> _items { get; set; }
+    private IList<ASTElementBase> _items { get; set; }
 
-    internal HandlebarsTemplate(IList<ASTElementBase> items, string model)
+    internal HandlebarsTemplate(IList<ASTElementBase> items, MemberExpression model)
     {
       Model = model;
       _items = items;

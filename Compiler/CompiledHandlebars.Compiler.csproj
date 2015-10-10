@@ -55,9 +55,12 @@
     <Compile Include="AST\YieldStatement.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="AST\HandlebarsTemplate.cs" />
+    <Compile Include="HandlebarsException.cs" />
     <Compile Include="Introspection\Context.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Visitors\CodeGenerationVisitor.cs" />
     <Compile Include="Visitors\IASTVisitor.cs" />
+    <Compile Include="Visitors\SemanticAnalysisVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <PegGrammar Include="HandlebarsGrammar.peg" />
