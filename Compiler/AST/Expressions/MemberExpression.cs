@@ -1,9 +1,5 @@
-﻿using System;
+﻿using CompiledHandlebars.Compiler.Introspection;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CompiledHandlebars.Compiler.Introspection;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {

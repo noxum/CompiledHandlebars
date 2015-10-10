@@ -1,14 +1,9 @@
-﻿using CompiledHandlebars.Compiler.AST;
-using CompiledHandlebars.Compiler.Visitors;
-using System;
+﻿using CompiledHandlebars.Compiler.Visitors;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CompiledHandlebars.Compiler
+namespace CompiledHandlebars.Compiler.AST
 {
-  
+
   internal class HandlebarsTemplate
   {
     internal string Name { get; set; }
