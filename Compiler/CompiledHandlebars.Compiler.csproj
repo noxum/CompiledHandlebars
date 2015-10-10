@@ -40,8 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\ASTElementBase.cs" />
+    <Compile Include="AST\ASTNode.cs" />
+    <Compile Include="AST\Expressions\Expression.cs" />
+    <Compile Include="AST\Expressions\Identifier.cs" />
+    <Compile Include="AST\Expressions\MemberExpression.cs" />
+    <Compile Include="AST\MarkupLiteral.cs" />
+    <Compile Include="AST\YieldStatement.cs" />
     <Compile Include="Compiler.cs" />
+    <Compile Include="HandlebarsTemplate.cs" />
+    <Compile Include="Introspection\Context.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Visitors\IASTVisitor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
