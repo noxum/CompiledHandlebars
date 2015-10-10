@@ -2,11 +2,13 @@
 
 namespace CompiledHandlebars.Compiler
 {
-  public static class Compiler
+  public static class HbsCompiler
   {
     public static string Compile(string hbsTemplate, string solutionPath)
     {
-      throw new NotImplementedException();
+      var parser = new HbsParser();
+      var template = parser.Parse(hbsTemplate);
+      return "Hello World!";
     }
   }
 }

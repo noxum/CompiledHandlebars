@@ -4,6 +4,7 @@ namespace CompiledHandlebars.Compiler.Visitors
 {
   /// <summary>
   /// This is the interface for a hierarchical Visitor that visits all elements of a Handlebars-AST
+  /// Hierarchical Visitors are described here: http://c2.com/cgi/wiki?HierarchicalVisitorPattern
   /// </summary>
   interface IASTVisitor
   {

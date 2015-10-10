@@ -1,0 +1,109 @@
+﻿@namespace CompiledHandlebars.Compiler
+@classname HbsParser
+@accessibility internal
+@using CompiledHandlebars.Compiler.AST
+@using CompiledHandlebars.Compiler.AST.Expressions
+
+Template<HandlebarsTemplate> 
+    = model:ModelNode items:Element EOF {new HandlebarsTemplate(items, model)}
+
+ModelNode <string>
+    = Opening ModelKeyword value:(!Closing .)* Closing { string.Concat(value) }
+
+//------------------------------
+//        ASTElements
+//------------------------------
+
+Element 
+    = (Token) +
+
+Token <ASTElementBase>
+    = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / MarkupLiteral
+
+ASTLeaf <ASTElementBase>
+    = YieldStatement
+
+
+YieldStatement <YieldStatement>
+    = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
+
+MarkupLiteral <MarkupLiteral> 
+    = value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
+
+    
+//-----------------------------------------------
+//    Nodes and Blocks
+//-----------------------------------------------
+/*
+HandlebarsNode <ASTElement>
+    = WithBlock
+
+WithBlock <WithBlock>
+    = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(memberStart.Line, memberStart.Column, body, member)}
+
+WithOpeningToken <MemberExpression>
+    = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
+
+WithClosingToken
+    = "{{" BlockClosingIdentifier WithKeyword "}}"
+
+BlockBody 
+    = Token
+
+*/
+
+//-----------------------------------------------
+//    Expressions, Statements
+//-----------------------------------------------
+
+MemberExpression <MemberExpression>
+    = Whitespace value:MemberPath Whitespace { new MemberExpression(value)}
+
+MemberPath
+    = NestedMemberIdentifier
+    / MemberIdentifier
+
+//Last Identifier Element => no next
+MemberIdentifier <IdentifierElement>
+    = value:NameIdentifier {new Identifier(value, null)}
+
+NestedMemberIdentifier
+    = ParentContextName
+    / ChildContextName
+
+ParentContextName <IdentifierElement>
+    = ParentPathLiteral next:MemberPath {new PathUp(next)}
+
+ChildContextName <IdentifierElement>
+    = value:NameIdentifier NameDelimiter next:MemberPath {new Identifier(value, next)}
+
+NameIdentifier <string>
+    = val:Identifier {string.Concat(val)}
+
+Identifier
+    = [a-z]i+
+
+//-------------------------------
+//      Keywords and Literals
+//-------------------------------
+
+BlockOpeningIdentifier = "#"
+BlockClosingIdentifier = "/"
+WithKeyword = "with"
+ModelKeyword = "model"
+Opening = "{{"/"{{{"/"{{{{"
+Closing = "}}"/"}}}"/"}}}}"
+ParentPathLiteral = "../"
+NameDelimiter = "." / "/"
+Whitespace = " "*
+
+
+//-------------------------------
+//      Miscellaneous
+//-------------------------------
+
+EOF 
+  = !.
+  / c:. #ERROR{ string.Format("Line {0}; Column{1}: Unexpected character {2}", cStart.Line, cStart.Column ,c) }

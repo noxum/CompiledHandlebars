@@ -27,5 +27,5 @@ namespace CompiledHandlebars.Compiler.AST
     internal abstract void Accept(IASTVisitor visitor);
   }
 
-  internal enum TokenType { Encoded, Escaped }
+  internal enum TokenType { Undefined, Encoded, Escaped }
 }

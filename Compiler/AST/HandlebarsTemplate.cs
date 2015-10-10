@@ -6,12 +6,14 @@ namespace CompiledHandlebars.Compiler.AST
 
   internal class HandlebarsTemplate
   {
+    internal string Model { get; set; }
     internal string Name { get; set; }
     internal string Namespace { get; set; }
     protected IList<ASTElementBase> _items { get; set; }
 
-    internal HandlebarsTemplate(IList<ASTElementBase> items)
+    internal HandlebarsTemplate(IList<ASTElementBase> items, string model)
     {
+      Model = model;
       _items = items;
     }
 

@@ -78,6 +78,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Compiler\CompiledHandlebars.Compiler.csproj">
+      <Project>{55e767e0-44f0-4297-9a00-7211b424be03}</Project>
+      <Name>CompiledHandlebars.Compiler</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
