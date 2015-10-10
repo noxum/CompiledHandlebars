@@ -8,8 +8,8 @@ Template<HandlebarsTemplate>
 
 ModelNode <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
-    / Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}"); }}
-    / .* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template");} }
+    / v:Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", vStart.Line, vStart.Column); }}
+    / v:.* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", vStart.Line, vStart.Column);} }
 
 //------------------------------
 //        ASTElements
@@ -80,9 +80,9 @@ ParentContextName <IdentifierElement>
 ChildContextName <IdentifierElement>
     = value:NameIdentifier NameDelimiter next:MemberPath {new Identifier(value, next)}
     / value:NameIdentifier NameDelimiter NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!");}}
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", valueStart.Line, valueStart.Column);}}
     / value:NameIdentifier NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!");}}
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", valueStart.Line, valueStart.Column);}}
       
 
 NameIdentifier <string>

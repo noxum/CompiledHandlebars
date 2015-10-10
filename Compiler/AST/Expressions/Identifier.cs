@@ -1,5 +1,6 @@
 ﻿using CompiledHandlebars.Compiler.Introspection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
@@ -12,19 +13,35 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
       _value = value;
     }
 
-    internal override Context Evaluate(Stack<Context> contextStack)
+    internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
     {
       //Add the Identifier to the current context
-      var identifierContext = new Context() { FullPath = string.Join(".", contextStack.Peek().FullPath, _value) };
-      if (_next == null)
-        //Last element => return IdentifierContext
-        return identifierContext;
-      else
+      var memberSymbol = contextStack.Any() ? contextStack.Peek().Symbol.FindMemberIfExists(_value) : 
+                                              state.Introspector.GetTypeSymbol(_value);      
+      if (memberSymbol!=null)
+      {        
+        var identifierContext = new Context(string.Join(".", contextStack.Peek().FullPath, _value), memberSymbol);      
+        if (_next == null)
+          //Last element => return IdentifierContext
+          return identifierContext;
+        else
+        {
+          //Push the identifier on the contextStack and keep going
+          contextStack.Push(identifierContext);
+          return _next.Evaluate(contextStack, state);
+        }
+      } else
       {
-        //Push the identifier on the contextStack and keep going
-        contextStack.Push(identifierContext);
-        return _next.Evaluate(contextStack);
+        state.AddTypeError($"Could not find Member '{_value}' in Type '{contextStack.Peek().FullPath}'!");
+        return contextStack.Peek();
       }
+    }
+
+    public override string ToString()
+    {
+      if (_next != null)
+        return string.Join(".", _value, _next.ToString());
+      return _value;
     }
   }
 
@@ -32,10 +49,17 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal PathUp(IdentifierElement next) : base(next) { }
 
-    internal override Context Evaluate(Stack<Context> contextStack)
+    internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
     {
+      if (!contextStack.Any())
+        state.AddTypeError("Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!");
       contextStack.Pop();
-      return _next.Evaluate(contextStack);
+      return _next.Evaluate(contextStack, state);
+    }
+
+    public override string ToString()
+    {
+      return string.Concat("../", _next.ToString());
     }
   }
 
@@ -60,7 +84,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
       _next = next;
     }
 
-    internal abstract Context Evaluate(Stack<Context> contextStack);
+    internal abstract Context Evaluate(Stack<Context> contextStack, CompilationState state);
 
   }
 }

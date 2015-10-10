@@ -1,8 +1,15 @@
-﻿namespace CompiledHandlebars.Compiler.Introspection
+﻿using Microsoft.CodeAnalysis;
+
+namespace CompiledHandlebars.Compiler.Introspection
 {
   internal class Context
   {
-    internal string FullPath { get; set; }
-
+    internal readonly string FullPath;
+    internal readonly ISymbol Symbol;
+    public Context(string fullPath, ISymbol symbol)
+    {
+      FullPath = fullPath;
+      Symbol = symbol;
+    }
   }
 }

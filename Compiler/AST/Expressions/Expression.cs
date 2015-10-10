@@ -5,6 +5,6 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
 {
   internal abstract class Expression
   {
-    internal abstract string Evaluate(Stack<Context> contextStack);
+    internal abstract string Evaluate(CompilationState state);
   }
 }

@@ -9,14 +9,14 @@ namespace CompiledHandlebars.Compiler.AST
     /// Original Position in the template.
     /// Usefull for error messages
     /// </summary>
-    protected readonly int _line;
-    protected readonly int _column;
-    protected TokenType _type { get; set; }
+    internal readonly int Line;
+    internal readonly int Column;
+    internal TokenType _type { get; private set; }
 
     internal ASTElementBase(int line, int column)
     {
-      _line = line;
-      _column = column;
+      Line = line;
+      Column = column;
     }
 
     internal void SetTokenType(TokenType type)

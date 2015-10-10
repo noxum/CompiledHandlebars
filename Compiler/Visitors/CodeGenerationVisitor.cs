@@ -4,34 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CompiledHandlebars.Compiler.AST;
+using CompiledHandlebars.Compiler.Introspection;
+using CompiledHandlebars.Compiler.CodeGeneration;
 
 namespace CompiledHandlebars.Compiler.Visitors
 {
   internal class CodeGenerationVisitor : IASTVisitor
   {
+    private CompilationState state { get; set; }
+    public CodeGenerationVisitor(RoslynIntrospector introspector, HandlebarsTemplate template)
+    {
+      state = new CompilationState(introspector, template);
+      state.Introspector = introspector;
+    }
+
     public void Visit(MarkupLiteral astLeaf)
     {
-      throw new NotImplementedException();
+      state.SetCursor(astLeaf);
+      state.PushStatement(SyntaxHelper.AppendStringLiteral(astLeaf.Value));
     }
 
     public void Visit(YieldStatement astLeaf)
     {
-      throw new NotImplementedException();
+      state.SetCursor(astLeaf);
+      if (astLeaf._type == TokenType.Encoded)
+        state.PushStatement(SyntaxHelper.AppendMemberEncoded(astLeaf.Member.Evaluate(state)));
+      else
+        state.PushStatement(SyntaxHelper.AppendMember(astLeaf.Member.Evaluate(state)));
     }
 
     public void VisitEnter(HandlebarsTemplate template)
     {
-      throw new NotImplementedException();
+      state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
     }
 
     public void VisitLeave(HandlebarsTemplate template)
     {
-      throw new NotImplementedException();
+      state.PushStatement(SyntaxHelper.ReturnSBToString);
     }
 
-    internal string GenerateCode(HandlebarsTemplate template)
+    internal CompilationState GenerateCode()
     {
-      return "Hello World";
+      state.Template.Accept(this);
+      return state;
     }
 
   }

@@ -11,12 +11,18 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
       Path = path;
     }
 
-    internal override string Evaluate(Stack<Context> contextStack)
+    internal override string Evaluate(CompilationState state)
     {
       //Copy Stack as identifier elements manipulate (push, pop)
       var cpContextStack = new Stack<Context>();
-      cpContextStack = new Stack<Context>(contextStack);
-      return Path.Evaluate(contextStack).FullPath;
+      cpContextStack = new Stack<Context>(state.ContextStack);
+      return Path.Evaluate(cpContextStack, state).FullPath;
     }
+
+    public override string ToString()
+    {
+      return Path.ToString();
+    }
+
   }
 }

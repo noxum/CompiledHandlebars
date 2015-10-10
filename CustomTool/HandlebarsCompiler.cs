@@ -1,8 +1,11 @@
-﻿using Microsoft.VisualStudio;
+﻿using CompiledHandlebars.Compiler;
+using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using VSLangProj80;
@@ -48,9 +51,13 @@ namespace CompiledHandlebars.CustomTool
 
     public int Generate(string wszInputFilePath, string bstrInputFileContents, string wszDefaultNamespace, IntPtr[] rgbOutputFileContents, out uint pcbOutput, IVsGeneratorProgress pGenerateProgress)
     {
-      string result = "Hello World!";
+      ProjectItem projectItem = siteServiceProvider.GetService(typeof(ProjectItem)) as ProjectItem;
+      EnvDTE.Project project = projectItem.ContainingProject;
+      EnvDTE.Solution solution = project.DTE.Solution;
 
-      byte[] bytes = Encoding.UTF8.GetBytes(result);
+      var compilationResult = HbsCompiler.Compile(bstrInputFileContents, solution.FileName, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath));
+
+      byte[] bytes = Encoding.UTF8.GetBytes(compilationResult.Item1);
       rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);
       Marshal.Copy(bytes, 0, rgbOutputFileContents[0], bytes.Length);
       pcbOutput = (uint)bytes.Length;

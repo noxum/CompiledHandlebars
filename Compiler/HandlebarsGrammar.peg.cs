@@ -165,7 +165,10 @@ namespace
             {
                 var startCursor1 = cursor;
                 IParseResult<string> r5 = null;
+                var vStart = cursor;
                 r5 = this.Opening(ref cursor);
+                var vEnd = cursor;
+                var v = ValueOrDefault(r5);
                 if (r5 != null)
                 {
                     IParseResult<string> r6 = null;
@@ -231,7 +234,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
                                     #line 11 "HandlebarsGrammar.peg"
-                                                  { throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}"); }
+                                                    { throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", vStart.Line, vStart.Column); }
                                     #line default
                                     );
                             }
@@ -259,6 +262,7 @@ namespace
             {
                 var startCursor5 = cursor;
                 IParseResult<IList<string>> r13 = null;
+                var vStart = cursor;
                 var startCursor6 = cursor;
                 var l1 = new List<string>();
                 while (true)
@@ -275,11 +279,13 @@ namespace
                     }
                 }
                 r13 = this.ReturnHelper<IList<string>>(startCursor6, ref cursor, state => l1.AsReadOnly());
+                var vEnd = cursor;
+                var v = ValueOrDefault(r13);
                 if (r13 != null)
                 {
                     r0 = this.ReturnHelper<MemberExpression>(startCursor5, ref cursor, state =>
                         #line 12 "HandlebarsGrammar.peg"
-           { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template");}
+             { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", vStart.Line, vStart.Column);}
                         #line default
                         );
                 }
@@ -759,7 +765,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
                                     #line 83 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!");}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", valueStart.Line, valueStart.Column);}
                                     #line default
                                     );
                             }
@@ -803,7 +809,7 @@ namespace
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor2, ref cursor, state =>
                                 #line 85 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!");}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", valueStart.Line, valueStart.Column);}
                                 #line default
                                 );
                         }
