@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Compiler
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Cli", "Cli\CompiledHandlebars.Cli.csproj", "{1F9A3019-8FBE-494B-95FE-10C0D7A85600}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebarsCustomTool", "CustomTool\CompiledHandlebarsCustomTool.csproj", "{35510CE3-E149-4EB3-8A43-F572F328ACD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.CustomTool", "CustomTool\CompiledHandlebars.CustomTool.csproj", "{35510CE3-E149-4EB3-8A43-F572F328ACD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
