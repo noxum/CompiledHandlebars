@@ -52,7 +52,7 @@ namespace CompiledHandlebars.Compiler
 
     }
 
-    public CompilationUnitSyntax GetCompilationUnit()
+    public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
     {
       var ws = new AdhocWorkspace();
       var compiledHbs = SyntaxFactory.CompilationUnit()
@@ -60,7 +60,7 @@ namespace CompiledHandlebars.Compiler
         SyntaxHelper.UsingDirectives
       )
       .AddMembers(
-        SyntaxHelper.HandlebarsNamespace(Template.Namespace)
+        SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)          
           .AddMembers(
             SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
               .AddMembers(

@@ -62,9 +62,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// Yields a NamespaceDeclaration:
     /// namespace CompiledHandlebars{}
     /// </summary>
-    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string nameSpace)
+    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string nameSpace, string comment)
     {
-      return SF.NamespaceDeclaration(SF.ParseName(nameSpace));
+      return SF.NamespaceDeclaration(SF.ParseName(nameSpace))
+              .WithLeadingTrivia(
+                SF.SyntaxTrivia(SyntaxKind.MultiLineCommentTrivia, string.Concat("/*",comment,"*/")));
     }
 
 

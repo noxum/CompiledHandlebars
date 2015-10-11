@@ -18,7 +18,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       _solution = workspace.OpenSolutionAsync(solutionPath).Result;
 
       var taskList = _solution.Projects.Select(x => x.GetCompilationAsync());
-      projectCompilations.AddRange(taskList.Select(x => x.Result));
+      projectCompilations.AddRange(taskList.Select(x => x.Result));      
     }
 
     public INamedTypeSymbol GetTypeSymbol(string fullTypeName)
