@@ -28,9 +28,9 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astLeaf);
       if (astLeaf._type == TokenType.Encoded)
-        state.PushStatement(SyntaxHelper.AppendMemberEncoded(astLeaf.Member.Evaluate(state)));
+        state.PushStatement(SyntaxHelper.AppendMemberEncoded(astLeaf.Member.EvaluateToString(state)));
       else
-        state.PushStatement(SyntaxHelper.AppendMember(astLeaf.Member.Evaluate(state)));
+        state.PushStatement(SyntaxHelper.AppendMember(astLeaf.Member.EvaluateToString(state)));
     }
 
     public void VisitEnter(HandlebarsTemplate template)
@@ -49,5 +49,16 @@ namespace CompiledHandlebars.Compiler.Visitors
       return state;
     }
 
+    public void VisitEnter(WithBlock astNode)
+    {
+      state.SetCursor(astNode);
+      //TODO: if(IsTruthy(Member))
+      state.ContextStack.Push(astNode.Member.EvaluateToContext(state));
+    }
+
+    public void VisitLeave(WithBlock astNode)
+    {
+      state.ContextStack.Pop();
+    }
   }
 }

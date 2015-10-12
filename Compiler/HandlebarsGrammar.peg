@@ -16,7 +16,8 @@ ModelNode <MemberExpression>
 //------------------------------
 
 Element 
-    = (Token)*
+    = (Node
+    / Token)*
 
 Token <ASTElementBase>
     = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
@@ -37,12 +38,13 @@ MarkupLiteral <MarkupLiteral>
 //-----------------------------------------------
 //    Nodes and Blocks
 //-----------------------------------------------
-/*
-HandlebarsNode <ASTElement>
+
+Node <ASTElementBase>
     = WithBlock
 
 WithBlock <WithBlock>
-    = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(memberStart.Line, memberStart.Column, body, member)}
+    = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
+    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }}
 
 WithOpeningToken <MemberExpression>
     = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
@@ -51,9 +53,8 @@ WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"
 
 BlockBody 
-    = Token
+    = Element
 
-*/
 
 //-----------------------------------------------
 //    Expressions, Statements

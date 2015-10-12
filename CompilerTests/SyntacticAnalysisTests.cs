@@ -44,10 +44,10 @@ namespace CompiledHandlebars.CompilerTests
       {
         _parser.Parse(template);
         Assert.Fail();
-      }catch(HandlebarsSyntaxError se)
+      }catch(HandlebarsSyntaxError)
       {
 
-      }catch(Exception e)
+      }catch(Exception)
       {
         Assert.Fail();
       }

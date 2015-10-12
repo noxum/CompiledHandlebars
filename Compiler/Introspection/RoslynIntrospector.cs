@@ -14,9 +14,10 @@ namespace CompiledHandlebars.Compiler.Introspection
     private static Workspace workspace { get; set; }
     private static Solution solution { get; set; }
     private static Dictionary<ProjectId, Compilation> projectCompilations { get; set; } = new Dictionary<ProjectId, Compilation>();
-
+    
+    //TODO: Test what happens if multiple instances of VisualStudio run...
     public RoslynIntrospector(Workspace containingWorkspace)
-    {
+    {      
       if (workspace == null)
         workspace = containingWorkspace;
       if (solution == null)

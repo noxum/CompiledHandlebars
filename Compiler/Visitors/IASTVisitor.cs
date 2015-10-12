@@ -8,6 +8,8 @@ namespace CompiledHandlebars.Compiler.Visitors
   /// </summary>
   internal interface IASTVisitor
   {
+    void VisitEnter(WithBlock astNode);
+    void VisitLeave(WithBlock astNode);
 
     void Visit(YieldStatement astLeaf);
     void Visit(MarkupLiteral astLeaf);
