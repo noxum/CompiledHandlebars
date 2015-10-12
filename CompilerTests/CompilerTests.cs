@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace CompiledHandlebars.Compiler.Tests
 {
+  /// <summary>
+  /// TODO: Read and understand https://benetkiewicz.github.io/blog/csharp/roslyn/2014/10/26/code-mutiations-with-roslyn.html
+  /// Should be helpful for unittesting generated code
+  /// </summary>
   [TestClass()]
   public class CompilerTests
   {

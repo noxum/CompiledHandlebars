@@ -1,10 +1,13 @@
 ﻿using CompiledHandlebars.Compiler;
 using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -51,13 +54,13 @@ namespace CompiledHandlebars.CustomTool
 
     public int Generate(string wszInputFilePath, string bstrInputFileContents, string wszDefaultNamespace, IntPtr[] rgbOutputFileContents, out uint pcbOutput, IVsGeneratorProgress pGenerateProgress)
     {
-      ProjectItem projectItem = siteServiceProvider.GetService(typeof(ProjectItem)) as ProjectItem;
-      EnvDTE.Project project = projectItem.ContainingProject;
-      EnvDTE.Solution solution = project.DTE.Solution;
-
-      var compilationResult = HbsCompiler.Compile(bstrInputFileContents, solution.FileName, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath));
-
-      byte[] bytes = Encoding.UTF8.GetBytes(compilationResult.Item1);
+      var sw = new Stopwatch();
+      sw.Start();
+      var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
+      var workspace = componentModel.GetService<VisualStudioWorkspace>();
+      var compilationResult = HbsCompiler.Compile(bstrInputFileContents, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath), workspace);
+      sw.Stop();      
+      byte[] bytes = Encoding.UTF8.GetBytes(string.Concat(compilationResult.Item1, $"/*compiled in {sw.ElapsedMilliseconds}ms*/"));
       rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);
       Marshal.Copy(bytes, 0, rgbOutputFileContents[0], bytes.Length);
       pcbOutput = (uint)bytes.Length;

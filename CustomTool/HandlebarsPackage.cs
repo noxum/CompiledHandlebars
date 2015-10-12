@@ -15,6 +15,9 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.LanguageServices;
+using System.ComponentModel.Composition;
 
 namespace CompiledHandlebars.CustomTool
 {
@@ -66,7 +69,7 @@ namespace CompiledHandlebars.CustomTool
     /// </summary>
     protected override void Initialize()
     {
-            base.Initialize();
+      base.Initialize();
     }
 
     #endregion

@@ -9,7 +9,7 @@ namespace CompiledHandlebars.Compiler
 {
   public static class HbsCompiler
   {
-    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string solutionPath, string nameSpace, string name)
+    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Workspace workspace)
     {
       var parser = new HbsParser();
       try
@@ -17,14 +17,12 @@ namespace CompiledHandlebars.Compiler
         var sw = new Stopwatch();
         sw.Start();
         var template = parser.Parse(hbsTemplate);
-        sw.Stop();
-        long parseTime = sw.ElapsedMilliseconds;
+        long parseTime = sw.ElapsedMilliseconds;        
         template.Namespace = nameSpace;
         template.Name = name;
         sw.Restart();
-        var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(solutionPath), template);
-        sw.Stop();
-        long initTime = sw.ElapsedMilliseconds;
+        var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(workspace), template);
+        long initTime = sw.ElapsedMilliseconds;        
         sw.Restart();
         var state = codeGenerator.GenerateCode();
         sw.Stop();
