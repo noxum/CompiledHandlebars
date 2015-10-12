@@ -41,7 +41,15 @@ MarkupLiteral <MarkupLiteral>
 
 Node <ASTElementBase>
     = WithBlock
+    / IfBlock
+    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing {{ throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), nameStart.Line, nameStart.Column);}}
 
+
+
+BlockBody 
+    = Element
+
+//#With
 WithBlock <WithBlock>
     = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
     / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }}   
@@ -53,8 +61,23 @@ WithOpeningToken <MemberExpression>
 WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"
 
-BlockBody 
-    = Element
+//#If
+
+IfBlock <IfBlock>
+  = member:IfOpeningToken body:BlockBody IfClosingToken { new IfBlock(member, IfType.If, body, memberStart.Line, memberStart.Column) }
+  / member:UnlessOpeningToken body:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, body, memberStart.Line, memberStart.Column) }
+
+IfOpeningToken <MemberExpression>
+  = "{{" BlockOpeningIdentifier IfKeyword member:MemberExpression "}}" { member }
+
+IfClosingToken
+  = "{{" BlockClosingIdentifier IfKeyword "}}"
+
+UnlessOpeningToken <MemberExpression>
+  = "{{" BlockOpeningIdentifier UnlessKeyword member:MemberExpression "}}" { member }
+
+UnlessClosingToken
+  = "{{" BlockClosingIdentifier UnlessKeyword "}}"
 
 
 //-----------------------------------------------
@@ -100,6 +123,8 @@ Identifier
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 WithKeyword = "with"
+IfKeyword = "if"
+UnlessKeyword = "unless"
 ModelKeyword = "model"
 Opening = "{{"/"{{{"/"{{{{"
 Closing = "}}"/"}}}"/"}}}}"

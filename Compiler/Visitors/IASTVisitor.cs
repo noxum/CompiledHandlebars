@@ -11,6 +11,9 @@ namespace CompiledHandlebars.Compiler.Visitors
     void VisitEnter(WithBlock astNode);
     void VisitLeave(WithBlock astNode);
 
+    void VisitEnter(IfBlock astNode);
+    void VisitLeave(IfBlock astNode);
+
     void Visit(YieldStatement astLeaf);
     void Visit(MarkupLiteral astLeaf);
 

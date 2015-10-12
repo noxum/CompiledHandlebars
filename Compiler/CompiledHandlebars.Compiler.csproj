@@ -113,6 +113,7 @@
     <Compile Include="AST\Expressions\Expression.cs" />
     <Compile Include="AST\Expressions\Identifier.cs" />
     <Compile Include="AST\Expressions\MemberExpression.cs" />
+    <Compile Include="AST\IfBlock.cs" />
     <Compile Include="AST\MarkupLiteral.cs" />
     <Compile Include="AST\WithBlock.cs" />
     <Compile Include="AST\YieldStatement.cs" />

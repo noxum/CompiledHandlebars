@@ -61,5 +61,16 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.ContextStack.Pop();
       state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
     }
+
+    public void VisitEnter(IfBlock astNode)
+    {
+      state.SetCursor(astNode);
+      state.PushNewBlock();
+    }
+
+    public void VisitLeave(IfBlock astNode)
+    {
+      state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+    }
   }
 }
