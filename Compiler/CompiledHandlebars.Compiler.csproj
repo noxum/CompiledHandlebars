@@ -117,7 +117,7 @@
     <Compile Include="AST\WithBlock.cs" />
     <Compile Include="AST\YieldStatement.cs" />
     <Compile Include="CodeGeneration\SyntaxHelper.cs" />
-    <Compile Include="CompilationState.cs" />
+    <Compile Include="CodeGeneration\CompilationState.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="AST\HandlebarsTemplate.cs" />
     <Compile Include="HandlebarsException.cs" />

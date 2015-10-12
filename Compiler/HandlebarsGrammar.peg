@@ -44,10 +44,11 @@ Node <ASTElementBase>
 
 WithBlock <WithBlock>
     = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
-    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }}
+    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }}   
 
 WithOpeningToken <MemberExpression>
     = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
+    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" {{ throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", vStart.Line, vStart.Column ); }}
 
 WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"

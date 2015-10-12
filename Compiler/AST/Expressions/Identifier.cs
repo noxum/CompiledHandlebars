@@ -1,4 +1,5 @@
-﻿using CompiledHandlebars.Compiler.Introspection;
+﻿using CompiledHandlebars.Compiler.CodeGeneration;
+using CompiledHandlebars.Compiler.Introspection;
 using System.Collections.Generic;
 using System.Linq;
 

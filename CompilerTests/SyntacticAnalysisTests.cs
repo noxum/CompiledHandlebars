@@ -51,7 +51,7 @@ namespace CompiledHandlebars.CompilerTests
     {
       try
       {
-        _parser.Parse(template);
+        _parser.Parse(template);        
         Assert.Fail();
       }catch(HandlebarsSyntaxError)
       {

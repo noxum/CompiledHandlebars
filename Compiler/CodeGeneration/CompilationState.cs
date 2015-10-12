@@ -1,5 +1,4 @@
 ﻿using CompiledHandlebars.Compiler.AST;
-using CompiledHandlebars.Compiler.CodeGeneration;
 using CompiledHandlebars.Compiler.Introspection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -10,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CompiledHandlebars.Compiler
+namespace CompiledHandlebars.Compiler.CodeGeneration
 {
   public class CompilationState
   {
@@ -42,12 +41,12 @@ namespace CompiledHandlebars.Compiler
       resultStack.Peek().Add(statement);
     }
 
-    public void StartBlock()
+    public void PushNewBlock()
     {
       resultStack.Push(new List<StatementSyntax>());
     }
 
-    public List<StatementSyntax> EndBlock()
+    public List<StatementSyntax> PopBlock()
     {
       return resultStack.Pop();
     }
