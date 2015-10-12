@@ -64,7 +64,9 @@ WithClosingToken
 //#If
 
 IfBlock <IfBlock>
-  = member:IfOpeningToken body:BlockBody IfClosingToken { new IfBlock(member, IfType.If, body, memberStart.Line, memberStart.Column) }
+  = member:IfOpeningToken body:BlockBody ElseToken elseBlock:BlockBody IfClosingToken { new IfBlock(member, IfType.If, elseBlock, body, memberStart.Line, memberStart.Column) }
+  / member:UnlessOpeningToken body:BlockBody ElseToken elseBlock:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, elseBlock, body, memberStart.Line, memberStart.Column) }
+  / member:IfOpeningToken body:BlockBody IfClosingToken { new IfBlock(member, IfType.If, body, memberStart.Line, memberStart.Column) }
   / member:UnlessOpeningToken body:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, body, memberStart.Line, memberStart.Column) }
 
 IfOpeningToken <MemberExpression>
@@ -78,6 +80,9 @@ UnlessOpeningToken <MemberExpression>
 
 UnlessClosingToken
   = "{{" BlockClosingIdentifier UnlessKeyword "}}"
+
+ElseToken
+  = Opening ElseKeyword Closing
 
 
 //-----------------------------------------------
@@ -111,7 +116,7 @@ ChildContextName <IdentifierElement>
       
 
 NameIdentifier <string>
-    = val:Identifier {string.Concat(val)}
+    = (!ReservedKeywords) val:Identifier {string.Concat(val)}
 
 Identifier
     = [a-z]i+
@@ -120,11 +125,16 @@ Identifier
 //      Keywords and Literals
 //-------------------------------
 
+ReservedKeywords 
+  = ElseKeyword
+  
+
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 WithKeyword = "with"
 IfKeyword = "if"
 UnlessKeyword = "unless"
+ElseKeyword = "else"
 ModelKeyword = "model"
 Opening = "{{"/"{{{"/"{{{{"
 Closing = "}}"/"}}}"/"}}}}"

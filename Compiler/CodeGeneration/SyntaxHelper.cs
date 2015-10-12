@@ -312,12 +312,26 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+    internal static IfStatementSyntax IfIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
+    {
+      return IfIsTruthy(memberName, ifBlock)
+        .WithElse(
+          SF.ElseClause(SF.Block(elseBlock)));
+    }
+
     internal static IfStatementSyntax UnlessIsTruthy(string memberName, List<StatementSyntax> block)
     {
       return SF.IfStatement(
         SF.ParseExpression($"!IsTruthy({memberName})"),
         SF.Block(block)
       );
+    }
+
+    internal static IfStatementSyntax UnlessIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
+    {
+      return UnlessIsTruthy(memberName, ifBlock)
+        .WithElse(
+          SF.ElseClause(SF.Block(elseBlock)));
     }
   }
 

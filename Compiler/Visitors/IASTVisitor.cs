@@ -13,6 +13,7 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     void VisitEnter(IfBlock astNode);
     void VisitLeave(IfBlock astNode);
+    void VisitElse();
 
     void Visit(YieldStatement astLeaf);
     void Visit(MarkupLiteral astLeaf);
