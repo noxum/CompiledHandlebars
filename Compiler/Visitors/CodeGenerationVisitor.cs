@@ -91,5 +91,10 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.PushNewBlock();
     }
+
+    public void Visit(CommentLiteral astLeaf)
+    {
+      state.AddComment(astLeaf.Value);
+    }
   }
 }

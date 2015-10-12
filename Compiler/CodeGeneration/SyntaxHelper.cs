@@ -333,6 +333,16 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         .WithElse(
           SF.ElseClause(SF.Block(elseBlock)));
     }
+
+    internal static StatementSyntax AddCommentToStatement(StatementSyntax statement, string comment)
+    {
+      return
+        statement.WithTrailingTrivia(
+          SF.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, comment)
+        );
+
+    }
+
   }
 
 }

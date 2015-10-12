@@ -50,6 +50,12 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       return resultStack.Pop();
     }
+    
+    public void AddComment(string comment)
+    {
+      var list = resultStack.Peek();
+      list[0] = SyntaxHelper.AddCommentToStatement(list[0], comment);
+    }
 
     public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
     {

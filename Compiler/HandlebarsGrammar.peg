@@ -22,6 +22,7 @@ Element
 Token <ASTElementBase>
     = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
     / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / Comment
     / MarkupLiteral
 
 ASTLeaf <ASTElementBase>
@@ -34,6 +35,9 @@ YieldStatement <YieldStatement>
 MarkupLiteral <MarkupLiteral> 
     = value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
+Comment <CommentLiteral>
+    = CommentOpening val:(!CommentClosing .)* CommentClosing { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
+    / MultilineCommentOpening val:(!MultilineCommentClosing .)* MultilineCommentClosing { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
     
 //-----------------------------------------------
 //    Nodes and Blocks
@@ -138,6 +142,10 @@ ElseKeyword = "else"
 ModelKeyword = "model"
 Opening = "{{"/"{{{"/"{{{{"
 Closing = "}}"/"}}}"/"}}}}"
+CommentOpening = "{{!"
+CommentClosing = "}}"
+MultilineCommentOpening = "{{!--"
+MultilineCommentClosing = "--}}"
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
 Whitespace = " "*
