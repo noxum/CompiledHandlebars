@@ -70,7 +70,10 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     public void VisitLeave(IfBlock astNode)
     {
-      state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+      if (astNode.Type == IfType.If)
+        state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+      else if (astNode.Type == IfType.Unless)
+        state.PushStatement(SyntaxHelper.UnlessIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
     }
   }
 }

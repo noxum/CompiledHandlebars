@@ -311,6 +311,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         SF.Block(block)
       );
     }
+
+    internal static IfStatementSyntax UnlessIsTruthy(string memberName, List<StatementSyntax> block)
+    {
+      return SF.IfStatement(
+        SF.ParseExpression($"!IsTruthy({memberName})"),
+        SF.Block(block)
+      );
+    }
   }
 
 }
