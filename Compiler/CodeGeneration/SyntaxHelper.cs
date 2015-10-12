@@ -206,6 +206,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );
     }
 
+    /// <summary>
+    /// Yields a "sb.append(memberName)" Statement
+    /// </summary>
+    /// <param name="memberName"></param>
+    /// <returns></returns>
     internal static ExpressionStatementSyntax AppendMember(string memberName)
     {
       return
@@ -217,5 +222,95 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           )
         );
     }
+
+    internal static MethodDeclarationSyntax IsTruthyMethodBool()
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier("IsTruthy"),
+          default(TypeParameterListSyntax),
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+            default(SyntaxList<AttributeListSyntax>),
+            default(SyntaxTokenList),
+            SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+            SF.Identifier("b"),
+            default(EqualsValueClauseSyntax)))
+          ),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(
+            SF.ReturnStatement(SF.ParseExpression("b"))    
+          ),
+          default(SyntaxToken)
+      );
+    }
+
+    internal static MethodDeclarationSyntax IsTruthyMethodString()
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier("IsTruthy"),
+          default(TypeParameterListSyntax),
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+            default(SyntaxList<AttributeListSyntax>),
+            default(SyntaxTokenList),
+            SF.PredefinedType(SF.Token(SyntaxKind.StringKeyword)),
+            SF.Identifier("s"),
+            default(EqualsValueClauseSyntax)))
+          ),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(
+            SF.ReturnStatement(SF.ParseExpression("!string.IsNullOrEmpty(s)"))
+          ),
+          default(SyntaxToken)
+      );
+    }
+
+    internal static MethodDeclarationSyntax IsTruthyMethodObject()
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier("IsTruthy"),
+          default(TypeParameterListSyntax),
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+            default(SyntaxList<AttributeListSyntax>),
+            default(SyntaxTokenList),
+            SF.PredefinedType(SF.Token(SyntaxKind.ObjectKeyword)),
+            SF.Identifier("o"),
+            default(EqualsValueClauseSyntax)))
+          ),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(
+            SF.ReturnStatement(SF.ParseExpression("o!=null"))
+          ),
+          default(SyntaxToken)
+      );
+    }
+
+    internal static IfStatementSyntax IfIsTruthy(string memberName, List<StatementSyntax> block)
+    {
+      return SF.IfStatement(
+        SF.ParseExpression($"IsTruthy({memberName})"),
+        SF.Block(block)
+      );
+    }
   }
+
 }

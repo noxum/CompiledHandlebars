@@ -53,12 +53,14 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       //TODO: if(IsTruthy(Member))
+      state.StartBlock();
       state.ContextStack.Push(astNode.Member.EvaluateToContext(state));
     }
 
     public void VisitLeave(WithBlock astNode)
     {
       state.ContextStack.Pop();
+      state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.EvaluateToString(state), state.EndBlock()));
     }
   }
 }

@@ -44,12 +44,12 @@ namespace CompiledHandlebars.Compiler
 
     public void StartBlock()
     {
-
+      resultStack.Push(new List<StatementSyntax>());
     }
 
-    public void EndBlock()
+    public List<StatementSyntax> EndBlock()
     {
-
+      return resultStack.Pop();
     }
 
     public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
@@ -67,7 +67,10 @@ namespace CompiledHandlebars.Compiler
                 SyntaxHelper.RenderWithParameter(Template.Model.ToString())
                   .AddBodyStatements(                     
                     resultStack.Pop().ToArray()
-                  )
+                  ), 
+                SyntaxHelper.IsTruthyMethodBool(),
+                SyntaxHelper.IsTruthyMethodString(),
+                SyntaxHelper.IsTruthyMethodObject()
               )
           )
       );

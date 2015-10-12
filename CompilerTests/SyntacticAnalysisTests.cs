@@ -38,6 +38,15 @@ namespace CompiledHandlebars.CompilerTests
       ShouldThrowException("{{model Mars}}{{Plantatia..Utopia}}");
     }
 
+    [TestMethod]
+    public void WithBlockFail()
+    {
+      ShouldThrowException("{{model Mars}}{{#with}}");
+      ShouldThrowException("{{model Mars}}{{#with Sun}}");
+      ShouldThrowException("{{model Mars}}{{#with Sun}}{{#with}}");
+      ShouldThrowException("{{model Mars}}{{#with Sun}}{{/witz}}");
+    }
+
     private void ShouldThrowException(string template)
     {
       try
