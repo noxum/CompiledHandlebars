@@ -2005,7 +2005,18 @@ namespace
             while (true)
             {
                 IParseResult<string> r1 = null;
-                r1 = this.ParseClass(ref cursor, "az", ignoreCase: true);
+                if (r1 == null)
+                {
+                    r1 = this.ParseClass(ref cursor, "az", ignoreCase: true);
+                }
+                if (r1 == null)
+                {
+                    r1 = this.ParseClass(ref cursor, "09");
+                }
+                if (r1 == null)
+                {
+                    r1 = this.ParseLiteral(ref cursor, "_");
+                }
                 if (r1 != null)
                 {
                     l0.Add(r1.Value);

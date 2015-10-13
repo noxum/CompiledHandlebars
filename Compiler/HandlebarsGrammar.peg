@@ -123,7 +123,7 @@ NameIdentifier <string>
     = (!ReservedKeywords) val:Identifier {string.Concat(val)}
 
 Identifier
-    = [a-z]i+
+    = ([a-z]i / [0-9] / "_" )+
 
 //-------------------------------
 //      Keywords and Literals
