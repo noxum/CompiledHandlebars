@@ -307,6 +307,10 @@ namespace
                 IParseResult<ASTElementBase> r1 = null;
                 if (r1 == null)
                 {
+                    r1 = this.Comment(ref cursor);
+                }
+                if (r1 == null)
+                {
                     r1 = this.Node(ref cursor);
                 }
                 if (r1 == null)
@@ -327,7 +331,7 @@ namespace
         }
 
         private IParseResult<
-            #line 22 "HandlebarsGrammar.peg"
+            #line 23 "HandlebarsGrammar.peg"
        ASTElementBase
             #line default
             > Token(ref Cursor cursor)
@@ -352,7 +356,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
-                                #line 23 "HandlebarsGrammar.peg"
+                                #line 24 "HandlebarsGrammar.peg"
                                 {value.SetTokenType(TokenType.Encoded); return value;}
                                 #line default
                                 );
@@ -391,7 +395,7 @@ namespace
                         if (r6 != null)
                         {
                             r0 = this.ReturnHelper<ASTElementBase>(startCursor1, ref cursor, state =>
-                                #line 24 "HandlebarsGrammar.peg"
+                                #line 25 "HandlebarsGrammar.peg"
                                   {value.SetTokenType(TokenType.Encoded); return value;}
                                 #line default
                                 );
@@ -410,10 +414,6 @@ namespace
                 {
                     cursor = startCursor1;
                 }
-            }
-            if (r0 == null)
-            {
-                r0 = this.Comment(ref cursor);
             }
             if (r0 == null)
             {
@@ -566,16 +566,16 @@ namespace
 
         private IParseResult<
             #line 38 "HandlebarsGrammar.peg"
-         CommentLiteral
+         ASTElementBase
             #line default
             > Comment(ref Cursor cursor)
         {
-            IParseResult<CommentLiteral> r0 = null;
+            IParseResult<ASTElementBase> r0 = null;
             if (r0 == null)
             {
                 var startCursor0 = cursor;
                 IParseResult<string> r1 = null;
-                r1 = this.CommentOpening(ref cursor);
+                r1 = this.MultilineCommentOpening(ref cursor);
                 if (r1 != null)
                 {
                     IParseResult<IList<string>> r2 = null;
@@ -589,7 +589,7 @@ namespace
                         IParseResult<string> r4 = null;
                         var startCursor3 = cursor;
                         IParseResult<string> r5 = null;
-                        r5 = this.CommentClosing(ref cursor);
+                        r5 = this.MultilineCommentClosing(ref cursor);
                         if (r5 == null)
                         {
                             r4 = this.ReturnHelper<string>(cursor, ref cursor, state => string.Empty);
@@ -635,12 +635,12 @@ namespace
                     if (r2 != null)
                     {
                         IParseResult<string> r7 = null;
-                        r7 = this.CommentClosing(ref cursor);
+                        r7 = this.MultilineCommentClosing(ref cursor);
                         if (r7 != null)
                         {
-                            r0 = this.ReturnHelper<CommentLiteral>(startCursor0, ref cursor, state =>
+                            r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
                                 #line 39 "HandlebarsGrammar.peg"
-                                                               new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)
+                                                                                          new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)
                                 #line default
                                 );
                         }
@@ -663,7 +663,7 @@ namespace
             {
                 var startCursor4 = cursor;
                 IParseResult<string> r8 = null;
-                r8 = this.MultilineCommentOpening(ref cursor);
+                r8 = this.CommentOpening(ref cursor);
                 if (r8 != null)
                 {
                     IParseResult<IList<string>> r9 = null;
@@ -677,7 +677,7 @@ namespace
                         IParseResult<string> r11 = null;
                         var startCursor7 = cursor;
                         IParseResult<string> r12 = null;
-                        r12 = this.MultilineCommentClosing(ref cursor);
+                        r12 = this.CommentClosing(ref cursor);
                         if (r12 == null)
                         {
                             r11 = this.ReturnHelper<string>(cursor, ref cursor, state => string.Empty);
@@ -723,12 +723,12 @@ namespace
                     if (r9 != null)
                     {
                         IParseResult<string> r14 = null;
-                        r14 = this.MultilineCommentClosing(ref cursor);
+                        r14 = this.CommentClosing(ref cursor);
                         if (r14 != null)
                         {
-                            r0 = this.ReturnHelper<CommentLiteral>(startCursor4, ref cursor, state =>
+                            r0 = this.ReturnHelper<ASTElementBase>(startCursor4, ref cursor, state =>
                                 #line 40 "HandlebarsGrammar.peg"
-                                                                                          new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)
+                                                               new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)
                                 #line default
                                 );
                         }

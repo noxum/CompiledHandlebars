@@ -16,13 +16,13 @@ ModelNode <MemberExpression>
 //------------------------------
 
 Element 
-    = (Node
+    = (Comment
+    / Node
     / Token)*
 
 Token <ASTElementBase>
     = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
     / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
-    / Comment
     / MarkupLiteral
 
 ASTLeaf <ASTElementBase>
@@ -35,9 +35,9 @@ YieldStatement <YieldStatement>
 MarkupLiteral <MarkupLiteral> 
     = value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
-Comment <CommentLiteral>
-    = CommentOpening val:(!CommentClosing .)* CommentClosing { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
-    / MultilineCommentOpening val:(!MultilineCommentClosing .)* MultilineCommentClosing { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
+Comment <ASTElementBase>
+    = MultilineCommentOpening val:(!MultilineCommentClosing .)* MultilineCommentClosing { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
+    / CommentOpening val:(!CommentClosing .)* CommentClosing { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
     
 //-----------------------------------------------
 //    Nodes and Blocks

@@ -338,7 +338,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       return
         statement.WithTrailingTrivia(
-          SF.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, comment)
+          SF.Comment(string.Concat("/*",comment,"*/"))
         );
 
     }

@@ -27,7 +27,7 @@ namespace CompiledHandlebars.Compiler
         var state = codeGenerator.GenerateCode();
         sw.Stop();
         long generationTime = sw.ElapsedMilliseconds;
-        return new Tuple<string, IEnumerable<HandlebarsException>>(state.GetCompilationUnit($"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!").NormalizeWhitespace().ToFullString(), state.Errors);
+        return new Tuple<string, IEnumerable<HandlebarsException>>(state.GetCompilationUnit($"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!").NormalizeWhitespace(elasticTrivia: true).ToFullString(), state.Errors);
       } catch(HandlebarsSyntaxError syntaxError)
       {
         return new Tuple<string, IEnumerable<HandlebarsException>>($"No result as SyntaxErrors occured: {syntaxError.Message}", new HandlebarsSyntaxError[] { syntaxError });
