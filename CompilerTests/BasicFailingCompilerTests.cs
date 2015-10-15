@@ -27,12 +27,21 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("ContextErrorTests1", "{{../Name}}", _marsModel, false)]
-    [RegisterHandlebarsTemplate("ContextErrorTests2", "{{Phobos/../../Name}}", _marsModel, false)]
-    public void ContextErrorTests()
+    [RegisterHandlebarsTemplate("ContextErrorTest1", "{{../Name}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("ContextErrorTest2", "{{Phobos/../../Name}}", _marsModel, false)]
+    public void ContextErrorTest()
     {
-      ShouldRaiseError("ContextErrorTests1", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
-      ShouldRaiseError("ContextErrorTests2", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
+      ShouldRaiseError("ContextErrorTest1", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
+      ShouldRaiseError("ContextErrorTest2", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("UnknownMemberTest1", "{{Europa}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("UnknownMemberTest2", "{{#if Titan}}{{/if}}", _marsModel, false)]
+    public void UnknownMemberTest()
+    {
+      ShouldRaiseError("UnknownMemberTest1", Compiler.HandlebarsTypeErrorKind.UnknownMember);
+      ShouldRaiseError("UnknownMemberTest2", Compiler.HandlebarsTypeErrorKind.UnknownMember);
     }
 
 
