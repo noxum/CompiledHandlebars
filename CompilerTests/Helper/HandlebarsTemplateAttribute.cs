@@ -11,16 +11,19 @@ namespace CompiledHandlebars.CompilerTests.Helper
   {
     public readonly string _contents;
     public readonly string _name;
+    public readonly bool _include;
 
-    public RegisterHandlebarsTemplateAttribute(string name, string contents)
+    public RegisterHandlebarsTemplateAttribute(string name, string contents, bool includeInAssembly = true)
     {
       _contents = contents;
       _name = name;
+      _include = includeInAssembly;
     }
-    public RegisterHandlebarsTemplateAttribute(string name, string contents, string modelToken)
+    public RegisterHandlebarsTemplateAttribute(string name, string contents, string modelToken, bool includeInAssembly = true)
     {
       _contents = string.Concat(modelToken,contents);
       _name = name;
+      _include = includeInAssembly;
     }
   }
 }

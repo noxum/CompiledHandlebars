@@ -1105,7 +1105,7 @@ namespace
                                 {
                                     r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
                                         #line 63 "HandlebarsGrammar.peg"
-                                                                    { throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingType, vStart.Line, vStart.Column ); }
+                                                                    { throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingMemberExpression, vStart.Line, vStart.Column ); }
                                         #line default
                                         );
                                 }
@@ -1884,7 +1884,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
                                     #line 117 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedType, valueStart.Line, valueStart.Column);}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedMemberExpression, valueStart.Line, valueStart.Column);}
                                     #line default
                                     );
                             }
@@ -1928,7 +1928,7 @@ namespace
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor2, ref cursor, state =>
                                 #line 119 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedType,  valueStart.Line, valueStart.Column);}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedMemberExpression,  valueStart.Line, valueStart.Column);}
                                 #line default
                                 );
                         }

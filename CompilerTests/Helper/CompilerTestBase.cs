@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,15 +35,18 @@ namespace CompiledHandlebars.CompilerTests.Helper
         {//Get compiled templates
           var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace);
           compiledCode.Add(template._name, code);
-          //Check if template already exits
-          var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
-          if (doc != null)
-          {//And remove it if it does
-            project = project.RemoveDocument(doc.Id);
+          if (template._include)
+          {
+            //Check if template already exits
+            var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
+            if (doc != null)
+            {//And remove it if it does
+              project = project.RemoveDocument(doc.Id);
+            }
+            //Then add the new version
+            project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
+            compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
           }
-          //Then add the new version
-          project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
-          compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
         }
       }
       string assemblyName = Path.GetRandomFileName();
@@ -83,9 +87,19 @@ namespace CompiledHandlebars.CompilerTests.Helper
       return result.Equals(renderResult);
     }
 
-    protected bool ShouldRaiseError(string templateName, int line, int column)
+    protected void ShouldRaiseError(string templateName, HandlebarsSyntaxErrorKind kind)
     {
-      return compiledCode[templateName].Item2.Any(x => x.Line.Equals(line) && x.Column.Equals(column));
+      Assert.IsTrue(compiledCode[templateName].Item2.OfType<HandlebarsSyntaxError>().Any(x => x.Kind.Equals(kind)));
+    }
+
+    protected void ShouldRaiseError(string templateName, HandlebarsTypeErrorKind kind)
+    {
+      Assert.IsTrue(compiledCode[templateName].Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind.Equals(kind)));
+    }
+
+    protected void ShouldCompileWithoutError(string templateName)
+    {
+      Assert.IsTrue(!compiledCode[templateName].Item2.Any());
     }
   }
 }
