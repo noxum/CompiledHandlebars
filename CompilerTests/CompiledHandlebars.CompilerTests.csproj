@@ -115,7 +115,6 @@
   <ItemGroup>
     <Compile Include="CompilerTests.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
-    <Compile Include="Helper\TestViewModelAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntacticAnalysisTests.cs" />
     <Compile Include="TestTemplates\Mars.cs" />

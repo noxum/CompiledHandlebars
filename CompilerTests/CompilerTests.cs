@@ -13,11 +13,11 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 
 namespace CompiledHandlebars.Compiler.Tests
 {
 
-  [TestViewModel]
   public class MarsModel
   {
     public string Name { get; set; }
@@ -40,35 +40,67 @@ namespace CompiledHandlebars.Compiler.Tests
       List<SyntaxTree> compiledTemplates = new List<SyntaxTree>();  
       var workspace = MSBuildWorkspace.Create();
       var sol = workspace.OpenSolutionAsync(solutionFile).Result;
-      var newSol = sol;
-      var project = newSol.Projects.First(x => x.Name.Equals("CompiledHandlebars.CompilerTests"));
       foreach (MethodInfo methodInfo in (this.GetType()).GetMethods())
       {
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
         foreach(var template in attrList)
         {//Get compiled templates
           var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace).Item1;
-          project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code), new string[]{ "TestTemplates"}).Project;
+          compiledTemplates.Add(CSharpSyntaxTree.ParseText(code));
         }        
       }
-      newSol = project.Solution;
-      workspace.TryApplyChanges(newSol);
+
+      string assemblyName = Path.GetRandomFileName();
+      MetadataReference[] references = new MetadataReference[]
+      {
+        MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+        MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+        MetadataReference.CreateFromFile(typeof(WebUtility).Assembly.Location),
+        MetadataReference.CreateFromFile(typeof(CompilerTests).Assembly.Location),
+      };
+      var compilation = CSharpCompilation.Create(
+        assemblyName,
+        compiledTemplates,
+        references,
+        options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+      using (var ms = new MemoryStream())
+      {
+        var emitResult = compilation.Emit(ms);
+
+        if(!emitResult.Success)
+        {
+          IEnumerable<Diagnostic> failures = emitResult.Diagnostics.Where(diagnostic =>
+                          diagnostic.IsWarningAsError ||
+                          diagnostic.Severity == DiagnosticSeverity.Error);
+          throw new Exception(failures.First().GetMessage());
+        }
+        ms.Seek(0, SeekOrigin.Begin);
+        assemblyWithCompiledTemplates = Assembly.Load(ms.ToArray());
+      }
+
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("Mars", @"{{model CompiledHandlebars.Compiler.Tests.MarsModel}}{{Name}}")]
     public void CompileTest()
     {
-      var result = TestTemplates.Mars.Render(new MarsModel() { Name = "Mars" } );
-      Assert.AreEqual("Mars", result);      
+      Assert.IsTrue(ShouldRender("Mars", new MarsModel() { Name = "Mars" }, "Mars"));  
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("MarsConditionals", @"{{model CompiledHandlebars.Compiler.Tests.MarsModel}}{{#if Name}}HasName{{else}}HasNoName{{/if}}")]
     public void ConditionalsTest()
     {
-   //   var result = TestTemplates.MarsConditionals.Render(new MarsModel() { Name = "Mars" });
-   //   Assert.AreEqual("Mars", result);
+      Assert.IsTrue(ShouldRender("MarsConditionals", new MarsModel() { Name = "Mars"}, "HasName"));
+      Assert.IsTrue(ShouldRender("MarsConditionals", new MarsModel(), "HasNoName"));
+    }
+
+    private bool ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string result)
+    {
+      var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
+      var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
+      return result.Equals(renderResult);
     }
   }
 }
