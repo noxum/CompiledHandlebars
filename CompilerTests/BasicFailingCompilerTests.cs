@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CompiledHandlebars.CompilerTests
 {
   [TestClass()]
-  class BasicFailingCompilerTests : CompilerTestBase
+  public class BasicFailingCompilerTests : CompilerTestBase
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
 
@@ -20,10 +20,19 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("UnknownViewModel", "{{model Mars}}", false)]
-    public void BasicTest()
+    [RegisterHandlebarsTemplate("UnknownViewModelTest", "{{model Mars}}", false)]
+    public void UnknownViewModelTest()
     {
-      ShouldRaiseError("UnknownViewModel", Compiler.HandlebarsTypeErrorKind.UnknownType);
+      ShouldRaiseError("UnknownViewModelTest", Compiler.HandlebarsTypeErrorKind.UnknownViewModel);
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("ContextErrorTests1", "{{../Name}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("ContextErrorTests2", "{{Phobos/../../Name}}", _marsModel, false)]
+    public void ContextErrorTests()
+    {
+      ShouldRaiseError("ContextErrorTests1", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
+      ShouldRaiseError("ContextErrorTests2", Compiler.HandlebarsTypeErrorKind.EmptyContextStack);
     }
 
 

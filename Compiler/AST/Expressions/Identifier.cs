@@ -53,7 +53,14 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
     {
       if (!contextStack.Any())
+      {
         state.AddTypeError("Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!", HandlebarsTypeErrorKind.EmptyContextStack);
+        return null;
+      } else if (contextStack.Count==1)
+      {        
+        state.AddTypeError("Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!", HandlebarsTypeErrorKind.EmptyContextStack);
+        return _next.Evaluate(contextStack, state);
+      }
       contextStack.Pop();
       return _next.Evaluate(contextStack, state);
     }
