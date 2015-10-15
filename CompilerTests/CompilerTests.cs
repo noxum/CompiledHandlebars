@@ -47,18 +47,45 @@ namespace CompiledHandlebars.Compiler.Tests
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("IfTest", @"{{#if Name}}HasName{{else}}HasNoName{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("IfTest", @"{{#if Name}}HasName{{/if}}", _marsModel)]
     public void IfTest()
     {
       Assert.IsTrue(ShouldRender("IfTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
-      Assert.IsTrue(ShouldRender("IfTest", new MarsModel(), "HasNoName"));
+      Assert.IsTrue(ShouldRender("IfTest", new MarsModel(), ""));
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("UnlessTest", @"{{#unless Name}}HasNoName{{else}}HasName{{/unless}}", _marsModel)]
+    [RegisterHandlebarsTemplate("IfElseTest", @"{{#if Name}}HasName{{else}}HasNoName{{/if}}", _marsModel)]
+    public void IfElseTest()
+    {
+      Assert.IsTrue(ShouldRender("IfElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
+      Assert.IsTrue(ShouldRender("IfElseTest", new MarsModel(), "HasNoName"));
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("NestedIfTest", @"{{#if Phobos}}Phobos:{{#if Phobos.Name}}HasName{{else}}HasNoName{{/if}}{{else}}NoPhobos{{/if}}", _marsModel)]
+    public void NestedIfTest()
+    {
+      var mars = MarsModelFactory.CreateFullMarsModel();
+      Assert.IsTrue(ShouldRender("NestedIfTest", mars, "Phobos:HasName"));
+      mars.Phobos.Name = null;
+      Assert.IsTrue(ShouldRender("NestedIfTest", mars, "Phobos:HasNoName"));
+      Assert.IsTrue(ShouldRender("NestedIfTest", new MarsModel(), "NoPhobos"));
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("UnlessElseTest", @"{{#unless Name}}HasNoName{{else}}HasName{{/unless}}", _marsModel)]
+    public void UnlessElseTest()
+    {
+      Assert.IsTrue(ShouldRender("UnlessElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
+      Assert.IsTrue(ShouldRender("UnlessElseTest", new MarsModel(), "HasNoName"));
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("UnlessTest", @"{{#unless Name}}HasNoName{{/unless}}", _marsModel)]
     public void UnlessTest()
     {
-      Assert.IsTrue(ShouldRender("UnlessTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
+      Assert.IsTrue(ShouldRender("UnlessTest", MarsModelFactory.CreateFullMarsModel(), ""));
       Assert.IsTrue(ShouldRender("UnlessTest", new MarsModel(), "HasNoName"));
     }
 

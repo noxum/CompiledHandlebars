@@ -28,14 +28,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       Template = template; 
       INamedTypeSymbol modelSymbol = Introspector.GetTypeSymbol(Template.Model.ToString());
       if (modelSymbol == null)
-        Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", 1, 1));
+        Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", HandlebarsTypeErrorKind.UnknownType, 1, 1));
       ContextStack.Push(new Context("viewModel", modelSymbol));
       resultStack.Push(new List<StatementSyntax>());
     }
 
-    public void AddTypeError(string message)
+    public void AddTypeError(string message, HandlebarsTypeErrorKind kind)
     {
-      Errors.Add(new HandlebarsTypeError(message, line, column));
+      Errors.Add(new HandlebarsTypeError(message, kind, line, column));
     }
 
     public void PushStatement(StatementSyntax statement)

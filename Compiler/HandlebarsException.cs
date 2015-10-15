@@ -8,12 +8,25 @@ namespace CompiledHandlebars.Compiler
 {
 
   public class HandlebarsTypeError : HandlebarsException {
-    public HandlebarsTypeError(string message, int line, int column) : base(message, line, column) { }
+    public HandlebarsTypeErrorKind Kind { get; set; }
+    public HandlebarsTypeError(string message, HandlebarsTypeErrorKind kind, int line, int column) : base(message, line, column)
+    {
+      Kind = kind;
+    }
+
+
   }
+  public enum HandlebarsTypeErrorKind { UnknownType, UnknownMember, EmptyContextStack }
 
   public class HandlebarsSyntaxError : HandlebarsException {
-    public HandlebarsSyntaxError(string message, int line, int column) : base(message, line, column) { }
+    public HandlebarsSyntaxErrorKind Kind { get; set; }
+    public HandlebarsSyntaxError(string message, HandlebarsSyntaxErrorKind kind, int line, int column) : base(message, line, column)
+    {
+      Kind = kind;
+    }
+
   }
+  public enum HandlebarsSyntaxErrorKind { MissingModelToken, MalformedModelToken, UnknownBlock, MalformedBlock, MissingType, MalformedType }
 
   public abstract class HandlebarsException : Exception
   {
@@ -25,4 +38,5 @@ namespace CompiledHandlebars.Compiler
       Column = column;
     }
   }
+
 }

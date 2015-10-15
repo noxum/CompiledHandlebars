@@ -8,8 +8,8 @@ Template<HandlebarsTemplate>
 
 ModelNode <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
-    / v:Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", vStart.Line, vStart.Column); }}
-    / v:.* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", vStart.Line, vStart.Column);} }
+    / v:Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, vStart.Line, vStart.Column); }}
+    / v:.* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, vStart.Line, vStart.Column);} }
 
 //------------------------------
 //        ASTElements
@@ -46,7 +46,7 @@ Comment <ASTElementBase>
 Node <ASTElementBase>
     = WithBlock
     / IfBlock
-    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing {{ throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), nameStart.Line, nameStart.Column);}}
+    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing {{ throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, nameStart.Line, nameStart.Column);}}
 
 
 
@@ -56,11 +56,11 @@ BlockBody
 //#With
 WithBlock <WithBlock>
     = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
-    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }}   
+    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, memberStart.Line, memberStart.Column); }}   
 
 WithOpeningToken <MemberExpression>
     = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
-    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" {{ throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", vStart.Line, vStart.Column ); }}
+    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" {{ throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingType, vStart.Line, vStart.Column ); }}
 
 WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"
@@ -114,9 +114,9 @@ ParentContextName <IdentifierElement>
 ChildContextName <IdentifierElement>
     = value:NameIdentifier NameDelimiter next:MemberPath {new Identifier(value, next)}
     / value:NameIdentifier NameDelimiter NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", valueStart.Line, valueStart.Column);}}
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedType, valueStart.Line, valueStart.Column);}}
     / value:NameIdentifier NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", valueStart.Line, valueStart.Column);}}
+      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedType,  valueStart.Line, valueStart.Column);}}
       
 
 NameIdentifier <string>

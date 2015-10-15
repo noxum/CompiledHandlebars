@@ -33,7 +33,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
         }
       } else
       {
-        state.AddTypeError($"Could not find Member '{_value}' in Type '{contextStack.Peek().FullPath}'!");
+        state.AddTypeError($"Could not find Member '{_value}' in Type '{contextStack.Peek().FullPath}'!", HandlebarsTypeErrorKind.UnknownMember);
         return contextStack.Peek();
       }
     }
@@ -53,7 +53,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
     {
       if (!contextStack.Any())
-        state.AddTypeError("Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!");
+        state.AddTypeError("Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!", HandlebarsTypeErrorKind.EmptyContextStack);
       contextStack.Pop();
       return _next.Evaluate(contextStack, state);
     }

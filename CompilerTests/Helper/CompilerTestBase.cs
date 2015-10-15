@@ -16,7 +16,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
 {
   public abstract class CompilerTestBase
   {
-    protected static Dictionary<string, string> compiledCode { get; set; }  = new Dictionary<string, string>();
+    protected static Dictionary<string, Tuple<string, IEnumerable<HandlebarsException>>> compiledCode { get; set; }  = new Dictionary<string, Tuple<string, IEnumerable<HandlebarsException>>>();
     protected static Assembly assemblyWithCompiledTemplates { get; set; }
 
     protected static Assembly CompileTemplatesToAssembly(Type testClassType)
@@ -32,7 +32,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
         foreach (var template in attrList)
         {//Get compiled templates
-          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace).Item1;
+          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace);
           compiledCode.Add(template._name, code);
           //Check if template already exits
           var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
@@ -41,8 +41,8 @@ namespace CompiledHandlebars.CompilerTests.Helper
             project = project.RemoveDocument(doc.Id);
           }
           //Then add the new version
-          project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code), new string[] { "TestTemplates", testClassType.Name }).Project;
-          compiledTemplates.Add(CSharpSyntaxTree.ParseText(code));
+          project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
+          compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
         }
       }
       string assemblyName = Path.GetRandomFileName();
@@ -81,6 +81,11 @@ namespace CompiledHandlebars.CompilerTests.Helper
       var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
       var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
       return result.Equals(renderResult);
+    }
+
+    protected bool ShouldRaiseError(string templateName, int line, int column)
+    {
+      return compiledCode[templateName].Item2.Any(x => x.Line.Equals(line) && x.Column.Equals(column));
     }
   }
 }

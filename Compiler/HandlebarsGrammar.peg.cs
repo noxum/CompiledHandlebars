@@ -234,7 +234,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
                                     #line 11 "HandlebarsGrammar.peg"
-                                                    { throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", vStart.Line, vStart.Column); }
+                                                    { throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, vStart.Line, vStart.Column); }
                                     #line default
                                     );
                             }
@@ -285,7 +285,7 @@ namespace
                 {
                     r0 = this.ReturnHelper<MemberExpression>(startCursor5, ref cursor, state =>
                         #line 12 "HandlebarsGrammar.peg"
-             { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", vStart.Line, vStart.Column);}
+             { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, vStart.Line, vStart.Column);}
                         #line default
                         );
                 }
@@ -845,7 +845,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
                                     #line 49 "HandlebarsGrammar.peg"
-                                                                 { throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), nameStart.Line, nameStart.Column);}
+                                                                 { throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, nameStart.Line, nameStart.Column);}
                                     #line default
                                     );
                             }
@@ -947,7 +947,7 @@ namespace
                     {
                         r0 = this.ReturnHelper<WithBlock>(startCursor1, ref cursor, state =>
                             #line 59 "HandlebarsGrammar.peg"
-                                              { throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", memberStart.Line, memberStart.Column); }
+                                              { throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, memberStart.Line, memberStart.Column); }
                             #line default
                             );
                     }
@@ -1105,7 +1105,7 @@ namespace
                                 {
                                     r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
                                         #line 63 "HandlebarsGrammar.peg"
-                                                                    { throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", vStart.Line, vStart.Column ); }
+                                                                    { throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingType, vStart.Line, vStart.Column ); }
                                         #line default
                                         );
                                 }
@@ -1884,7 +1884,7 @@ namespace
                             {
                                 r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
                                     #line 117 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", valueStart.Line, valueStart.Column);}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedType, valueStart.Line, valueStart.Column);}
                                     #line default
                                     );
                             }
@@ -1928,7 +1928,7 @@ namespace
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor2, ref cursor, state =>
                                 #line 119 "HandlebarsGrammar.peg"
-       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", valueStart.Line, valueStart.Column);}
+       {throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedType,  valueStart.Line, valueStart.Column);}
                                 #line default
                                 );
                         }
