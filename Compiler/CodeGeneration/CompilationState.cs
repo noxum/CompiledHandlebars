@@ -27,6 +27,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       Introspector = introspector;
       Template = template; 
       INamedTypeSymbol modelSymbol = Introspector.GetTypeSymbol(Template.Model.ToString());
+      if (modelSymbol == null)
+        Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", 1, 1));
       ContextStack.Push(new Context("viewModel", modelSymbol));
       resultStack.Push(new List<StatementSyntax>());
     }

@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace CompiledHandlebars.Compiler
 {
@@ -22,12 +23,19 @@ namespace CompiledHandlebars.Compiler
         template.Name = name;
         sw.Restart();
         var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(workspace), template);
-        long initTime = sw.ElapsedMilliseconds;        
-        sw.Restart();
-        var state = codeGenerator.GenerateCode();
-        sw.Stop();
-        long generationTime = sw.ElapsedMilliseconds;
-        return new Tuple<string, IEnumerable<HandlebarsException>>(state.GetCompilationUnit($"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!").NormalizeWhitespace(elasticTrivia: true).ToFullString(), state.Errors);
+        if (!codeGenerator.ErrorList.Any())
+        {
+          long initTime = sw.ElapsedMilliseconds;        
+          sw.Restart();
+          codeGenerator.GenerateCode();
+          sw.Stop();
+          long generationTime = sw.ElapsedMilliseconds;
+          return new Tuple<string, IEnumerable<HandlebarsException>>(
+            codeGenerator.CompilationUnit(
+              $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
+            ).NormalizeWhitespace(elasticTrivia: true).ToFullString(), codeGenerator.ErrorList);
+        }
+        return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
       } catch(HandlebarsSyntaxError syntaxError)
       {
         return new Tuple<string, IEnumerable<HandlebarsException>>($"No result as SyntaxErrors occured: {syntaxError.Message}", new HandlebarsSyntaxError[] { syntaxError });

@@ -6,16 +6,33 @@ using System.Threading.Tasks;
 using CompiledHandlebars.Compiler.AST;
 using CompiledHandlebars.Compiler.Introspection;
 using CompiledHandlebars.Compiler.CodeGeneration;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CompiledHandlebars.Compiler.Visitors
 {
   internal class CodeGenerationVisitor : IASTVisitor
   {
     private CompilationState state { get; set; }
+
+    public List<HandlebarsException> ErrorList
+    {
+      get
+      {
+        return state.Errors;
+      }
+    }
     public CodeGenerationVisitor(RoslynIntrospector introspector, HandlebarsTemplate template)
     {
       state = new CompilationState(introspector, template);
       state.Introspector = introspector;
+    }
+    public void GenerateCode()
+    {
+      state.Template.Accept(this);
+    }
+    public CompilationUnitSyntax CompilationUnit(string templateComment)
+    {
+      return state.GetCompilationUnit(templateComment);
     }
 
     public void Visit(MarkupLiteral astLeaf)
@@ -41,12 +58,6 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitLeave(HandlebarsTemplate template)
     {
       state.PushStatement(SyntaxHelper.ReturnSBToString);
-    }
-
-    internal CompilationState GenerateCode()
-    {
-      state.Template.Accept(this);
-      return state;
     }
 
     public void VisitEnter(WithBlock astNode)

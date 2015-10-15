@@ -17,7 +17,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
     {
       //Add the Identifier to the current context
-      var memberSymbol = contextStack.Any() ? contextStack.Peek().Symbol.FindMemberIfExists(_value) : 
+      var memberSymbol = contextStack.Any() ? contextStack.Peek().Symbol.FindMember(_value) : 
                                               state.Introspector.GetTypeSymbol(_value);      
       if (memberSymbol!=null)
       {        
