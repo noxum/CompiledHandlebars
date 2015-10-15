@@ -22,20 +22,24 @@ namespace CompiledHandlebars.Compiler
         template.Namespace = nameSpace;
         template.Name = name;
         sw.Restart();
-        var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(workspace), template);
-        if (!codeGenerator.ErrorList.Any())
+        if(!(template._ParseErrors?.Any()?? false))
         {
-          long initTime = sw.ElapsedMilliseconds;        
-          sw.Restart();
-          codeGenerator.GenerateCode();
-          sw.Stop();
-          long generationTime = sw.ElapsedMilliseconds;
-          return new Tuple<string, IEnumerable<HandlebarsException>>(
-            codeGenerator.CompilationUnit(
-              $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
-            ).NormalizeWhitespace(elasticTrivia: true).ToFullString(), codeGenerator.ErrorList);
+          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(workspace), template);
+          if (!codeGenerator.ErrorList.Any())
+          {
+            long initTime = sw.ElapsedMilliseconds;
+            sw.Restart();
+            codeGenerator.GenerateCode();
+            sw.Stop();
+            long generationTime = sw.ElapsedMilliseconds;
+            return new Tuple<string, IEnumerable<HandlebarsException>>(
+              codeGenerator.CompilationUnit(
+                $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
+              ).NormalizeWhitespace(elasticTrivia: true).ToFullString(), codeGenerator.ErrorList);
+          }
+          return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
         }
-        return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
+        return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, template._ParseErrors);
       } catch(HandlebarsSyntaxError syntaxError)
       {
         return new Tuple<string, IEnumerable<HandlebarsException>>($"No result as SyntaxErrors occured: {syntaxError.Message}", new HandlebarsSyntaxError[] { syntaxError });

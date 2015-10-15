@@ -3,13 +3,30 @@
 @using CompiledHandlebars.Compiler.AST
 @using CompiledHandlebars.Compiler.AST.Expressions
 
+@using System.Linq
+@members
+{
+    private static void AddError(string message, HandlebarsSyntaxErrorKind kind, Cursor state)
+    {
+        var existing = state["errors"] as IList<HandlebarsSyntaxError>;
+        var newList = existing == null ? new List<HandlebarsSyntaxError>() : existing.ToList();
+        newList.Add(new HandlebarsSyntaxError(        
+            message,
+            kind,
+            state.Line,
+            state.Column           
+        ));
+        state["errors"] = newList.AsReadOnly();
+    }
+}
+
 Template<HandlebarsTemplate> 
-    = model:ModelNode items:Element EOF {new HandlebarsTemplate(items, model)}
+    = model:ModelNode items:Element EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
 
 ModelNode <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
-    / v:Opening ModelKeyword (!Closing .)* Closing {{ throw new HandlebarsSyntaxError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, vStart.Line, vStart.Column); }}
-    / v:.* { { throw new HandlebarsSyntaxError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, vStart.Line, vStart.Column);} }
+    / v:Opening ModelKeyword (!Closing .)* Closing #STATE{ AddError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, state); } { default(MemberExpression)}
+    / v:.* #STATE{ AddError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, state); } { default(MemberExpression) }
 
 //------------------------------
 //        ASTElements
@@ -46,7 +63,7 @@ Comment <ASTElementBase>
 Node <ASTElementBase>
     = WithBlock
     / IfBlock
-    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing {{ throw new HandlebarsSyntaxError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, nameStart.Line, nameStart.Column);}}
+    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
 
 
 
@@ -56,11 +73,11 @@ BlockBody
 //#With
 WithBlock <WithBlock>
     = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
-    / member:WithOpeningToken body:BlockBody {{ throw new HandlebarsSyntaxError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, memberStart.Line, memberStart.Column); }}   
+    / member:WithOpeningToken body:BlockBody #STATE{ AddError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, state); } { new WithBlock(null, null, 0, 0)}   
 
 WithOpeningToken <MemberExpression>
     = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
-    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" {{ throw new HandlebarsSyntaxError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingType, vStart.Line, vStart.Column ); }}
+    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" #STATE{ AddError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingMemberExpression, state ); } { new MemberExpression(null)}
 
 WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"
@@ -113,10 +130,8 @@ ParentContextName <IdentifierElement>
 
 ChildContextName <IdentifierElement>
     = value:NameIdentifier NameDelimiter next:MemberPath {new Identifier(value, next)}
-    / value:NameIdentifier NameDelimiter NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: double identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedMemberExpression, valueStart.Line, valueStart.Column);}}
-    / value:NameIdentifier NameDelimiter . 
-      {{throw new HandlebarsSyntaxError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedMemberExpression,  valueStart.Line, valueStart.Column);}}
+    / value:NameIdentifier NameDelimiter (NameDelimiter)+ MemberPath #STATE{ AddError("Malformed MemberExpression: multiple identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedMemberExpression, state);} { new Identifier(null, null)}
+    / value:NameIdentifier NameDelimiter #STATE{ AddError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedMemberExpression,  state);} { new Identifier(null, null)}
       
 
 NameIdentifier <string>
@@ -157,4 +172,4 @@ Whitespace = " "*
 
 EOF 
   = !.
-  / c:. #ERROR{ string.Format("Line {0}; Column{1}: Unexpected character {2}", cStart.Line, cStart.Column ,c) }
+  / c:. 

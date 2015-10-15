@@ -7,15 +7,17 @@ namespace CompiledHandlebars.Compiler.AST
 
   public class HandlebarsTemplate
   {
+    internal readonly IList<HandlebarsSyntaxError> _ParseErrors;
     internal MemberExpression Model { get; set; }
     internal string Name { get; set; }
     internal string Namespace { get; set; }
     private IList<ASTElementBase> _items { get; set; }
 
-    internal HandlebarsTemplate(IList<ASTElementBase> items, MemberExpression model)
+    internal HandlebarsTemplate(IList<ASTElementBase> items, MemberExpression model, IList<HandlebarsSyntaxError> parseErrors)
     {
       Model = model;
       _items = items;
+      _ParseErrors = parseErrors;
     }
 
     internal void Accept(IASTVisitor visitor)
