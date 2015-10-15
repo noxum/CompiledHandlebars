@@ -113,7 +113,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CompilerTests.cs" />
+    <Compile Include="BasicCompilerTests.cs" />
+    <Compile Include="BasicFailingCompilerTests.cs" />
     <Compile Include="Helper\CompilerTestBase.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

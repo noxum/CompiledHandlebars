@@ -20,13 +20,13 @@ namespace CompiledHandlebars.Compiler.Tests
 {
 
   [TestClass()]
-  public class CompilerTests : CompilerTestBase
+  public class BasicCompilerTests : CompilerTestBase
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
     
-    static CompilerTests()
+    static BasicCompilerTests()
     {
-      assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(CompilerTests));
+      assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(BasicCompilerTests));
     }
 
     [TestMethod()]
@@ -39,7 +39,6 @@ namespace CompiledHandlebars.Compiler.Tests
     [TestMethod()]
     [RegisterHandlebarsTemplate("HtmlEncodeTest1", "{{Description}}", _marsModel)]
     [RegisterHandlebarsTemplate("HtmlEncodeTest2", "{{{Description}}}", _marsModel)]
-
     public void HtmlEncodeTest()
     {
       Assert.IsTrue(ShouldRender("HtmlEncodeTest1", MarsModelFactory.CreateFullMarsModel(), @"&lt;b&gt;Mars&lt;/b&gt; is the fourth &lt;a href=&quot;/wiki/Planet&quot; title=&quot;Planet&quot;&gt;planet&lt;/a&gt; from the &lt;a href=&quot;/wiki/Sun&quot; title=&quot;Sun&quot;&gt;Sun&lt;/a&gt; and the second smallest planet in the &lt;a href=&quot;/wiki/Solar_System&quot; title=&quot;Solar System&quot;&gt;Solar System&lt;/a&gt;, after &lt;a href=&quot;/wiki/Mercury_(planet)&quot; title=&quot;Mercury (planet)&quot;&gt;Mercury&lt;/a&gt;."));
