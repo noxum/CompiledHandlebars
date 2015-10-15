@@ -19,10 +19,6 @@ using CompiledHandlebars.CompilerTests.TestViewModels;
 namespace CompiledHandlebars.Compiler.Tests
 {
 
-  /// <summary>
-  /// TODO: Read and understand https://benetkiewicz.github.io/blog/csharp/roslyn/2014/10/26/code-mutiations-with-roslyn.html
-  /// Should be helpful for unittesting generated code
-  /// </summary>
   [TestClass()]
   public class CompilerTests
   {
@@ -68,7 +64,7 @@ namespace CompiledHandlebars.Compiler.Tests
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("PathTest1", @"{{Phobos/../Name}}:{{Pobos.Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("PathTest1", @"{{Phobos/../Name}}:{{Phobos.Name}}", _marsModel)]
     [RegisterHandlebarsTemplate("PathTest2", @"{{Deimos/../Name}}:{{Deimos/../Phobos.Name}}", _marsModel)]
     public void PathTest()
     {

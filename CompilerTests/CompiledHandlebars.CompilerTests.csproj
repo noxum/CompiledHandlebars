@@ -118,6 +118,12 @@
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntacticAnalysisTests.cs" />
+    <Compile Include="TestTemplates\CompilerTests\BasicTest.cs" />
+    <Compile Include="TestTemplates\CompilerTests\IfTest.cs" />
+    <Compile Include="TestTemplates\CompilerTests\PathTest1.cs" />
+    <Compile Include="TestTemplates\CompilerTests\PathTest2.cs" />
+    <Compile Include="TestTemplates\CompilerTests\UnlessTest.cs" />
+    <Compile Include="TestTemplates\CompilerTests\WithTest.cs" />
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
     <Compile Include="TestViewModels\SolarSystem.cs" />
