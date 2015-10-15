@@ -20,16 +20,13 @@ namespace CompiledHandlebars.Compiler.Tests
 {
 
   [TestClass()]
-  public class CompilerTests
+  public class CompilerTests : CompilerTestBase
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
-    private Assembly assemblyWithCompiledTemplates { get; set; }
-
-    [TestInitialize()]
-    public void Initialize()
+    
+    static CompilerTests()
     {
-      assemblyWithCompiledTemplates = CompilerHelper.CompileTemplatesToAssembly(this.GetType());
-
+      assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(CompilerTests));
     }
 
     [TestMethod()]
@@ -37,6 +34,16 @@ namespace CompiledHandlebars.Compiler.Tests
     public void BasicTest()
     {
       Assert.IsTrue(ShouldRender("BasicTest", MarsModelFactory.CreateFullMarsModel(), "Mars"));  
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("HtmlEncodeTest1", "{{Description}}", _marsModel)]
+    [RegisterHandlebarsTemplate("HtmlEncodeTest2", "{{{Description}}}", _marsModel)]
+
+    public void HtmlEncodeTest()
+    {
+      Assert.IsTrue(ShouldRender("HtmlEncodeTest1", MarsModelFactory.CreateFullMarsModel(), @"&lt;b&gt;Mars&lt;/b&gt; is the fourth &lt;a href=&quot;/wiki/Planet&quot; title=&quot;Planet&quot;&gt;planet&lt;/a&gt; from the &lt;a href=&quot;/wiki/Sun&quot; title=&quot;Sun&quot;&gt;Sun&lt;/a&gt; and the second smallest planet in the &lt;a href=&quot;/wiki/Solar_System&quot; title=&quot;Solar System&quot;&gt;Solar System&lt;/a&gt;, after &lt;a href=&quot;/wiki/Mercury_(planet)&quot; title=&quot;Mercury (planet)&quot;&gt;Mercury&lt;/a&gt;."));
+      Assert.IsTrue(ShouldRender("HtmlEncodeTest2", MarsModelFactory.CreateFullMarsModel(), "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>."));          
     }
 
     [TestMethod()]
@@ -72,11 +79,5 @@ namespace CompiledHandlebars.Compiler.Tests
       Assert.IsTrue(ShouldRender("PathTest2", MarsModelFactory.CreateFullMarsModel(), "Mars:Phobos"));
     }
 
-    private bool ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string result)
-    {
-      var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
-      var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
-      return result.Equals(renderResult);
-    }
   }
 }

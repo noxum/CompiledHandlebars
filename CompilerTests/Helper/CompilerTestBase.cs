@@ -14,9 +14,12 @@ using System.Threading.Tasks;
 
 namespace CompiledHandlebars.CompilerTests.Helper
 {
-  public static class CompilerHelper
+  public abstract class CompilerTestBase
   {
-    public static Assembly CompileTemplatesToAssembly(Type testClassType)
+    protected static Dictionary<string, string> compiledCode { get; set; }  = new Dictionary<string, string>();
+    protected static Assembly assemblyWithCompiledTemplates { get; set; }
+
+    protected static Assembly CompileTemplatesToAssembly(Type testClassType)
     {
       var solutionFile = Path.Combine(Directory.CreateDirectory(Environment.CurrentDirectory).Parent.Parent.Parent.FullName, "CompiledHandlebars.sln");
       List<SyntaxTree> compiledTemplates = new List<SyntaxTree>();
@@ -30,6 +33,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
         foreach (var template in attrList)
         {//Get compiled templates
           var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace).Item1;
+          compiledCode.Add(template._name, code);
           //Check if template already exits
           var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
           if (doc != null)
@@ -70,6 +74,13 @@ namespace CompiledHandlebars.CompilerTests.Helper
         ms.Seek(0, SeekOrigin.Begin);
         return Assembly.Load(ms.ToArray());
       }
+    }
+
+    protected bool ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string result)
+    {
+      var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
+      var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
+      return result.Equals(renderResult);
     }
   }
 }

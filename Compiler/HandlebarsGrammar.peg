@@ -22,7 +22,7 @@ Element
 
 Token <ASTElementBase>
     = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
-    / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
 ASTLeaf <ASTElementBase>

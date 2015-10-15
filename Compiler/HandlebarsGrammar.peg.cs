@@ -396,7 +396,7 @@ namespace
                         {
                             r0 = this.ReturnHelper<ASTElementBase>(startCursor1, ref cursor, state =>
                                 #line 25 "HandlebarsGrammar.peg"
-                                  {value.SetTokenType(TokenType.Encoded); return value;}
+                                  {value.SetTokenType(TokenType.Escaped); return value;}
                                 #line default
                                 );
                         }
