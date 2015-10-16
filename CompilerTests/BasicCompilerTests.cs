@@ -23,7 +23,8 @@ namespace CompiledHandlebars.Compiler.Tests
   public class BasicCompilerTests : CompilerTestBase
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
-    
+    private const string _starModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.StarModel}}";
+
     static BasicCompilerTests()
     {
       assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(BasicCompilerTests));
@@ -127,11 +128,13 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("EachTest1", @"{{#each Plains}}{{Name}}{{/each}}", _marsModel)]
     [RegisterHandlebarsTemplate("EachTest2", @"{{#each Mountains}}{{Name}}{{/each}}", _marsModel)]
     [RegisterHandlebarsTemplate("EachTest3", @"{{#each Rovers}}{{Key}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("EachTest4", @"{{#each Planets}}{{Name}}:{{#each Moons}}{{Name}}{{/each}};{{/each}}", _starModel)]
     public void EachTest()
     {
       ShouldRender("EachTest1", MarsModelFactory.CreateFullMarsModel(), "Acidalia PlanitiaUtopia Planitia");
       ShouldRender("EachTest2", MarsModelFactory.CreateFullMarsModel(), "Aeolis MonsOlympus Mons");
       ShouldRender("EachTest3", MarsModelFactory.CreateFullMarsModel(), "OpportunityCuriosity");
+      ShouldRender("EachTest4", CelestialBodyFactory.CreateSolarSystem(), "Mercury:;Venus:;Earth:Moon;Mars:DeimosPhobos;");
     }
 
   }

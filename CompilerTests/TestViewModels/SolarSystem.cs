@@ -24,7 +24,7 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
   {
     public bool IsInhabited { get; set; }
     public bool IsHabitable { get; set; }
-    public bool HasMoons { get; set; }
+    public List<MoonModel> Moons { get; set; }
   }
 
   public class StarModel : CelestialBodyModel
@@ -52,10 +52,36 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
           },
           new PlanetModel()
           {
+            Name = "Venus",            
+          },
+          new PlanetModel()
+          {
+            Name = "Earth",
+            Moons = new List<MoonModel>()
+            {
+              new MoonModel()
+              {
+                Name = "Moon"
+              }
+            }
+          },
+          new PlanetModel()
+          {
             Name = "Mars",
             IsHabitable = false,
             IsInhabited = false,
             Mass = 3.3e23,
+            Moons = new List<MoonModel>()
+            {
+              new MoonModel()
+              {
+                Name = "Deimos"
+              }, 
+              new MoonModel()
+              {
+                Name = "Phobos"
+              }
+            }
           }
         },
         Name = "Sun",

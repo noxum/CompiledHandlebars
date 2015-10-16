@@ -35,7 +35,6 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
     {
       var model = new MarsModel();
       model.Name = "Mars";
-      model.HasMoons = true;
       model.Phobos = new MoonModel() { Name = "Phobos" };
       model.Deimos = new MoonModel() { Name = "Deimos" };
       model.WikiLink = new LinkModel()
