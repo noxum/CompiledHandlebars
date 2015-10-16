@@ -30,11 +30,9 @@ namespace CompiledHandlebars.Compiler.Introspection
       if (symbol.Kind == SymbolKind.ArrayType)
         return (symbol as IArrayTypeSymbol).ElementType;
 
-      if (symbol.Kind == SymbolKind.NamedType)
+      if (symbol.Kind == SymbolKind.NamedType && (symbol as INamedTypeSymbol).IsGenericType)
       {
-        if ((symbol as INamedTypeSymbol).IsGenericType &&
-            (symbol as INamedTypeSymbol).AllInterfaces.Any(x => x.Name.Equals("IEnumerable")))
-          return (symbol as INamedTypeSymbol).TypeParameters.First();
+        return (symbol as INamedTypeSymbol).AllInterfaces.First(x => x.MetadataName.Equals("IEnumerable`1")).TypeArguments.First();
       }
       return null;
     }

@@ -35,7 +35,7 @@ namespace CompiledHandlebars.Compiler
             return new Tuple<string, IEnumerable<HandlebarsException>>(
               codeGenerator.CompilationUnit(
                 $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
-              ).NormalizeWhitespace(elasticTrivia: true).ToFullString(), codeGenerator.ErrorList);
+              ).NormalizeWhitespace(indentation: "  ").ToFullString(), codeGenerator.ErrorList);
           }
           return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
         }
