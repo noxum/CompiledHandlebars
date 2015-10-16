@@ -84,7 +84,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
     {
       var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
       var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
-      Assert.AreEqual(renderResult, expectedResult);
+      Assert.AreEqual(expectedResult, renderResult);
     }
 
     protected void ShouldRaiseError(string templateName, HandlebarsSyntaxErrorKind kind)

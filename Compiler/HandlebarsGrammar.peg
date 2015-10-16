@@ -118,8 +118,8 @@ MemberPath
     / MemberIdentifier
 
 ThisBasedPath<IdentifierElement> 
-    = ThisKeyword { new ThisIdentifier(null) }
-    / ThisKeyword next:MemberPath { new ThisIdentifier(next)}
+    = ThisKeyword NameDelimiter next:MemberPath { new ThisIdentifier(next)}
+    / ThisKeyword { new ThisIdentifier(null) }
 
 //Last Identifier Element => no next
 MemberIdentifier <IdentifierElement>

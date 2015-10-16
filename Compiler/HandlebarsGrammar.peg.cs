@@ -1858,11 +1858,32 @@ namespace
                 r1 = this.ThisKeyword(ref cursor);
                 if (r1 != null)
                 {
-                    r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                        #line 121 "HandlebarsGrammar.peg"
-                    new ThisIdentifier(null)
-                        #line default
-                        );
+                    IParseResult<string> r2 = null;
+                    r2 = this.NameDelimiter(ref cursor);
+                    if (r2 != null)
+                    {
+                        IParseResult<IdentifierElement> r3 = null;
+                        var nextStart = cursor;
+                        r3 = this.MemberPath(ref cursor);
+                        var nextEnd = cursor;
+                        var next = ValueOrDefault(r3);
+                        if (r3 != null)
+                        {
+                            r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
+                                #line 121 "HandlebarsGrammar.peg"
+                                                  new ThisIdentifier(next)
+                                #line default
+                                );
+                        }
+                        else
+                        {
+                            cursor = startCursor0;
+                        }
+                    }
+                    else
+                    {
+                        cursor = startCursor0;
+                    }
                 }
                 else
                 {
@@ -1872,27 +1893,15 @@ namespace
             if (r0 == null)
             {
                 var startCursor1 = cursor;
-                IParseResult<string> r2 = null;
-                r2 = this.ThisKeyword(ref cursor);
-                if (r2 != null)
+                IParseResult<string> r4 = null;
+                r4 = this.ThisKeyword(ref cursor);
+                if (r4 != null)
                 {
-                    IParseResult<IdentifierElement> r3 = null;
-                    var nextStart = cursor;
-                    r3 = this.MemberPath(ref cursor);
-                    var nextEnd = cursor;
-                    var next = ValueOrDefault(r3);
-                    if (r3 != null)
-                    {
-                        r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
-                            #line 122 "HandlebarsGrammar.peg"
-                                    new ThisIdentifier(next)
-                            #line default
-                            );
-                    }
-                    else
-                    {
-                        cursor = startCursor1;
-                    }
+                    r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
+                        #line 122 "HandlebarsGrammar.peg"
+                    new ThisIdentifier(null)
+                        #line default
+                        );
                 }
                 else
                 {
