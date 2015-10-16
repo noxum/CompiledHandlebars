@@ -62,6 +62,7 @@ Comment <ASTElementBase>
 
 Node <ASTElementBase>
     = WithBlock
+    / EachBlock
     / IfBlock
     / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
 
@@ -82,8 +83,18 @@ WithOpeningToken <MemberExpression>
 WithClosingToken
     = "{{" BlockClosingIdentifier WithKeyword "}}"
 
-//#If
+//#Each
+EachBlock <EachBlock>
+    = member:EachOpeningToken body:BlockBody EachClosingToken {new EachBlock(member, body, memberStart.Line, memberStart.Column)}
 
+EachOpeningToken <MemberExpression>
+    = "{{" BlockOpeningIdentifier EachKeyword member:MemberExpression "}}" { member }
+
+EachClosingToken
+    = "{{" BlockClosingIdentifier EachKeyword "}}"
+
+
+//#If
 IfBlock <IfBlock>
   = member:IfOpeningToken body:BlockBody ElseToken elseBlock:BlockBody IfClosingToken { new IfBlock(member, IfType.If, elseBlock, body, memberStart.Line, memberStart.Column) }
   / member:UnlessOpeningToken body:BlockBody ElseToken elseBlock:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, elseBlock, body, memberStart.Line, memberStart.Column) }
@@ -155,6 +166,7 @@ ReservedKeywords
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 WithKeyword = "with"
+EachKeyword = "each"
 IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"

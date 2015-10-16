@@ -64,11 +64,13 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
+      //Enter new Context
       state.ContextStack.Push(astNode.Member.Evaluate(state));
     }
 
     public void VisitLeave(WithBlock astNode)
     {
+      //Leave Context
       state.ContextStack.Pop();
       state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
     }
@@ -106,6 +108,22 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(CommentLiteral astLeaf)
     {
       state.AddComment(astLeaf.Value);
+    }
+
+    public void VisitEnter(EachBlock astNode)
+    {
+      state.SetCursor(astNode);
+      state.ContextStack.Push(astNode.Member.EvaluateLoop(state));
+      state.PushNewBlock();
+      state.loopLevel++;
+    }
+
+    public void VisitLeave(EachBlock astNode)
+    {
+      //Leave loop context
+      state.ContextStack.Pop();
+      state.loopLevel--;
+      state.PushStatement(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
     }
   }
 }

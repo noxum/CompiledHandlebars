@@ -11,19 +11,18 @@ namespace CompiledHandlebars.Compiler.AST
   internal class IfBlock : ASTNode
   {
     private readonly IList<ASTElementBase> _elseBlock;
-    internal readonly MemberExpression Member;
     internal readonly IfType QueryType;
     internal readonly bool HasElseBlock;
-    internal IfBlock(MemberExpression member, IfType type, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+    internal IfBlock(MemberExpression member, IfType type, IList<ASTElementBase> children, int line, int column) 
+                    : base(member, children, line, column)
     {
-      Member = member;
       QueryType = type;
       HasElseBlock = false;
     }
 
-    internal IfBlock(MemberExpression member, IfType type, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+    internal IfBlock(MemberExpression member, IfType type, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column) 
+                    : base(member, children, line, column)
     {
-      Member = member;
       QueryType = type;
       _elseBlock = elseBlock;
       HasElseBlock = true;

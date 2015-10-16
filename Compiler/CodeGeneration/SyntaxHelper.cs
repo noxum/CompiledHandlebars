@@ -340,7 +340,17 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         statement.WithTrailingTrivia(
           SF.Comment(string.Concat("/*",comment,"*/"))
         );
+    }
 
+    internal static StatementSyntax ForLoop(string loopVariable, string loopedVariable, List<StatementSyntax> block)
+    {
+      return
+        SF.ForEachStatement(
+             SF.ParseTypeName("var"),
+             loopVariable,
+             SF.ParseExpression(loopedVariable),
+             SF.Block(block)
+          );
     }
 
   }

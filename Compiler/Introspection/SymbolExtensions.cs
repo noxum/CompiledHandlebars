@@ -18,6 +18,27 @@ namespace CompiledHandlebars.Compiler.Introspection
       return null;
     }
 
+    /// <summary>
+    /// Is used to get Symbols inside arrays, lists, enumerables etc.
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    public static ISymbol GetElementSymbol(this ISymbol symbol)
+    {
+      if (symbol.Kind == SymbolKind.Property)
+        return (symbol as IPropertySymbol).Type.GetElementSymbol();
+      if (symbol.Kind == SymbolKind.ArrayType)
+        return (symbol as IArrayTypeSymbol).ElementType;
+
+      if (symbol.Kind == SymbolKind.NamedType)
+      {
+        if ((symbol as INamedTypeSymbol).IsGenericType &&
+            (symbol as INamedTypeSymbol).AllInterfaces.Any(x => x.Name.Equals("IEnumerable")))
+          return (symbol as INamedTypeSymbol).TypeParameters.First();
+      }
+      return null;
+    }
+
     private static ISymbol FindMemberRec(this ITypeSymbol symbol, string name)
     {
       var result = symbol.GetMembers(name).FirstOrDefault();

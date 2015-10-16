@@ -20,6 +20,17 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
       return Path.Evaluate(cpContextStack, state);
     }
 
+    /// <summary>
+    /// Will evaluate to a context inside a loop. Used for the context inside #each blocks
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    internal Context EvaluateLoop(CompilationState state)
+    {
+      var loopVariable = Evaluate(state);
+      return state.BuildLoopContext(loopVariable.Symbol.GetElementSymbol());
+    }
+
     public override string ToString()
     {
       return Path.ToString();

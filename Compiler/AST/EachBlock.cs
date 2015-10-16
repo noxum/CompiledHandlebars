@@ -8,11 +8,9 @@ using CompiledHandlebars.Compiler.AST.Expressions;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class WithBlock : ASTNode
+  internal class EachBlock : ASTNode
   {
-
-    internal WithBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(member, children, line, column) {}
-
+    internal EachBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(member, children, line, column) { }
     internal override void Accept(IASTVisitor visitor)
     {
       visitor.VisitEnter(this);

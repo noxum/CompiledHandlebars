@@ -16,6 +16,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     private int line { get; set; }
     private int column { get; set; }
     public string ResultingCode { get; set; }
+    public int loopLevel { get; set; } = 0;
     public List<HandlebarsException> Errors { get; private set; } = new List<HandlebarsException>();
     public RoslynIntrospector Introspector { get; set; }
     public Stack<List<StatementSyntax>> resultStack { get; private set; } = new Stack<List<StatementSyntax>>();
@@ -84,6 +85,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           )
       );
       return compiledHbs;
+    }
+
+    internal Context BuildLoopContext(ISymbol symbol)
+    {
+      return new Context($"loopItem{loopLevel}", symbol);
     }
 
     internal void SetCursor(ASTElementBase element)
