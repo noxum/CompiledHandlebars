@@ -80,11 +80,11 @@ namespace CompiledHandlebars.CompilerTests.Helper
       }
     }
 
-    protected bool ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string result)
+    protected void ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string expectedResult)
     {
       var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
       var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
-      return result.Equals(renderResult);
+      Assert.AreEqual(renderResult, expectedResult);
     }
 
     protected void ShouldRaiseError(string templateName, HandlebarsSyntaxErrorKind kind)

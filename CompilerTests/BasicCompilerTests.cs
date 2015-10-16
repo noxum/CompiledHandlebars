@@ -33,7 +33,7 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("BasicTest", "{{Name}}", _marsModel)]
     public void BasicTest()
     {
-      Assert.IsTrue(ShouldRender("BasicTest", MarsModelFactory.CreateFullMarsModel(), "Mars"));  
+      ShouldRender("BasicTest", MarsModelFactory.CreateFullMarsModel(), "Mars");  
     }
 
     [TestMethod()]
@@ -41,24 +41,24 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("HtmlEncodeTest2", "{{{Description}}}", _marsModel)]
     public void HtmlEncodeTest()
     {
-      Assert.IsTrue(ShouldRender("HtmlEncodeTest1", MarsModelFactory.CreateFullMarsModel(), @"&lt;b&gt;Mars&lt;/b&gt; is the fourth &lt;a href=&quot;/wiki/Planet&quot; title=&quot;Planet&quot;&gt;planet&lt;/a&gt; from the &lt;a href=&quot;/wiki/Sun&quot; title=&quot;Sun&quot;&gt;Sun&lt;/a&gt; and the second smallest planet in the &lt;a href=&quot;/wiki/Solar_System&quot; title=&quot;Solar System&quot;&gt;Solar System&lt;/a&gt;, after &lt;a href=&quot;/wiki/Mercury_(planet)&quot; title=&quot;Mercury (planet)&quot;&gt;Mercury&lt;/a&gt;."));
-      Assert.IsTrue(ShouldRender("HtmlEncodeTest2", MarsModelFactory.CreateFullMarsModel(), "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>."));          
+      ShouldRender("HtmlEncodeTest1", MarsModelFactory.CreateFullMarsModel(), @"&lt;b&gt;Mars&lt;/b&gt; is the fourth &lt;a href=&quot;/wiki/Planet&quot; title=&quot;Planet&quot;&gt;planet&lt;/a&gt; from the &lt;a href=&quot;/wiki/Sun&quot; title=&quot;Sun&quot;&gt;Sun&lt;/a&gt; and the second smallest planet in the &lt;a href=&quot;/wiki/Solar_System&quot; title=&quot;Solar System&quot;&gt;Solar System&lt;/a&gt;, after &lt;a href=&quot;/wiki/Mercury_(planet)&quot; title=&quot;Mercury (planet)&quot;&gt;Mercury&lt;/a&gt;.");
+      ShouldRender("HtmlEncodeTest2", MarsModelFactory.CreateFullMarsModel(), "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>.");          
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("IfTest", @"{{#if Name}}HasName{{/if}}", _marsModel)]
     public void IfTest()
     {
-      Assert.IsTrue(ShouldRender("IfTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
-      Assert.IsTrue(ShouldRender("IfTest", new MarsModel(), ""));
+      ShouldRender("IfTest", MarsModelFactory.CreateFullMarsModel(), "HasName");
+      ShouldRender("IfTest", new MarsModel(), "");
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("IfElseTest", @"{{#if Name}}HasName{{else}}HasNoName{{/if}}", _marsModel)]
     public void IfElseTest()
     {
-      Assert.IsTrue(ShouldRender("IfElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
-      Assert.IsTrue(ShouldRender("IfElseTest", new MarsModel(), "HasNoName"));
+      ShouldRender("IfElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName");
+      ShouldRender("IfElseTest", new MarsModel(), "HasNoName");
     }
 
     [TestMethod()]
@@ -66,34 +66,34 @@ namespace CompiledHandlebars.Compiler.Tests
     public void NestedIfTest()
     {
       var mars = MarsModelFactory.CreateFullMarsModel();
-      Assert.IsTrue(ShouldRender("NestedIfTest", mars, "Phobos:HasName"));
+      ShouldRender("NestedIfTest", mars, "Phobos:HasName");
       mars.Phobos.Name = null;
-      Assert.IsTrue(ShouldRender("NestedIfTest", mars, "Phobos:HasNoName"));
-      Assert.IsTrue(ShouldRender("NestedIfTest", new MarsModel(), "NoPhobos"));
+      ShouldRender("NestedIfTest", mars, "Phobos:HasNoName");
+      ShouldRender("NestedIfTest", new MarsModel(), "NoPhobos");
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("UnlessElseTest", @"{{#unless Name}}HasNoName{{else}}HasName{{/unless}}", _marsModel)]
     public void UnlessElseTest()
     {
-      Assert.IsTrue(ShouldRender("UnlessElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName"));
-      Assert.IsTrue(ShouldRender("UnlessElseTest", new MarsModel(), "HasNoName"));
+      ShouldRender("UnlessElseTest", MarsModelFactory.CreateFullMarsModel(), "HasName");
+      ShouldRender("UnlessElseTest", new MarsModel(), "HasNoName");
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("UnlessTest", @"{{#unless Name}}HasNoName{{/unless}}", _marsModel)]
     public void UnlessTest()
     {
-      Assert.IsTrue(ShouldRender("UnlessTest", MarsModelFactory.CreateFullMarsModel(), ""));
-      Assert.IsTrue(ShouldRender("UnlessTest", new MarsModel(), "HasNoName"));
+      ShouldRender("UnlessTest", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("UnlessTest", new MarsModel(), "HasNoName");
     }
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("WithTest", @"{{#with Phobos}}Name:{{Name}}{{/with}}", _marsModel)]
     public void WithTest()
     {
-      Assert.IsTrue(ShouldRender("WithTest", MarsModelFactory.CreateFullMarsModel(), "Name:Phobos"));
-      Assert.IsTrue(ShouldRender("WithTest", new MarsModel(), ""));
+      ShouldRender("WithTest", MarsModelFactory.CreateFullMarsModel(), "Name:Phobos");
+      ShouldRender("WithTest", new MarsModel(), "");
     }
 
     [TestMethod()]
@@ -101,8 +101,17 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("PathTest2", @"{{Deimos/../Name}}:{{Deimos/../Phobos.Name}}", _marsModel)]
     public void PathTest()
     {
-      Assert.IsTrue(ShouldRender("PathTest1", MarsModelFactory.CreateFullMarsModel(), "Mars:Phobos"));
-      Assert.IsTrue(ShouldRender("PathTest2", MarsModelFactory.CreateFullMarsModel(), "Mars:Phobos"));
+      ShouldRender("PathTest1", MarsModelFactory.CreateFullMarsModel(), "Mars:Phobos");
+      ShouldRender("PathTest2", MarsModelFactory.CreateFullMarsModel(), "Mars:Phobos");
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("ThisTest1", @"{{model string}}{{this}}")]
+    [RegisterHandlebarsTemplate("ThisTest2", @"{{#with Name}}{{this}}{{/with}}", _marsModel)]
+    public void ThisTest()
+    {
+      ShouldRender("PathTest1", "Test", "Test");
+      ShouldRender("PathTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
   }
