@@ -111,11 +111,15 @@ ElseToken
 //-----------------------------------------------
 
 MemberExpression <MemberExpression>
-    = Whitespace value:MemberPath Whitespace { new MemberExpression(value)}
+    = Whitespace value:(ThisBasedPath/MemberPath) Whitespace { new MemberExpression(value)}
 
-MemberPath
+MemberPath     
     = NestedMemberIdentifier
     / MemberIdentifier
+
+ThisBasedPath<IdentifierElement> 
+    = ThisKeyword { new ThisIdentifier(null) }
+    / ThisKeyword next:MemberPath { new ThisIdentifier(next)}
 
 //Last Identifier Element => no next
 MemberIdentifier <IdentifierElement>
@@ -164,6 +168,7 @@ MultilineCommentClosing = "--}}"
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
 Whitespace = " "*
+ThisKeyword = "this" / ("."!".")
 
 
 //-------------------------------

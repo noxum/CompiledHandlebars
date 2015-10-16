@@ -106,12 +106,12 @@ namespace CompiledHandlebars.Compiler.Tests
     }
 
     [TestMethod()]
-    [RegisterHandlebarsTemplate("ThisTest1", @"{{model string}}{{this}}")]
+    [RegisterHandlebarsTemplate("ThisTest1", @"{{model System.String}}{{this}}")]
     [RegisterHandlebarsTemplate("ThisTest2", @"{{#with Name}}{{this}}{{/with}}", _marsModel)]
     public void ThisTest()
     {
-      ShouldRender("PathTest1", "Test", "Test");
-      ShouldRender("PathTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("ThisTest1", "Test", "Test");
+      ShouldRender("ThisTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
   }

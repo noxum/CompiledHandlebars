@@ -2,9 +2,24 @@
 using CompiledHandlebars.Compiler.Introspection;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
+
+  internal class ThisIdentifier : IdentifierElement
+  {
+
+    internal ThisIdentifier(IdentifierElement next) : base(next) { }
+
+    internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
+    {
+      if (_next == null)
+        return contextStack.Peek();
+      else
+        return _next.Evaluate(contextStack, state);
+    }
+  }
   internal class Identifier : IdentifierElement
   {
     private readonly string _value;
