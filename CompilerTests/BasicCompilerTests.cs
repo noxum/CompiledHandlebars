@@ -108,10 +108,19 @@ namespace CompiledHandlebars.Compiler.Tests
     [TestMethod()]
     [RegisterHandlebarsTemplate("ThisTest1", @"{{model System.String}}{{this}}")]
     [RegisterHandlebarsTemplate("ThisTest2", @"{{#with Name}}{{this}}{{/with}}", _marsModel)]
+    [RegisterHandlebarsTemplate("ThisTest3", @"{{this.Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("ThisTest4", @"{{#if this}}Model{{else}}NoModel{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("ThisTest5", @"{{./Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("ThisTest6", @"{{#with Name}}{{.}}{{/with}}", _marsModel)]
     public void ThisTest()
     {
       ShouldRender("ThisTest1", "Test", "Test");
       ShouldRender("ThisTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("ThisTest3", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("ThisTest4", MarsModelFactory.CreateFullMarsModel(), "Model");
+      ShouldRender("ThisTest4", default(MarsModel), "NoModel");
+      ShouldRender("ThisTest5", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("ThisTest6", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
   }
