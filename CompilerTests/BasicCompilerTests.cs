@@ -123,5 +123,16 @@ namespace CompiledHandlebars.Compiler.Tests
       ShouldRender("ThisTest6", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("EachTest1", @"{{#each Plains}}{{Name}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("EachTest2", @"{{#each Mountains}}{{Name}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("EachTest3", @"{{#each Rovers}}{{Key}}{{/each}}", _marsModel)]
+    public void EachTest()
+    {
+      ShouldRender("EachTest1", MarsModelFactory.CreateFullMarsModel(), "Acidalia PlanitiaUtopia Planitia");
+      ShouldRender("EachTest2", MarsModelFactory.CreateFullMarsModel(), "Aeolis MonsOlympus Mons");
+      ShouldRender("EachTest3", MarsModelFactory.CreateFullMarsModel(), "OpportunityCuriosity");
+    }
+
   }
 }

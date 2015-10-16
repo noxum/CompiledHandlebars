@@ -1,21 +1,18 @@
 ﻿using System.Text;
 using System.Net;
 
-/*10/14/2015 9:35:38 PM | parsing: 0ms; init: 0; codeGeneration: 0!*/
+/*10/16/2015 1:15:04 PM | parsing: 0ms; init: 0; codeGeneration: 0!*/
 namespace TestTemplates
 {
-    public static class UnlessTest
+    public static class WithTest
     {
         public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
         {
             var sb = new StringBuilder();
-            if (!IsTruthy(viewModel.Name))
+            if (IsTruthy(viewModel.Phobos))
             {
-                sb.Append("HasNoName");
-            }
-            else
-            {
-                sb.Append("HasName");
+                sb.Append("Name:");
+                sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
             }
 
             return sb.ToString();

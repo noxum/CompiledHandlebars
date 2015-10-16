@@ -1,17 +1,19 @@
 ﻿using System.Text;
 using System.Net;
 
-/*10/14/2015 9:35:38 PM | parsing: 0ms; init: 0; codeGeneration: 0!*/
+/*10/16/2015 1:15:04 PM | parsing: 0ms; init: 0; codeGeneration: 0!*/
 namespace TestTemplates
 {
-    public static class PathTest1
+    public static class ThisTest6
     {
         public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
         {
             var sb = new StringBuilder();
-            sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-            sb.Append(":");
-            sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+            if (IsTruthy(viewModel.Name))
+            {
+                sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+            }
+
             return sb.ToString();
         }
 
