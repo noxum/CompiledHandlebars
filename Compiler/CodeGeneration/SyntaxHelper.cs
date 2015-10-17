@@ -91,61 +91,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           default(SyntaxList<MemberDeclarationSyntax>)
         );
     }
-
-
-    /// <summary>
-    /// Yields the Render Method with dynamic ViewModel Parameter:
-    /// public static string Render(dynamic viewModel){}
-    /// </summary>
-    /// <returns></returns>
-    internal static MethodDeclarationSyntax RenderWithDynamicParameter()
-    {
-      return
-        SF.MethodDeclaration(
-          new SyntaxList<AttributeListSyntax>(),
-          SF.TokenList(
-            SF.Token(SyntaxKind.PublicKeyword),
-            SF.Token(SyntaxKind.StaticKeyword)),
-          SF.PredefinedType(SF.Token(SyntaxKind.StringKeyword)),
-          default(ExplicitInterfaceSpecifierSyntax),
-          SF.Identifier("Render"),
-          default(TypeParameterListSyntax),
-          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
-            default(SyntaxList<AttributeListSyntax>),
-            default(SyntaxTokenList),
-            SF.ParseTypeName("dynamic"), //no native support for dynamic yet
-            SF.Identifier("viewModel"),
-            default(EqualsValueClauseSyntax)))
-          ),
-          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-          SF.Block(),
-          default(SyntaxToken)
-        );
-    }
-
-    /// <summary>
-    /// Yields the Render Method without ViewModel Parameter:
-    /// public static string Render(){}
-    /// </summary>
-    internal static MethodDeclarationSyntax RenderWithoutParameter()
-    {
-      return
-        SF.MethodDeclaration(
-          new SyntaxList<AttributeListSyntax>(),
-          SF.TokenList(
-            SF.Token(SyntaxKind.PublicKeyword),
-            SF.Token(SyntaxKind.StaticKeyword)),
-          SF.PredefinedType(SF.Token(SyntaxKind.StringKeyword)),
-          default(ExplicitInterfaceSpecifierSyntax),
-          SF.Identifier("Render"),
-          default(TypeParameterListSyntax),
-          SF.ParameterList(),
-          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-          SF.Block(),
-          default(SyntaxToken)
-        );
-    }
-
+    
     /// <summary>
     /// Yields the Render Method with ViewModel Parameter:
     /// public static string Render(TViewModel viewModel){}
@@ -306,13 +252,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
-    internal static IfStatementSyntax IfIsTruthy(string memberName, List<StatementSyntax> block)
-    {
-      return SF.IfStatement(
-        SF.ParseExpression($"IsTruthy({memberName})"),
-        SF.Block(block)
-      );
-    }
 
     internal static IfStatementSyntax IfIsTruthy(Context lastCheckedContext, Context contextToCheck, AST.IfType ifType)
     {
@@ -322,27 +261,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       else return SF.IfStatement(condition, SF.EmptyStatement());
     }
 
-    internal static IfStatementSyntax IfIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
-    {
-      return IfIsTruthy(memberName, ifBlock)
-        .WithElse(
-          SF.ElseClause(SF.Block(elseBlock)));
-    }
-
-    internal static IfStatementSyntax UnlessIsTruthy(string memberName, List<StatementSyntax> block)
-    {
-      return SF.IfStatement(
-        SF.ParseExpression($"!IsTruthy({memberName})"),
-        SF.Block(block)
-      );
-    }
-
-    internal static IfStatementSyntax UnlessIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
-    {
-      return UnlessIsTruthy(memberName, ifBlock)
-        .WithElse(
-          SF.ElseClause(SF.Block(elseBlock)));
-    }
 
     internal static StatementSyntax AddCommentToStatement(StatementSyntax statement, string comment)
     {
