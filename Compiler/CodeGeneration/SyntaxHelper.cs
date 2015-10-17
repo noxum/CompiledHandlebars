@@ -1,7 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using CompiledHandlebars.Compiler.Introspection;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
+using System.Linq;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace CompiledHandlebars.Compiler.CodeGeneration
@@ -312,6 +314,17 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+    internal static StatementSyntax IfIsTruthy(Context currentContext, Context contextToCheck, List<StatementSyntax> block)
+    {
+      var ifExpression = CheckContextForTruthy(currentContext, contextToCheck);      
+      if (ifExpression == null)
+        return SF.Block(block);
+      return SF.IfStatement(
+        ifExpression,
+        SF.Block(block)
+      );
+    }
+
     internal static IfStatementSyntax IfIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
     {
       return IfIsTruthy(memberName, ifBlock)
@@ -342,6 +355,13 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );
     }
 
+    /// <summary>
+    /// Yields a foreach(var loopVariable in loopedVariable) Statement
+    /// </summary>
+    /// <param name="loopVariable"></param>
+    /// <param name="loopedVariable"></param>
+    /// <param name="block"></param>
+    /// <returns></returns>
     internal static StatementSyntax ForLoop(string loopVariable, string loopedVariable, List<StatementSyntax> block)
     {
       return
@@ -351,6 +371,63 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
              SF.ParseExpression(loopedVariable),
              SF.Block(block)
           );
+    }
+
+    private static ExpressionSyntax CheckContextForTruthy(Context currentContext, Context contextToCheck)
+    {
+      var argumentList = new List<string>();
+      var pathToCheck = contextToCheck.FullPath;
+      if (contextToCheck.FullPath.StartsWith(currentContext.FullPath)
+          && currentContext.FullPath.Contains("."))
+      {//The context to check is directly depended from the currentContext
+        if (currentContext.FullPath.Equals(contextToCheck.FullPath))
+          return null;
+        pathToCheck = contextToCheck.FullPath.Substring(currentContext.FullPath.Length + 1);
+        var elements = pathToCheck.Split('.');
+        for(int i = 1;i<=elements.Length;i++)
+        {
+          argumentList.Add(string.Join(".", currentContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
+        }
+      } else
+      {//The context to check is independed from the currentContext
+        var elements = pathToCheck.Split('.');
+        for (int i = 1; i <= elements.Length; i++)
+        {
+          argumentList.Add(string.Join(".", elements.Take(i).ToArray()));
+        }
+      }
+      var result = SF.ParseExpression($"IsTruthy({argumentList[0]})");
+      foreach(var element in argumentList.Skip(1))
+        result = BinaryIfIsTruthyExpression(result, element);      
+      return result;
+    }
+
+    /// <summary>
+    /// Yields IsTruthy(a) && IsTruthy(b)
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    private static BinaryExpressionSyntax BinaryIfIsTruthyExpression(string a, string b)
+    {
+      return SF.BinaryExpression(SyntaxKind.LogicalAndExpression,
+        SF.ParseExpression($"IsTruthy({a})"),
+        SF.ParseExpression($"IsTruthy({b})")
+      );
+    }
+
+    /// <summary>
+    /// Yields IsTruthy(a) && IsTruthy(b)
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    private static BinaryExpressionSyntax BinaryIfIsTruthyExpression(ExpressionSyntax a, string b)
+    {
+      return SF.BinaryExpression(SyntaxKind.LogicalAndExpression,
+        a,
+        SF.ParseExpression($"IsTruthy({b})")
+      );
     }
 
   }

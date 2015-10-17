@@ -6,6 +6,8 @@ namespace CompiledHandlebars.Compiler.Introspection
   {
     internal readonly string FullPath;
     internal readonly ISymbol Symbol;
+
+    internal bool HasBeenCheckedForTruthy { get; set; } = false;
     public Context(string fullPath, ISymbol symbol)
     {
       FullPath = fullPath;

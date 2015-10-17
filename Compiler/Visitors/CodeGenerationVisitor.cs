@@ -72,7 +72,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       //Leave Context
       state.ContextStack.Pop();
-      state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+      state.PushStatement(SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state), state.PopBlock()));
     }
 
     public void VisitEnter(IfBlock astNode)
@@ -89,7 +89,7 @@ namespace CompiledHandlebars.Compiler.Visitors
         if (astNode.HasElseBlock)
           state.PushStatement(SyntaxHelper.IfIsTruthyElse(astNode.Member.Evaluate(state).FullPath, state.PopBlock(), latestBlock));
         else
-          state.PushStatement(SyntaxHelper.IfIsTruthy(astNode.Member.Evaluate(state).FullPath, latestBlock));
+          state.PushStatement(SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state), latestBlock));
       }
       else if (astNode.QueryType == IfType.Unless)
       {
@@ -98,6 +98,8 @@ namespace CompiledHandlebars.Compiler.Visitors
         else
           state.PushStatement(SyntaxHelper.UnlessIsTruthy(astNode.Member.Evaluate(state).FullPath, latestBlock));
       }
+
+
     }
 
     public void VisitElse()
@@ -123,7 +125,12 @@ namespace CompiledHandlebars.Compiler.Visitors
       //Leave loop context
       state.ContextStack.Pop();
       state.loopLevel--;
-      state.PushStatement(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+      state.PushStatement(
+        SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state),
+        new List<StatementSyntax>()
+        {
+          SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock())
+        }));
     }
   }
 }
