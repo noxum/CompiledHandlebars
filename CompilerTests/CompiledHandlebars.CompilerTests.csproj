@@ -122,6 +122,7 @@
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
     <Compile Include="TestViewModels\SolarSystem.cs" />
+    <Compile Include="TruthynessTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Compiler\CompiledHandlebars.Compiler.csproj">

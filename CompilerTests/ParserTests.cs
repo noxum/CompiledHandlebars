@@ -57,27 +57,15 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("MalformedWithBlockTest2", "{{#with Sun}}", _marsModel, false)]
     [RegisterHandlebarsTemplate("MalformedWithBlockTest3", "{{#with Sun}}{{#with}}", _marsModel, false)]
     [RegisterHandlebarsTemplate("MalformedWithBlockTest4", "{{#with Sun}}{{/witz}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("MalformedWithBlockTest5", "{{#with Sun}}{{#unless this}}{{/if}}{{/with}}", _marsModel, false)]
     public void MalformedWithBlockTest()
     {
       ShouldRaiseError("MalformedWithBlockTest1", HandlebarsSyntaxErrorKind.MissingMemberExpression);
       ShouldRaiseError("MalformedWithBlockTest2", HandlebarsSyntaxErrorKind.MalformedBlock);
       ShouldRaiseError("MalformedWithBlockTest3", HandlebarsSyntaxErrorKind.MissingMemberExpression);
       ShouldRaiseError("MalformedWithBlockTest4", HandlebarsSyntaxErrorKind.MalformedBlock);
+      ShouldRaiseError("MalformedWithBlockTest5", HandlebarsSyntaxErrorKind.MalformedBlock);
     }
 
-    private void ShouldThrowException(string template)
-    {
-      try
-      {
-        _parser.Parse(template);        
-        Assert.Fail();
-      }catch(HandlebarsSyntaxError)
-      {
-
-      }catch(Exception)
-      {
-        Assert.Fail();
-      }
-    }
   }
 }
