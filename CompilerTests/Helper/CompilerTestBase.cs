@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CompiledHandlebars.CompilerTests.Helper
@@ -85,6 +86,11 @@ namespace CompiledHandlebars.CompilerTests.Helper
       var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
       var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
       Assert.AreEqual(expectedResult, renderResult);
+    }
+
+    protected void ShouldContainCode(string templateName, string code, int instances)
+    {
+      Assert.IsTrue(Regex.Matches(compiledCode[templateName].Item1, code).Count == instances);
     }
 
     protected void ShouldRaiseError(string templateName, HandlebarsSyntaxErrorKind kind)
