@@ -44,6 +44,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       Errors.Add(new HandlebarsTypeError(message, kind, line, column));
     }
 
+    public void AddTypeError(HandlebarsTypeError error)
+    {
+      Errors.Add(error);
+    }
+
     public void PushStatement(StatementSyntax statement)
     {
       resultStack.Peek().Add(statement);

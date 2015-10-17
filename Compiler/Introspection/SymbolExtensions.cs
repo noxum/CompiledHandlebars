@@ -11,6 +11,8 @@ namespace CompiledHandlebars.Compiler.Introspection
   {
     public static ISymbol FindMember(this ISymbol symbol, string name)
     {
+      if (symbol == null)
+        return null;
       if (symbol.Kind == SymbolKind.NamedType)
         return (symbol as INamedTypeSymbol).FindMemberRec(name);
       if (symbol.Kind == SymbolKind.Property)

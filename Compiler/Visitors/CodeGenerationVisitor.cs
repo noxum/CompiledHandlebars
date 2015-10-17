@@ -28,7 +28,16 @@ namespace CompiledHandlebars.Compiler.Visitors
     }
     public void GenerateCode()
     {
-      state.Template.Accept(this);
+      try
+      {
+        state.Template.Accept(this);
+      } catch(HandlebarsTypeError e)
+      {
+        state.AddTypeError(e);
+      } catch(Exception e)
+      {
+        state.AddTypeError($"Compilation failed: {e.Message}", HandlebarsTypeErrorKind.CompilationFailed);
+      }
     }
     public CompilationUnitSyntax CompilationUnit(string templateComment)
     {
