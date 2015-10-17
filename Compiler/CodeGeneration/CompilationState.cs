@@ -21,6 +21,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     public RoslynIntrospector Introspector { get; set; }
     public Stack<List<StatementSyntax>> resultStack { get; private set; } = new Stack<List<StatementSyntax>>();
     internal Stack<Context> ContextStack { get; set; } = new Stack<Context>();
+    /// <summary>
+    /// Contains the status about already checked variables.
+    /// Needs to be seperated from the context stack, as truthyness check does not always change context (e.g. #if)
+    /// </summary>
+    internal Stack<Context> TruthyStack { get; set; } = new Stack<Context>();
     internal HandlebarsTemplate Template { get; private set; }
 
     public CompilationState(RoslynIntrospector introspector, HandlebarsTemplate template)
@@ -85,6 +90,40 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           )
       );
       return compiledHbs;
+    }
+
+    internal void PromiseTruthyCheck(Context contextToCheck)
+    {
+      TruthyStack.Push(contextToCheck);
+    }
+
+    internal void DoTruthyCheck(List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null)
+    {
+      var contextToCheck = TruthyStack.Pop();
+      IfStatementSyntax ifStatement;
+      if (TruthyStack.Any())
+        ifStatement = SyntaxHelper.IfIsTruthy(TruthyStack.Peek(), contextToCheck);
+      else
+        ifStatement = SyntaxHelper.IfIsTruthy(null, contextToCheck);
+      if (ifStatement == null)
+      {
+        if (elseBlock != null)
+          AddTypeError("Unreachable 'else' Block", HandlebarsTypeErrorKind.UnreachableCode);
+        resultStack.Peek().AddRange(ifBlock);
+      } else
+      {
+        if (elseBlock != null)
+        {
+          resultStack.Peek().Add(
+            ifStatement.WithStatement(SyntaxFactory.Block(ifBlock)).
+            WithElse(SyntaxFactory.ElseClause(SyntaxFactory.Block(elseBlock)))
+          );
+        } else
+        {
+          resultStack.Peek().Add(
+            ifStatement.WithStatement(SyntaxFactory.Block(ifBlock)));
+        }
+      }
     }
 
     internal Context BuildLoopContext(ISymbol symbol)

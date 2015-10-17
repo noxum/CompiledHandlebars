@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler
 
 
   }
-  public enum HandlebarsTypeErrorKind { UnknownType, UnknownMember, EmptyContextStack, UnknownViewModel }
+  public enum HandlebarsTypeErrorKind { UnknownType, UnknownMember, EmptyContextStack, UnknownViewModel, UnreachableCode }
 
   public class HandlebarsSyntaxError : HandlebarsException {
     public HandlebarsSyntaxErrorKind Kind { get; set; }

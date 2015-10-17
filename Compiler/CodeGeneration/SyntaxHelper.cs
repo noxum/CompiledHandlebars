@@ -325,6 +325,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+    internal static IfStatementSyntax IfIsTruthy(Context lastCheckedContext, Context contextToCheck)
+    {
+      var condition = CheckContextForTruthy(lastCheckedContext, contextToCheck);
+      if (condition == null)
+        return null;
+      else return SF.IfStatement(condition, SF.EmptyStatement());
+    }
+
     internal static IfStatementSyntax IfIsTruthyElse(string memberName, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock)
     {
       return IfIsTruthy(memberName, ifBlock)
@@ -377,7 +385,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       var argumentList = new List<string>();
       var pathToCheck = contextToCheck.FullPath;
-      if (contextToCheck.FullPath.StartsWith(currentContext.FullPath)
+      if (currentContext != null
+          && contextToCheck.FullPath.StartsWith(currentContext.FullPath)
           && currentContext.FullPath.Contains("."))
       {//The context to check is directly depended from the currentContext
         if (currentContext.FullPath.Equals(contextToCheck.FullPath))

@@ -64,7 +64,8 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
-      //Enter new Context
+      //Enter new Context and promise to check its truthyness
+      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
       state.ContextStack.Push(astNode.Member.Evaluate(state));
     }
 
@@ -72,13 +73,14 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       //Leave Context
       state.ContextStack.Pop();
-      state.PushStatement(SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state), state.PopBlock()));
+      state.DoTruthyCheck(state.PopBlock());
     }
 
     public void VisitEnter(IfBlock astNode)
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
+      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
     }
 
     public void VisitLeave(IfBlock astNode)
@@ -87,9 +89,9 @@ namespace CompiledHandlebars.Compiler.Visitors
       if (astNode.QueryType == IfType.If)
       {
         if (astNode.HasElseBlock)
-          state.PushStatement(SyntaxHelper.IfIsTruthyElse(astNode.Member.Evaluate(state).FullPath, state.PopBlock(), latestBlock));
+          state.DoTruthyCheck(state.PopBlock(), latestBlock);
         else
-          state.PushStatement(SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state), latestBlock));
+          state.DoTruthyCheck(latestBlock);          
       }
       else if (astNode.QueryType == IfType.Unless)
       {
@@ -115,6 +117,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitEnter(EachBlock astNode)
     {
       state.SetCursor(astNode);
+      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
       state.ContextStack.Push(astNode.Member.EvaluateLoop(state));
       state.PushNewBlock();
       state.loopLevel++;
@@ -125,12 +128,12 @@ namespace CompiledHandlebars.Compiler.Visitors
       //Leave loop context
       state.ContextStack.Pop();
       state.loopLevel--;
-      state.PushStatement(
-        SyntaxHelper.IfIsTruthy(state.ContextStack.Peek(), astNode.Member.Evaluate(state),
+      state.DoTruthyCheck(
         new List<StatementSyntax>()
         {
           SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock())
-        }));
+        }                        
+      );
     }
   }
 }
