@@ -36,7 +36,7 @@ namespace CompiledHandlebars.Compiler.AST
         child.Accept(visitor);
       if(HasElseBlock)
       {
-        visitor.VisitElse();
+        visitor.VisitElse(this);
         foreach(var ele in _elseBlock)
         {
           ele.Accept(visitor);

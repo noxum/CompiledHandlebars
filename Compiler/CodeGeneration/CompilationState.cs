@@ -92,8 +92,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       return compiledHbs;
     }
 
-    internal void PromiseTruthyCheck(Context contextToCheck)
+    internal void PromiseTruthyCheck(Context contextToCheck, IfType ifType = IfType.If)
     {
+      contextToCheck.Truthy = ifType == IfType.If;
       TruthyStack.Push(contextToCheck);
     }
 
@@ -102,9 +103,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       var contextToCheck = TruthyStack.Pop();
       IfStatementSyntax ifStatement;
       if (TruthyStack.Any())
-        ifStatement = SyntaxHelper.IfIsTruthy(TruthyStack.Peek(), contextToCheck, ifType);
+        ifStatement = SyntaxHelper.IfIsTruthy(GetQueryElements(TruthyStack.Peek(), contextToCheck), ifType);
       else
-        ifStatement = SyntaxHelper.IfIsTruthy(null, contextToCheck, ifType);
+        ifStatement = SyntaxHelper.IfIsTruthy(GetQueryElements(null, contextToCheck), ifType);
       if (ifStatement == null)
       {
         if (elseBlock != null)
@@ -124,6 +125,37 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             ifStatement.WithStatement(SyntaxFactory.Block(ifBlock)));
         }
       }
+    }
+
+    private List<string> GetQueryElements(Context lastCheckedContext, Context contextToCheck)
+    {
+      var argumentList = new List<string>();
+      var pathToCheck = contextToCheck.FullPath;
+      if (lastCheckedContext != null
+          && contextToCheck.FullPath.StartsWith(lastCheckedContext.FullPath)
+          && lastCheckedContext.FullPath.Contains("."))
+      {//The context to check is directly depended from the context checked before
+        if (lastCheckedContext.Truthy != contextToCheck.Truthy)//Unreachable Code
+          AddTypeError("Unreachable code detected", HandlebarsTypeErrorKind.UnreachableCode); 
+        if (lastCheckedContext.FullPath.Equals(contextToCheck.FullPath))
+          return null;//Context has already been checked. Nothing to check
+        //Get the unchecked subpath
+        pathToCheck = contextToCheck.FullPath.Substring(lastCheckedContext.FullPath.Length + 1);
+        //Split it into elements
+        var elements = pathToCheck.Split('.');
+        for(int i = 1; i<=elements.Length;i++)
+        {//then join them back together with the prefix
+          argumentList.Add(string.Join(".", lastCheckedContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
+        }
+      } else
+      {//The context to check is independed from the context checked before
+        var elements = pathToCheck.Split('.');
+        for (int i = 1; i <= elements.Length; i++)
+        {
+          argumentList.Add(string.Join(".", elements.Take(i).ToArray()));
+        }
+      }
+      return argumentList;
     }
 
     internal Context BuildLoopContext(ISymbol symbol)

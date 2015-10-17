@@ -253,9 +253,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
 
-    internal static IfStatementSyntax IfIsTruthy(Context lastCheckedContext, Context contextToCheck, AST.IfType ifType)
+    internal static IfStatementSyntax IfIsTruthy(List<string> elementsToCheck, AST.IfType ifType)
     {
-      var condition = CheckContextForTruthy(lastCheckedContext, contextToCheck, ifType);
+      var condition = CheckContextForTruthy(elementsToCheck, ifType);
       if (condition == null)
         return null;
       else return SF.IfStatement(condition, SF.EmptyStatement());
@@ -288,35 +288,13 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           );
     }
 
-    private static ExpressionSyntax CheckContextForTruthy(Context lastCheckedContext, Context contextToCheck, AST.IfType ifType)
+    private static ExpressionSyntax CheckContextForTruthy(List<string> elementsToCheck, AST.IfType ifType)
     {
-      var argumentList = new List<string>();
-      var pathToCheck = contextToCheck.FullPath;
-      if (lastCheckedContext != null
-          && contextToCheck.FullPath.StartsWith(lastCheckedContext.FullPath)
-          && lastCheckedContext.FullPath.Contains("."))
-      {//The context to check is directly depended from the context checked before
-        if (lastCheckedContext.FullPath.Equals(contextToCheck.FullPath))
-          return null;
-        //Get the unchecked subpath
-        pathToCheck = contextToCheck.FullPath.Substring(lastCheckedContext.FullPath.Length + 1);
-        //Split it into elements
-        var elements = pathToCheck.Split('.');
-        for(int i = 1;i<=elements.Length;i++)
-        {//then join them back together with the prefix
-          argumentList.Add(string.Join(".", lastCheckedContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
-        }
-      } else
-      {//The context to check is independed from the context checked before
-        var elements = pathToCheck.Split('.');
-        for (int i = 1; i <= elements.Length; i++)
-        {
-          argumentList.Add(string.Join(".", elements.Take(i).ToArray()));
-        }
-      }
-      var result = ifType == AST.IfType.If ? SF.ParseExpression($"IsTruthy({argumentList[0]})")
-                                           : SF.ParseExpression($"!IsTruthy({argumentList[0]})");
-      foreach (var element in argumentList.Skip(1))
+      if (elementsToCheck == null || !elementsToCheck.Any())
+        return null;
+      var result = ifType == AST.IfType.If ? SF.ParseExpression($"IsTruthy({elementsToCheck[0]})")
+                                           : SF.ParseExpression($"!IsTruthy({elementsToCheck[0]})");
+      foreach (var element in elementsToCheck.Skip(1))
         result = ifType == AST.IfType.If ? BinaryIfIsTruthyExpression(result, element)
                                       : BinaryUnlessIsTruthyExpression(result, element);
       return result;

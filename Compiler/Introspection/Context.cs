@@ -7,7 +7,7 @@ namespace CompiledHandlebars.Compiler.Introspection
     internal readonly string FullPath;
     internal readonly ISymbol Symbol;
 
-    internal bool HasBeenCheckedForTruthy { get; set; } = false;
+    internal bool Truthy { get; set; }
     public Context(string fullPath, ISymbol symbol)
     {
       FullPath = fullPath;

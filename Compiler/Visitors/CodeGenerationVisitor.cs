@@ -80,7 +80,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
-      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
+      state.PromiseTruthyCheck(astNode.Member.Evaluate(state), astNode.QueryType);
     }
 
     public void VisitLeave(IfBlock astNode)
@@ -92,8 +92,11 @@ namespace CompiledHandlebars.Compiler.Visitors
         state.DoTruthyCheck(latestBlock, ifType: astNode.QueryType);          
     }
 
-    public void VisitElse()
+    public void VisitElse(IfBlock astNode)
     {
+      var truthyContext = state.TruthyStack.Pop();
+      truthyContext.Truthy = !truthyContext.Truthy;
+      state.TruthyStack.Push(truthyContext);
       state.PushNewBlock();
     }
 
