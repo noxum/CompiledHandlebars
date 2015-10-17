@@ -97,14 +97,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       TruthyStack.Push(contextToCheck);
     }
 
-    internal void DoTruthyCheck(List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null)
+    internal void DoTruthyCheck(List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null, AST.IfType ifType = IfType.If)
     {
       var contextToCheck = TruthyStack.Pop();
       IfStatementSyntax ifStatement;
       if (TruthyStack.Any())
-        ifStatement = SyntaxHelper.IfIsTruthy(TruthyStack.Peek(), contextToCheck);
+        ifStatement = SyntaxHelper.IfIsTruthy(TruthyStack.Peek(), contextToCheck, ifType);
       else
-        ifStatement = SyntaxHelper.IfIsTruthy(null, contextToCheck);
+        ifStatement = SyntaxHelper.IfIsTruthy(null, contextToCheck, ifType);
       if (ifStatement == null)
       {
         if (elseBlock != null)

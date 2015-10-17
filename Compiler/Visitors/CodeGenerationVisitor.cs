@@ -86,22 +86,10 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitLeave(IfBlock astNode)
     {
       var latestBlock = state.PopBlock();
-      if (astNode.QueryType == IfType.If)
-      {
-        if (astNode.HasElseBlock)
-          state.DoTruthyCheck(state.PopBlock(), latestBlock);
-        else
-          state.DoTruthyCheck(latestBlock);          
-      }
-      else if (astNode.QueryType == IfType.Unless)
-      {
-        if (astNode.HasElseBlock)
-          state.PushStatement(SyntaxHelper.UnlessIsTruthyElse(astNode.Member.Evaluate(state).FullPath, state.PopBlock(), latestBlock));
-        else
-          state.PushStatement(SyntaxHelper.UnlessIsTruthy(astNode.Member.Evaluate(state).FullPath, latestBlock));
-      }
-
-
+      if (astNode.HasElseBlock)
+        state.DoTruthyCheck(state.PopBlock(), latestBlock, astNode.QueryType);
+      else
+        state.DoTruthyCheck(latestBlock, ifType: astNode.QueryType);          
     }
 
     public void VisitElse()

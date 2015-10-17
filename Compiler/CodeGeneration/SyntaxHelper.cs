@@ -314,20 +314,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
-    internal static StatementSyntax IfIsTruthy(Context currentContext, Context contextToCheck, List<StatementSyntax> block)
+    internal static IfStatementSyntax IfIsTruthy(Context lastCheckedContext, Context contextToCheck, AST.IfType ifType)
     {
-      var ifExpression = CheckContextForTruthy(currentContext, contextToCheck);      
-      if (ifExpression == null)
-        return SF.Block(block);
-      return SF.IfStatement(
-        ifExpression,
-        SF.Block(block)
-      );
-    }
-
-    internal static IfStatementSyntax IfIsTruthy(Context lastCheckedContext, Context contextToCheck)
-    {
-      var condition = CheckContextForTruthy(lastCheckedContext, contextToCheck);
+      var condition = CheckContextForTruthy(lastCheckedContext, contextToCheck, ifType);
       if (condition == null)
         return null;
       else return SF.IfStatement(condition, SF.EmptyStatement());
@@ -381,49 +370,40 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           );
     }
 
-    private static ExpressionSyntax CheckContextForTruthy(Context currentContext, Context contextToCheck)
+    private static ExpressionSyntax CheckContextForTruthy(Context lastCheckedContext, Context contextToCheck, AST.IfType ifType)
     {
       var argumentList = new List<string>();
       var pathToCheck = contextToCheck.FullPath;
-      if (currentContext != null
-          && contextToCheck.FullPath.StartsWith(currentContext.FullPath)
-          && currentContext.FullPath.Contains("."))
-      {//The context to check is directly depended from the currentContext
-        if (currentContext.FullPath.Equals(contextToCheck.FullPath))
+      if (lastCheckedContext != null
+          && contextToCheck.FullPath.StartsWith(lastCheckedContext.FullPath)
+          && lastCheckedContext.FullPath.Contains("."))
+      {//The context to check is directly depended from the context checked before
+        if (lastCheckedContext.FullPath.Equals(contextToCheck.FullPath))
           return null;
-        pathToCheck = contextToCheck.FullPath.Substring(currentContext.FullPath.Length + 1);
+        //Get the unchecked subpath
+        pathToCheck = contextToCheck.FullPath.Substring(lastCheckedContext.FullPath.Length + 1);
+        //Split it into elements
         var elements = pathToCheck.Split('.');
         for(int i = 1;i<=elements.Length;i++)
-        {
-          argumentList.Add(string.Join(".", currentContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
+        {//then join them back together with the prefix
+          argumentList.Add(string.Join(".", lastCheckedContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
         }
       } else
-      {//The context to check is independed from the currentContext
+      {//The context to check is independed from the context checked before
         var elements = pathToCheck.Split('.');
         for (int i = 1; i <= elements.Length; i++)
         {
           argumentList.Add(string.Join(".", elements.Take(i).ToArray()));
         }
       }
-      var result = SF.ParseExpression($"IsTruthy({argumentList[0]})");
-      foreach(var element in argumentList.Skip(1))
-        result = BinaryIfIsTruthyExpression(result, element);      
+      var result = ifType == AST.IfType.If ? SF.ParseExpression($"IsTruthy({argumentList[0]})")
+                                           : SF.ParseExpression($"!IsTruthy({argumentList[0]})");
+      foreach (var element in argumentList.Skip(1))
+        result = ifType == AST.IfType.If ? BinaryIfIsTruthyExpression(result, element)
+                                      : BinaryUnlessIsTruthyExpression(result, element);
       return result;
     }
 
-    /// <summary>
-    /// Yields IsTruthy(a) && IsTruthy(b)
-    /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
-    private static BinaryExpressionSyntax BinaryIfIsTruthyExpression(string a, string b)
-    {
-      return SF.BinaryExpression(SyntaxKind.LogicalAndExpression,
-        SF.ParseExpression($"IsTruthy({a})"),
-        SF.ParseExpression($"IsTruthy({b})")
-      );
-    }
 
     /// <summary>
     /// Yields IsTruthy(a) && IsTruthy(b)
@@ -436,6 +416,19 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       return SF.BinaryExpression(SyntaxKind.LogicalAndExpression,
         a,
         SF.ParseExpression($"IsTruthy({b})")
+      );
+    }
+    /// <summary>
+    /// Yields !IsTruthy(a) || !IsTruthy(b)
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    private static BinaryExpressionSyntax BinaryUnlessIsTruthyExpression(ExpressionSyntax a, string b)
+    {
+      return SF.BinaryExpression(SyntaxKind.LogicalOrExpression,
+        a,
+        SF.ParseExpression($"!IsTruthy({b})")
       );
     }
 
