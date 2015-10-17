@@ -121,10 +121,12 @@
     <Compile Include="ParserTests.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\BasicTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest1.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\EachTest2.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\EachTest3.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\EachTest4.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\HtmlEncodeTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\HtmlEncodeTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\IfElseTest.cs" />
-    <Compile Include="TestTemplates\BasicCompilerTests\IfTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\NestedIfTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest2.cs" />

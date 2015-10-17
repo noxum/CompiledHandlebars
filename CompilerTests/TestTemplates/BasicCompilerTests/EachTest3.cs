@@ -1,29 +1,17 @@
 ﻿using System.Text;
 using System.Net;
 
-/*10/16/2015 5:42:05 PM | parsing: 1391ms; init: 2953; codeGeneration: 48!*/
+/*10/16/2015 5:43:17 PM | parsing: 0ms; init: 0; codeGeneration: 2!*/
 namespace TestTemplates
 {
-  public static class NestedIfTest
+  public static class EachTest3
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel.Phobos))
+      foreach (var loopItem0 in viewModel.Rovers)
       {
-        sb.Append("Phobos:");
-        if (IsTruthy(viewModel.Phobos.Name))
-        {
-          sb.Append("HasName");
-        }
-        else
-        {
-          sb.Append("HasNoName");
-        }
-      }
-      else
-      {
-        sb.Append("NoPhobos");
+        sb.Append(WebUtility.HtmlEncode(loopItem0.Key));
       }
 
       return sb.ToString();

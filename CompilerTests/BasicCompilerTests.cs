@@ -129,13 +129,16 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("EachTest2", @"{{#each Mountains}}{{Name}}{{/each}}", _marsModel)]
     [RegisterHandlebarsTemplate("EachTest3", @"{{#each Rovers}}{{Key}}{{/each}}", _marsModel)]
     [RegisterHandlebarsTemplate("EachTest4", @"{{#each Planets}}{{Name}}:{{#each Moons}}{{Name}}{{/each}};{{/each}}", _starModel)]
+    [RegisterHandlebarsTemplate("EachTest5", @"{{#with Planets}}{{#each this}}{{Name}};{{/each}}{{/with}}", _starModel)]
     public void EachTest()
     {
       ShouldRender("EachTest1", MarsModelFactory.CreateFullMarsModel(), "Acidalia PlanitiaUtopia Planitia");
       ShouldRender("EachTest2", MarsModelFactory.CreateFullMarsModel(), "Aeolis MonsOlympus Mons");
       ShouldRender("EachTest3", MarsModelFactory.CreateFullMarsModel(), "OpportunityCuriosity");
       ShouldRender("EachTest4", CelestialBodyFactory.CreateSolarSystem(), "Mercury:;Venus:;Earth:Moon;Mars:DeimosPhobos;");
+      ShouldRender("EachTest5", CelestialBodyFactory.CreateSolarSystem(), "Mercury;Venus;Earth;Mars;");
     }
+
 
   }
 }
