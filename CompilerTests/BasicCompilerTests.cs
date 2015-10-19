@@ -139,6 +139,15 @@ namespace CompiledHandlebars.Compiler.Tests
       ShouldRender("EachTest5", CelestialBodyFactory.CreateSolarSystem(), "Mercury;Venus;Earth;Mars;");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("WhitespaceControlTest1", @"  {{~Name~}}  ", _marsModel)]
+    [RegisterHandlebarsTemplate("WhitespaceControlTest2", "{{#each Plains~}}\n{{Name}}\n{{~/each}}", _marsModel)]
+    public void WhitespaceControlTest()
+    {
+      ShouldRender("WhitespaceControlTest1", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("WhitespaceControlTest2", MarsModelFactory.CreateFullMarsModel(), "Acidalia PlanitiaUtopia Planitia");
+    }
+
 
   }
 }

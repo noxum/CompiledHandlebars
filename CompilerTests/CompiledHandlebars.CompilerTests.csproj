@@ -141,6 +141,8 @@
     <Compile Include="TestTemplates\BasicCompilerTests\ThisTest6.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\UnlessElseTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\UnlessTest.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest1.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
