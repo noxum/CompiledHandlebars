@@ -138,10 +138,26 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     public void Visit(PartialCall astLeaf)
     {
-      state.PushStatement(
-        SyntaxHelper.PartialTemplateCall(
-          state.Introspector.GetPartialHbsTemplate(astLeaf._TemplateName).Name, 
-          astLeaf._Member.Evaluate(state).FullPath));
+      state.SetCursor(astLeaf);
+      var partial = state.Introspector.GetPartialHbsTemplate(astLeaf._TemplateName);
+      if (partial == null)
+      {
+        state.AddTypeError($"Could not find partial '{astLeaf._TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
+        return;
+      }
+      if (astLeaf._HasMember)
+      {
+        state.PushStatement(
+          SyntaxHelper.PartialTemplateCall(
+            partial.Name, 
+            astLeaf._Member.Evaluate(state).FullPath));
+      } else
+      {
+        state.PushStatement(
+          SyntaxHelper.PartialTemplateCall(
+            partial.Name,
+            state.ContextStack.Peek().FullPath));
+      }
     }
   }
 }

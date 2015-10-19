@@ -12,11 +12,18 @@ namespace CompiledHandlebars.Compiler.AST
   {
     internal readonly MemberExpression _Member;
     internal readonly string _TemplateName;
-
+    internal readonly bool _HasMember;
 
     public PartialCall(string templateName, MemberExpression member, int line, int column) : base(line, column)
     {
+      _HasMember = true;
       _Member = member;
+      _TemplateName = templateName;
+    }
+
+    public PartialCall(string templateName, int line, int column) : base(line, column)
+    {
+      _HasMember = false;
       _TemplateName = templateName;
     }
 

@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler
 
 
   }
-  public enum HandlebarsTypeErrorKind { UnknownType, UnknownMember, EmptyContextStack, UnknownViewModel, UnreachableCode, CompilationFailed }
+  public enum HandlebarsTypeErrorKind { UnknownType, UnknownMember, EmptyContextStack, UnknownViewModel, UnreachableCode, CompilationFailed, UnknownPartial }
 
   public class HandlebarsSyntaxError : HandlebarsException {
     public HandlebarsSyntaxErrorKind Kind { get; set; }
@@ -26,7 +26,7 @@ namespace CompiledHandlebars.Compiler
     }
 
   }
-  public enum HandlebarsSyntaxErrorKind { MissingModelToken, MalformedModelToken, UnknownBlock, MalformedBlock, MissingMemberExpression, MalformedMemberExpression, UnexpectedCharacter }
+  public enum HandlebarsSyntaxErrorKind { MalformedPartialCallToken, MissingModelToken, MalformedModelToken, UnknownBlock, MalformedBlock, MissingMemberExpression, MalformedMemberExpression, UnexpectedCharacter }
 
   public abstract class HandlebarsException : Exception
   {
