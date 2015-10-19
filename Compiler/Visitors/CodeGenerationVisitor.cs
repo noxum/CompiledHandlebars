@@ -47,7 +47,10 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(MarkupLiteral astLeaf)
     {
       state.SetCursor(astLeaf);
-      state.PushStatement(SyntaxHelper.AppendStringLiteral(astLeaf.Value));
+      if (!string.IsNullOrEmpty(astLeaf._Value))
+      {//Do not append empty strings (possible through whitespace control)
+        state.PushStatement(SyntaxHelper.AppendStringLiteral(astLeaf._Value));
+      }
     }
 
     public void Visit(YieldStatement astLeaf)

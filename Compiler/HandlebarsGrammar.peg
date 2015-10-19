@@ -38,8 +38,8 @@ Element
     / Token)*
 
 Token <ASTElementBase>
-    = "{{" value:ASTLeaf "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
-    / "{{{" value:ASTLeaf "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
+    = "{{" TrimWhitespaceIdentifier? value:ASTLeaf TrimWhitespaceIdentifier? "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / "{{{" TrimWhitespaceIdentifier? value:ASTLeaf TrimWhitespaceIdentifier? "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
 ASTLeaf <ASTElementBase>
@@ -55,7 +55,10 @@ YieldStatement <YieldStatement>
     = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 MarkupLiteral <MarkupLiteral> 
-    = value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
+    /*= PrecedingTrimWhitespace value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
+    / PrecedingTrimWhitespace value:((!Opening !Closing .)+)  { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}*/
+    = value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
+    / value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
 Comment <ASTElementBase>
     = MultilineCommentOpening val:(!MultilineCommentClosing .)* MultilineCommentClosing { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
@@ -82,21 +85,21 @@ WithBlock <WithBlock>
     / member:WithOpeningToken body:BlockBody #STATE{ AddError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, state); } { new WithBlock(null, null, 0, 0)}   
 
 WithOpeningToken <MemberExpression>
-    = "{{" BlockOpeningIdentifier WithKeyword val:MemberExpression "}}" { val }
-    / "{{" BlockOpeningIdentifier WithKeyword v:(!Closing .)* "}}" #STATE{ AddError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingMemberExpression, state ); } { new MemberExpression(null)}
+    = Opening BlockOpeningIdentifier WithKeyword val:MemberExpression Closing { val }
+    / Opening BlockOpeningIdentifier WithKeyword v:(!Closing .)* Closing #STATE{ AddError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingMemberExpression, state ); } { new MemberExpression(null)}
 
 WithClosingToken
-    = "{{" BlockClosingIdentifier WithKeyword "}}"
+    = Opening BlockClosingIdentifier WithKeyword Closing
 
 //#Each
 EachBlock <EachBlock>
     = member:EachOpeningToken body:BlockBody EachClosingToken {new EachBlock(member, body, memberStart.Line, memberStart.Column)}
 
 EachOpeningToken <MemberExpression>
-    = "{{" BlockOpeningIdentifier EachKeyword member:MemberExpression "}}" { member }
+    = Opening BlockOpeningIdentifier EachKeyword member:MemberExpression Closing { member }
 
 EachClosingToken
-    = "{{" BlockClosingIdentifier EachKeyword "}}"
+    = Opening BlockClosingIdentifier EachKeyword Closing
 
 
 //#If
@@ -107,16 +110,16 @@ IfBlock <IfBlock>
   / member:UnlessOpeningToken body:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, body, memberStart.Line, memberStart.Column) }
 
 IfOpeningToken <MemberExpression>
-  = "{{" BlockOpeningIdentifier IfKeyword member:MemberExpression "}}" { member }
+  = Opening BlockOpeningIdentifier IfKeyword member:MemberExpression Closing { member }
 
 IfClosingToken
-  = "{{" BlockClosingIdentifier IfKeyword "}}"
+  = Opening BlockClosingIdentifier IfKeyword Closing
 
 UnlessOpeningToken <MemberExpression>
-  = "{{" BlockOpeningIdentifier UnlessKeyword member:MemberExpression "}}" { member }
+  = Opening BlockOpeningIdentifier UnlessKeyword member:MemberExpression Closing { member }
 
 UnlessClosingToken
-  = "{{" BlockClosingIdentifier UnlessKeyword "}}"
+  = Opening BlockClosingIdentifier UnlessKeyword Closing
 
 ElseToken
   = Opening ElseKeyword Closing
@@ -164,20 +167,30 @@ Identifier
 //      Keywords and Literals
 //-------------------------------
 
+/*
+PrecedingTrimWhitespace
+    = #STATE{state.Advance(-3); } "~}}"
+    / #STATE{state.Advance(-4); } "~}}}"
+    / #STATE{state.Advance(-5); } "~}}}}"
+*/
+
 ReservedKeywords 
   = ElseKeyword
   
 PartialCallIdentifier = ">"
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
+TrimWhitespaceIdentifier = "~"
 WithKeyword = "with"
 EachKeyword = "each"
 IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
-Opening = "{{"/"{{{"/"{{{{"
-Closing = "}}"/"}}}"/"}}}}"
+Opening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier?
+Closing = TrimWhitespaceIdentifier?("}}"/"}}}"/"}}}}")
+TrimOpening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier
+TrimClosing = TrimWhitespaceIdentifier("}}"/"}}}"/"}}}}")
 CommentOpening = "{{!"
 CommentClosing = "}}"
 MultilineCommentOpening = "{{!--"
