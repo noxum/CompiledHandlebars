@@ -14,6 +14,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
     private const string _starModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.StarModel}}";
+    private const string _selfRefModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.SelfReferencingViewModel}}";
     static PartialTests()
     {
       assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(PartialTests));
@@ -41,6 +42,13 @@ namespace CompiledHandlebars.CompilerTests
     public void ImpliedThisParameterTest()
     {
       ShouldRender("ImpliedThisParameterTest1", "Mars", "Mars");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("SelfReferencingPartialTest1", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> SelfReferencingPartialTest1 Child}}{{/if}}", _selfRefModel)]
+    public void SelfReferencingPartialTest()
+    {
+      ShouldRender("SelfReferencingPartialTest1", SelfReferencingViewModelFactory.Create(), "ParentChild");
     }
   }
 }

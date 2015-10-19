@@ -76,6 +76,8 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRaiseError("MalformedPartialCallTest2", HandlebarsSyntaxErrorKind.MalformedPartialCallToken);
     }
 
+
+
   }
 
 }
