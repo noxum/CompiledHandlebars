@@ -30,11 +30,17 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     [TestMethod]
-    [RegisterHandlebarsTemplate("NullParameterPartialTest1", "{{model System.String}}{{this}}")]
-    [RegisterHandlebarsTemplate("NullParameterPartialTest2", "{{model System.String}}{{> BasicPartialTest1 this}}")]
+    [RegisterHandlebarsTemplate("NullParameterPartialTest1", "{{model System.String}}{{> BasicPartialTest1 this}}")]
     public void NullParameterPartialTest()
     {
-      ShouldRender("NullParameterPartialTest2", default(string), "");
+      ShouldRender("NullParameterPartialTest1", default(string), "");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("ImpliedThisParameterTest1", "{{model System.String}}{{> BasicPartialTest1}}")]
+    public void ImpliedThisParameterTest()
+    {
+      ShouldRender("ImpliedThisParameterTest1", "Mars", "Mars");
     }
   }
 }

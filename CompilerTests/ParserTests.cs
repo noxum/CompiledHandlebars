@@ -67,5 +67,16 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRaiseError("MalformedWithBlockTest5", HandlebarsSyntaxErrorKind.MalformedBlock);
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("MalformedPartialCallTest1", "{{> !#Partial}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("MalformedPartialCallTest2", "{{>}}", _marsModel, false)]
+    public void MalformedPartialCallTest()
+    {
+      ShouldRaiseError("MalformedPartialCallTest1", HandlebarsSyntaxErrorKind.MalformedPartialCallToken);
+      ShouldRaiseError("MalformedPartialCallTest2", HandlebarsSyntaxErrorKind.MalformedPartialCallToken);
+    }
+
   }
+
 }
+
