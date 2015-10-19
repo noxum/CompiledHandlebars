@@ -43,8 +43,11 @@ Token <ASTElementBase>
     / MarkupLiteral
 
 ASTLeaf <ASTElementBase>
-    = YieldStatement
+    = PartialCall
+    / YieldStatement
 
+PartialCall <PartialCall>
+    = PartialCallIdentifier templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
 
 YieldStatement <YieldStatement>
     = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
@@ -162,7 +165,7 @@ Identifier
 ReservedKeywords 
   = ElseKeyword
   
-
+PartialCallIdentifier = ">"
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 WithKeyword = "with"

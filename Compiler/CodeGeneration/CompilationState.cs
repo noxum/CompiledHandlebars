@@ -90,7 +90,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                   ), 
                 SyntaxHelper.IsTruthyMethodBool(),
                 SyntaxHelper.IsTruthyMethodString(),
-                SyntaxHelper.IsTruthyMethodObject()
+                SyntaxHelper.IsTruthyMethodObject(),
+                SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
               )
           )
       );

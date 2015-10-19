@@ -22,6 +22,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     void Visit(YieldStatement astLeaf);
     void Visit(MarkupLiteral astLeaf);
     void Visit(CommentLiteral astLeaf);
+    void Visit(PartialCall astLeaf);
 
     void VisitEnter(HandlebarsTemplate template);
     void VisitLeave(HandlebarsTemplate template);

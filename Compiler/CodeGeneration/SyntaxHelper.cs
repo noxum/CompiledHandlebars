@@ -55,8 +55,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     internal static UsingDirectiveSyntax[] UsingDirectives =
       new UsingDirectiveSyntax[]
       {
-      SF.UsingDirective(SF.ParseName("System.Text")),
-      SF.UsingDirective(SF.ParseName("System.Net"))
+        SF.UsingDirective(SF.ParseName("System.Text")),
+        SF.UsingDirective(SF.ParseName("System.Net")),
+        SF.UsingDirective(SF.ParseName("System"))
       };
 
 
@@ -80,7 +81,10 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       return
         SF.ClassDeclaration(
-          new SyntaxList<AttributeListSyntax>(),
+          new SyntaxList<AttributeListSyntax>().Add(
+          SF.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().Add(
+            SF.Attribute(SF.ParseName("CompiledHandlebarsTemplate")))
+          )),
           SF.TokenList(
             SF.Token(SyntaxKind.PublicKeyword),
             SF.Token(SyntaxKind.StaticKeyword)),
@@ -108,7 +112,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           default(ExplicitInterfaceSpecifierSyntax),
           SF.Identifier("Render"),
           default(TypeParameterListSyntax),
-          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SF.Parameter(
             default(SyntaxList<AttributeListSyntax>),
             default(SyntaxTokenList),
             SF.ParseTypeName(typeName),
@@ -171,13 +175,18 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );
     }
 
+
+    /// <summary>
+    /// private static bool IsTruthy(bool b)
+    /// </summary>
+    /// <returns></returns>
     internal static MethodDeclarationSyntax IsTruthyMethodBool()
     {
       return
         SF.MethodDeclaration(
           new SyntaxList<AttributeListSyntax>(),
           SF.TokenList(
-            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.PrivateKeyword),
             SF.Token(SyntaxKind.StaticKeyword)),
           SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
           default(ExplicitInterfaceSpecifierSyntax),
@@ -198,13 +207,17 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+    /// <summary>
+    /// private static bool IsTruthy(string s)
+    /// </summary>
+    /// <returns></returns>
     internal static MethodDeclarationSyntax IsTruthyMethodString()
     {
       return
         SF.MethodDeclaration(
           new SyntaxList<AttributeListSyntax>(),
           SF.TokenList(
-            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.PrivateKeyword),
             SF.Token(SyntaxKind.StaticKeyword)),
           SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
           default(ExplicitInterfaceSpecifierSyntax),
@@ -225,13 +238,17 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+    /// <summary>
+    /// private static bool IsTruthy(object o)
+    /// </summary>
+    /// <returns></returns>
     internal static MethodDeclarationSyntax IsTruthyMethodObject()
     {
       return
         SF.MethodDeclaration(
           new SyntaxList<AttributeListSyntax>(),
           SF.TokenList(
-            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.PrivateKeyword),
             SF.Token(SyntaxKind.StaticKeyword)),
           SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
           default(ExplicitInterfaceSpecifierSyntax),
@@ -250,6 +267,51 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           ),
           default(SyntaxToken)
       );
+    }
+
+    /// <summary>
+    /// Template
+    /// </summary>
+    /// <param name="templateTypeName"></param>
+    /// <param name="memberName"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax PartialTemplateCall(string templateTypeName, string memberName)
+    {
+      return
+        SF.ExpressionStatement(
+          SF.InvocationExpression(
+            SF.ParseExpression("sb.Append")
+          )
+          .AddArgumentListArguments(
+            SF.Argument(
+              SF.InvocationExpression(
+                SF.ParseExpression($"{templateTypeName}.Render")
+              ).AddArgumentListArguments(
+                SF.Argument(SF.ParseExpression(memberName))
+              )
+            )
+          )
+        );
+    }
+
+    /// <summary>
+    /// private class CompiledHandlebarsTemplateAttribute : Attribute
+    /// </summary>
+    /// <returns></returns>
+    internal static ClassDeclarationSyntax CompiledHandlebarsTemplateAttributeClass()
+    {
+      return
+        SF.ClassDeclaration(
+            default(SyntaxList<AttributeListSyntax>),
+            SF.TokenList(
+              SF.Token(SyntaxKind.PrivateKeyword)),
+            SF.Identifier("CompiledHandlebarsTemplateAttribute"),
+            default(TypeParameterListSyntax),
+            SF.BaseList(new SeparatedSyntaxList<BaseTypeSyntax>().Add(
+              SF.SimpleBaseType(SF.ParseTypeName("Attribute")))),
+            default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+            default(SyntaxList<MemberDeclarationSyntax>)
+          );
     }
 
 
@@ -288,6 +350,12 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           );
     }
 
+    /// <summary>
+    /// Concats elements to a condition (e.g. (a && b && c) or (!a || !b || !c))
+    /// </summary>
+    /// <param name="elementsToCheck"></param>
+    /// <param name="ifType"></param>
+    /// <returns></returns>
     private static ExpressionSyntax CheckContextForTruthy(List<string> elementsToCheck, AST.IfType ifType)
     {
       if (elementsToCheck == null || !elementsToCheck.Any())

@@ -59,5 +59,18 @@ namespace CompiledHandlebars.Compiler.Introspection
     {
       return projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
     }
+
+    public INamedTypeSymbol GetPartialHbsTemplate(string templateName)
+    {
+      foreach(var comp in projectCompilations.Values)
+      {
+        var allSymbols = comp.GetSymbolsWithName(x => true);
+        var symbols = comp.GetSymbolsWithName(x => x.Contains(templateName));
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Contains(templateName)).OfType<INamedTypeSymbol>().FirstOrDefault(x => x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
+        if (template != null)
+          return template;
+      }
+      return null;
+    }
   }
 }

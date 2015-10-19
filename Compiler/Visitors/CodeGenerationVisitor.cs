@@ -135,5 +135,13 @@ namespace CompiledHandlebars.Compiler.Visitors
         }                        
       );
     }
+
+    public void Visit(PartialCall astLeaf)
+    {
+      state.PushStatement(
+        SyntaxHelper.PartialTemplateCall(
+          state.Introspector.GetPartialHbsTemplate(astLeaf._TemplateName).Name, 
+          astLeaf._Member.Evaluate(state).FullPath));
+    }
   }
 }
