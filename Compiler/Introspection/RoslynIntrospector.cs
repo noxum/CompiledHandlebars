@@ -1,11 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CompiledHandlebars.Compiler.Introspection
 {
@@ -17,7 +12,7 @@ namespace CompiledHandlebars.Compiler.Introspection
     
     //TODO: Test what happens if multiple instances of VisualStudio run...
     public RoslynIntrospector(Workspace containingWorkspace)
-    {      
+    {            
       if (workspace == null)
         workspace = containingWorkspace;
       if (solution == null)
@@ -66,7 +61,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       {
         var allSymbols = comp.GetSymbolsWithName(x => true);
         var symbols = comp.GetSymbolsWithName(x => x.Contains(templateName));
-        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Contains(templateName)).OfType<INamedTypeSymbol>().FirstOrDefault(x => x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName)).OfType<INamedTypeSymbol>().FirstOrDefault(x => x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
         if (template != null)
           return template;
       }
