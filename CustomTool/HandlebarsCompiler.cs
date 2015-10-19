@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using VSLangProj80;
@@ -60,12 +61,16 @@ namespace CompiledHandlebars.CustomTool
       var workspace = componentModel.GetService<VisualStudioWorkspace>();
       var compilationResult = HbsCompiler.Compile(bstrInputFileContents, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath), workspace);
       sw.Stop();      
+      if (compilationResult.Item2.Any())
+      {
+        foreach(var error in compilationResult.Item2)        
+          pGenerateProgress.GeneratorError(0, 1, error.Message, (uint)error.Line, (uint)error.Column);
+      }
       byte[] bytes = Encoding.UTF8.GetBytes(string.Concat(compilationResult.Item1, $"/*compiled in {sw.ElapsedMilliseconds}ms*/"));
       rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);
       Marshal.Copy(bytes, 0, rgbOutputFileContents[0], bytes.Length);
       pcbOutput = (uint)bytes.Length;
-
-      return VSConstants.S_OK;
+      return compilationResult.Item2.Any()?VSConstants.E_FAIL:VSConstants.S_OK;
     }
 
     public void GetSite(ref Guid riid, out IntPtr ppvSite)
