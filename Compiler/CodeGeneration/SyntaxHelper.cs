@@ -270,7 +270,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
     /// <summary>
-    /// Template
+    /// sb.Append(Template.Render(membername))
     /// </summary>
     /// <param name="templateTypeName"></param>
     /// <param name="memberName"></param>
@@ -292,6 +292,25 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             )
           )
         );
+    }
+
+    internal static ExpressionStatementSyntax SelfReferencingPartialCall(string memberName)
+    {
+      return
+       SF.ExpressionStatement(
+         SF.InvocationExpression(
+           SF.ParseExpression("sb.Append")
+         )
+         .AddArgumentListArguments(
+           SF.Argument(
+             SF.InvocationExpression(
+               SF.ParseExpression("Render")
+             ).AddArgumentListArguments(
+               SF.Argument(SF.ParseExpression(memberName))
+             )
+           )
+         )
+       );
     }
 
     /// <summary>

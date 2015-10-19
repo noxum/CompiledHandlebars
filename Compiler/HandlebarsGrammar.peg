@@ -55,9 +55,9 @@ YieldStatement <YieldStatement>
     = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 MarkupLiteral <MarkupLiteral> 
-    /*= PrecedingTrimWhitespace value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
-    / PrecedingTrimWhitespace value:((!Opening !Closing .)+)  { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}*/
-    = value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
+    = &TrimClosing value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
+    / &TrimClosing value:((!Opening !Closing .)+)  { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}
+    / value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
     / value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
 Comment <ASTElementBase>
@@ -72,7 +72,7 @@ Node <ASTElementBase>
     = WithBlock
     / EachBlock
     / IfBlock
-    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",name), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
+    / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",string.Concat(name)), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
 
 
 
