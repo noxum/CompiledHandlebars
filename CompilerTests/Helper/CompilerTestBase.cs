@@ -26,6 +26,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
       var solutionFile = Path.Combine(Directory.CreateDirectory(Environment.CurrentDirectory).Parent.Parent.Parent.FullName, "CompiledHandlebars.sln");
       List<SyntaxTree> compiledTemplates = new List<SyntaxTree>();
       var workspace = MSBuildWorkspace.Create();
+      var adHocWorkspace = new AdhocWorkspace();
       var sol = workspace.OpenSolutionAsync(solutionFile).Result;
       var project = sol.Projects.First(x => x.Name.Equals("CompiledHandlebars.CompilerTests"));
 
@@ -41,12 +42,16 @@ namespace CompiledHandlebars.CompilerTests.Helper
             //Check if template already exits
             var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
             if (doc != null)
-            {//And remove it if it does
-              project = project.RemoveDocument(doc.Id);
+            {//And change it if it does
+              project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(code.Item1).GetRoot()).Project;
+            } else
+            {//Otherwise add a new document
+              project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
             }
             //Then add the new version
-            project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
             compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
+            workspace.TryApplyChanges(project.Solution);
+            project = workspace.CurrentSolution.Projects.First(x => x.Name.Equals("CompiledHandlebars.CompilerTests"));
           }
         }
       }
@@ -70,10 +75,15 @@ namespace CompiledHandlebars.CompilerTests.Helper
 
         if (!emitResult.Success)
         {
-          workspace.TryApplyChanges(project.Solution);
           IEnumerable<Diagnostic> failures = emitResult.Diagnostics.Where(diagnostic =>
                           diagnostic.IsWarningAsError ||
                           diagnostic.Severity == DiagnosticSeverity.Error);
+
+          /*foreach (var fail in failures)
+          {
+            project.Documents.First(x => x.FilePath.Equals(fail.Location.SourceTree.FilePath));
+                       
+          }*/
           throw new Exception(failures.First().GetMessage());
         }
         ms.Seek(0, SeekOrigin.Begin);
