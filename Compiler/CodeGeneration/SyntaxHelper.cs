@@ -324,12 +324,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
 
-    internal static StatementSyntax AddCommentToStatement(StatementSyntax statement, string comment)
+    internal static StatementSyntax EmptyStatementWithComment(string comment)
     {
       return
-        statement.WithTrailingTrivia(
-          SF.Comment(string.Concat("/*",comment,"*/"))
-        );
+        SF.EmptyStatement().WithTrailingTrivia(
+          SF.Comment(string.Concat("/*", comment, "*/")));
     }
 
     /// <summary>

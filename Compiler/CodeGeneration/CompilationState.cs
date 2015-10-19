@@ -66,10 +66,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     
     public void AddComment(string comment)
     {
-      var list = resultStack.Peek();
-      //Very beautiful...
-      //Maybe stack<stack<StatementSyntax>>
-      list[list.Count-1] = SyntaxHelper.AddCommentToStatement(list[list.Count - 1], comment);
+      PushStatement(SyntaxHelper.EmptyStatementWithComment(comment));
     }
 
     public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
