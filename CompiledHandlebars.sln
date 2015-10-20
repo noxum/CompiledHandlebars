@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Cli", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.CustomTool", "CustomTool\CompiledHandlebars.CustomTool.csproj", "{35510CE3-E149-4EB3-8A43-F572F328ACD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.RuntimeUtils", "RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj", "{FD451D35-50C9-4D52-9A53-3FD1A5B98227}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD451D35-50C9-4D52-9A53-3FD1A5B98227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD451D35-50C9-4D52-9A53-3FD1A5B98227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD451D35-50C9-4D52-9A53-3FD1A5B98227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD451D35-50C9-4D52-9A53-3FD1A5B98227}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
