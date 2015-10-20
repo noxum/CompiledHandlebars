@@ -138,7 +138,12 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );
     }
 
-    internal static ExpressionStatementSyntax AppendMemberEncoded(string memberName)
+    /// <summary>
+    /// sb.Append(WebUtility.HtmlEncode(memberName))
+    /// </summary>
+    /// <param name="memberName"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax AppendMemberEncoded(string memberName, bool isString)
     {
       return
         SF.ExpressionStatement(
@@ -151,7 +156,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                 SF.ParseExpression("WebUtility.HtmlEncode")
               )
               .AddArgumentListArguments(
-                SF.Argument(SF.ParseExpression(memberName))
+                SF.Argument(SF.ParseExpression(isString ? memberName : $"{memberName}.ToString()"))
               )
             )
           )
@@ -163,14 +168,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// </summary>
     /// <param name="memberName"></param>
     /// <returns></returns>
-    internal static ExpressionStatementSyntax AppendMember(string memberName)
+    internal static ExpressionStatementSyntax AppendMember(string memberName, bool isString)
     {
       return
         SF.ExpressionStatement(
           SF.InvocationExpression(
             SF.ParseExpression("sb.Append")
           ).AddArgumentListArguments(
-            SF.Argument(SF.ParseExpression(memberName))
+            SF.Argument(SF.ParseExpression(isString?memberName:$"{memberName}.ToString()"))
           )
         );
     }

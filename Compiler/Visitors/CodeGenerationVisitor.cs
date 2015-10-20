@@ -56,10 +56,12 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(YieldStatement astLeaf)
     {
       state.SetCursor(astLeaf);
+      Context yieldContext = astLeaf.Member.Evaluate(state);
+
       if (astLeaf._type == TokenType.Encoded)
-        state.PushStatement(SyntaxHelper.AppendMemberEncoded(astLeaf.Member.Evaluate(state).FullPath));
+        state.PushStatement(SyntaxHelper.AppendMemberEncoded(yieldContext.FullPath, yieldContext.Symbol.IsString()));
       else
-        state.PushStatement(SyntaxHelper.AppendMember(astLeaf.Member.Evaluate(state).FullPath));
+        state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol.IsString()));
     }
 
     public void VisitEnter(HandlebarsTemplate template)
