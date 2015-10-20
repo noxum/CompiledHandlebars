@@ -144,13 +144,12 @@
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
-    <Compile Include="TestTemplates\ParserTests\SelfReferencingPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />
     <Compile Include="TestTemplates\PartialTests\ImpliedThisParameterTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\NullParameterPartialTest1.cs" />
-    <Compile Include="TestTemplates\PartialTests\NullParameterPartialTest2.cs" />
+    <Compile Include="TestTemplates\PartialTests\SelfReferencingPartialTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest2.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest1.cs" />
