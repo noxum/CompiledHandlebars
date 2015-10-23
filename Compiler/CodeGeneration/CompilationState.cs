@@ -72,27 +72,51 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
     {
       var ws = new AdhocWorkspace();
-      var compiledHbs = SyntaxFactory.CompilationUnit()
-      .AddUsings(
-        SyntaxHelper.UsingDirectives
-      )
-      .AddMembers(
-        SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)          
-          .AddMembers(
-            SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
-              .AddMembers(
-                SyntaxHelper.RenderWithParameter(Template.Model.ToString())
-                  .AddBodyStatements(                     
-                    resultStack.Pop().ToArray()
-                  ), 
-                SyntaxHelper.IsTruthyMethodBool(),
-                SyntaxHelper.IsTruthyMethodString(),
-                SyntaxHelper.IsTruthyMethodObject(),
-                SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
-              )
-          )
-      );
-      return compiledHbs;
+      if (Introspector.RuntimeUtilsReferenced())
+      {
+        return SyntaxFactory.CompilationUnit()
+        .AddUsings(
+          SyntaxHelper.UsingDirectives
+        ).AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils.RenderHelper")))
+        .AddMembers(
+          SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)
+            .AddMembers(
+              SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
+                .AddMembers(
+                  SyntaxHelper.RenderWithParameter(Template.Model.ToString())
+                    .AddBodyStatements(
+                      resultStack.Pop().ToArray()
+                    ),
+                  SyntaxHelper.IsTruthyMethodBool(),
+                  SyntaxHelper.IsTruthyMethodString(),
+                  SyntaxHelper.IsTruthyMethodObject(),
+                  SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
+                )
+            )
+        );
+      } else
+      {
+        return SyntaxFactory.CompilationUnit()
+        .AddUsings(
+          SyntaxHelper.UsingDirectives
+        )
+        .AddMembers(
+          SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)          
+            .AddMembers(
+              SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
+                .AddMembers(
+                  SyntaxHelper.RenderWithParameter(Template.Model.ToString())
+                    .AddBodyStatements(                     
+                      resultStack.Pop().ToArray()
+                    ), 
+                  SyntaxHelper.IsTruthyMethodBool(),
+                  SyntaxHelper.IsTruthyMethodString(),
+                  SyntaxHelper.IsTruthyMethodObject(),
+                  SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
+                )
+            )
+        );
+      }      
     }
 
     internal void PromiseTruthyCheck(Context contextToCheck, IfType ifType = IfType.If)

@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler
       try
       {
         var sw = new Stopwatch();
-        sw.Start();        
+        sw.Start();                
         var template = parser.Parse(hbsTemplate);
         long parseTime = sw.ElapsedMilliseconds;        
         template.Namespace = nameSpace;
@@ -24,7 +24,7 @@ namespace CompiledHandlebars.Compiler
         sw.Restart();
         if(!(template._ParseErrors?.Any()?? false))
         {//No parser errors
-          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(project.Solution.Workspace), template);
+          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(project), template);
           if (!codeGenerator.ErrorList.Any())
           {//No code generator initialization errors
             long initTime = sw.ElapsedMilliseconds;

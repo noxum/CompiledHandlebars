@@ -8,13 +8,16 @@ namespace CompiledHandlebars.Compiler.Introspection
   {
     private static Workspace workspace { get; set; }
     private static Solution solution { get; set; }
+    //Project which contains the HandlebarsTemplate to be compiled
+    private static ProjectId ContainingProject { get; set; }
     private static Dictionary<ProjectId, Compilation> projectCompilations { get; set; } = new Dictionary<ProjectId, Compilation>();
     
     //TODO: Test what happens if multiple instances of VisualStudio run...
-    public RoslynIntrospector(Workspace containingWorkspace)
-    {            
+    public RoslynIntrospector(Project project)
+    {
+      ContainingProject = project.Id;
       if (workspace == null)
-        workspace = containingWorkspace;
+        workspace = project.Solution.Workspace;
       if (solution == null)
       {
         solution = workspace.CurrentSolution;
@@ -28,7 +31,7 @@ namespace CompiledHandlebars.Compiler.Introspection
         }
       } else
       {
-        var changes = containingWorkspace.CurrentSolution.GetChanges(solution);
+        var changes = project.Solution.GetChanges(solution);
         foreach (var addedProject in changes.GetAddedProjects())
           projectCompilations.Add(addedProject.Id, GetCompilationForProject(addedProject));
         foreach (var removedProject in changes.GetRemovedProjects())
@@ -37,7 +40,7 @@ namespace CompiledHandlebars.Compiler.Introspection
           //Bruteforce way: Just get the new compilation...
           //If that does not scale try adding documents to the compilation (incremental update)
           projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
-        solution = containingWorkspace.CurrentSolution;
+        solution = project.Solution;
       }
 
     }
@@ -57,7 +60,8 @@ namespace CompiledHandlebars.Compiler.Introspection
 
     public bool RuntimeUtilsReferenced()
     {
-      return true;
+      //TODO: Not only check if the type exists... but also if it is the correct version and supports everything needed from it
+      return projectCompilations[ContainingProject].GetTypeByMetadataName("CompiledHandlebars.RuntimeUtils.RenderHelper") != null;      
     }
 
     public INamedTypeSymbol GetPartialHbsTemplate(string templateName)
