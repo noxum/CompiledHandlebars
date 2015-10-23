@@ -77,7 +77,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
           SyntaxHelper.UsingDirectives
-        ).AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils.RenderHelper")))
+        )
+        .AddUsings(
+          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")),
+          SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper")
+        )
         .AddMembers(
           SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)
             .AddMembers(
@@ -86,11 +90,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                   SyntaxHelper.RenderWithParameter(Template.Model.ToString())
                     .AddBodyStatements(
                       resultStack.Pop().ToArray()
-                    ),
-                  SyntaxHelper.IsTruthyMethodBool(),
-                  SyntaxHelper.IsTruthyMethodString(),
-                  SyntaxHelper.IsTruthyMethodObject(),
-                  SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
+                    )
                 )
             )
         );

@@ -61,6 +61,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       };
 
 
+    internal static UsingDirectiveSyntax UsingStatic(string name)
+    {
+      return SF.UsingDirective(SF.Token(SyntaxKind.StaticKeyword), default(NameEqualsSyntax), SF.ParseName(name));
+    }
+
     /// <summary>
     /// Yields a NamespaceDeclaration:
     /// namespace CompiledHandlebars{}
