@@ -35,7 +35,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
         foreach (var template in attrList)
         {//Get compiled templates
-          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, workspace);
+          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, project);
           compiledCode.Add(template._name, code);
           if (template._include)
           {

@@ -10,23 +10,23 @@ namespace CompiledHandlebars.Compiler
 {
   public static class HbsCompiler
   {
-    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Workspace workspace)
+    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Project project)
     {
       var parser = new HbsParser();
       try
       {
         var sw = new Stopwatch();
-        sw.Start();
+        sw.Start();        
         var template = parser.Parse(hbsTemplate);
         long parseTime = sw.ElapsedMilliseconds;        
         template.Namespace = nameSpace;
         template.Name = name;
         sw.Restart();
         if(!(template._ParseErrors?.Any()?? false))
-        {
-          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(workspace), template);
+        {//No parser errors
+          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(project.Solution.Workspace), template);
           if (!codeGenerator.ErrorList.Any())
-          {
+          {//No code generator initialization errors
             long initTime = sw.ElapsedMilliseconds;
             sw.Restart();
             codeGenerator.GenerateCode();
@@ -44,7 +44,6 @@ namespace CompiledHandlebars.Compiler
       {
         return new Tuple<string, IEnumerable<HandlebarsException>>($"No result as SyntaxErrors occured: {syntaxError.Message}", new HandlebarsSyntaxError[] { syntaxError });
       }
-
     }
   }
 }

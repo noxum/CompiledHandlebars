@@ -55,6 +55,11 @@ namespace CompiledHandlebars.Compiler.Introspection
       return projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
     }
 
+    public bool RuntimeUtilsReferenced()
+    {
+      return true;
+    }
+
     public INamedTypeSymbol GetPartialHbsTemplate(string templateName)
     {
       foreach(var comp in projectCompilations.Values)

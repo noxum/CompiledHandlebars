@@ -59,7 +59,9 @@ namespace CompiledHandlebars.CustomTool
       sw.Start();
       var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
       var workspace = componentModel.GetService<VisualStudioWorkspace>();
-      var compilationResult = HbsCompiler.Compile(bstrInputFileContents, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath), workspace);
+      var docIds = workspace.CurrentSolution.GetDocumentIdsWithFilePath(wszInputFilePath);
+      var project = workspace.CurrentSolution.GetDocument(docIds.First()).Project;
+      var compilationResult = HbsCompiler.Compile(bstrInputFileContents, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath), project);
       sw.Stop();      
       if (compilationResult.Item2.Any())
       {
