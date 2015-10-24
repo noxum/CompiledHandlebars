@@ -34,15 +34,14 @@ ModelNode <MemberExpression>
 
 Element 
     = (Node
-    /  Token)*
+    /  Leaf)*
 
-Token <ASTElementBase>
-    = "{{" TrimWhitespaceIdentifier? value:ASTLeaf (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
-    / "{{{" TrimWhitespaceIdentifier? value:YieldStatement (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
+Leaf <ASTElementBase>
+    = Opening value:HandlebarsLeaf (TrimWhitespaceIdentifier Closing { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / EscapedOpening TrimWhitespaceIdentifier? value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
-
-ASTLeaf <ASTElementBase>
+HandlebarsLeaf <ASTElementBase>
     = CommentIdentifier val:Comment { val }
     / PartialCallIdentifier val:PartialCall { val } 
     / YieldStatement
@@ -74,8 +73,6 @@ Node <ASTElementBase>
     / EachBlock
     / IfBlock
     / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",string.Concat(name)), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
-
-
 
 BlockBody 
     = Element
@@ -189,8 +186,10 @@ IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
-Opening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier?
-Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? ("}}"/"}}}"/"}}}}")
+Opening = "{{"TrimWhitespaceIdentifier?
+Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
+EscapedOpening = "{{{"TrimWhitespaceIdentifier?
+EscapedClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}}"
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
