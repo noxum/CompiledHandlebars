@@ -2,18 +2,21 @@
 using System.Net;
 using System;
 
-/*10/24/2015 5:49:27 PM | parsing: 0ms; init: 2; codeGeneration: 1!*/
+/*10/24/2015 5:49:25 PM | parsing: 0ms; init: 3; codeGeneration: 9!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class IfTest
+  public static class RootTest2
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Rovers))
       {
-        sb.Append("HasName");
+        foreach (var loopItem0 in viewModel.Rovers)
+        {
+          sb.Append(RootTest3.Render(viewModel));
+        }
       }
 
       return sb.ToString();

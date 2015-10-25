@@ -155,7 +155,9 @@
     <Compile Include="TestTemplates\PartialTests\ImpliedThisParameterTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\NullParameterPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\SelfReferencingPartialTest1.cs" />
-    <Compile Include="TestTemplates\SpecialKeywordsTest\TestRoot1.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest1.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest2.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest3.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest2.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest1.cs" />

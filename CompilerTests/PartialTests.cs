@@ -1,4 +1,5 @@
-﻿using CompiledHandlebars.CompilerTests.Helper;
+﻿using CompiledHandlebars.Compiler;
+using CompiledHandlebars.CompilerTests.Helper;
 using CompiledHandlebars.CompilerTests.TestViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -49,6 +50,13 @@ namespace CompiledHandlebars.CompilerTests
     public void SelfReferencingPartialTest()
     {
       ShouldRender("SelfReferencingPartialTest1", SelfReferencingViewModelFactory.Create(), "ParentChild");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("UnknownPartialTest1", "{{> NoSuchTemplate this}}", _marsModel, false)]
+    public void UnkownPartialTest()
+    {
+      ShouldRaiseError("UnknownPartialTest1", HandlebarsTypeErrorKind.UnknownPartial);
     }
   }
 }

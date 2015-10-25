@@ -19,10 +19,13 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     [TestMethod]
-    [RegisterHandlebarsTemplate("TestRoot1", "{{#each Rovers}}{{@root.Name}}{{/each}}", _marsModel)]
-    public void TestRoot()
+    [RegisterHandlebarsTemplate("RootTest1", "{{#each Rovers}}{{@root.Name}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("RootTest2", "{{#each Rovers}}{{> RootTest3 @root}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("RootTest3", "{{Name}}", _marsModel)]
+    public void RootTest()
     {
-      ShouldRender("TestRoot1", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
+      ShouldRender("RootTest1", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
+      ShouldRender("RootTest2", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
     }
 
   }
