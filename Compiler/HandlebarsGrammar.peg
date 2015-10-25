@@ -140,7 +140,7 @@ SpecialPath
 
 RootBasedPath<IdentifierElement> 
     = RootKeyword NameDelimiter next:MemberPath { new RootIdentifier(next)}
-    / RootKeyword { new ThisIdentifier(null) }
+    / RootKeyword { new RootIdentifier(null) }
 
 ThisBasedPath<IdentifierElement> 
     = ThisKeyword NameDelimiter next:MemberPath { new ThisIdentifier(next)}

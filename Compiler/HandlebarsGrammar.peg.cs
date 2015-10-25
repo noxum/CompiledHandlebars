@@ -2684,7 +2684,7 @@ namespace
                 {
                     r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
                         #line 143 "HandlebarsGrammar.peg"
-                    new ThisIdentifier(null)
+                    new RootIdentifier(null)
                         #line default
                         );
                 }
