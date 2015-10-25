@@ -191,7 +191,7 @@ ElseKeyword = "else"
 ModelKeyword = "model"
 Opening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? ("}}"/"}}}"/"}}}}")
-TrimOpening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier
+TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
 Whitespace = " "*

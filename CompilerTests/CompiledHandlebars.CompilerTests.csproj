@@ -146,6 +146,7 @@
     <Compile Include="TestTemplates\BasicCompilerTests\UnlessTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
@@ -177,7 +178,6 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

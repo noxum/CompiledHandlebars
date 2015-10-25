@@ -2,20 +2,16 @@
 using System.Net;
 using System;
 
-/*10/24/2015 9:43:32 PM | parsing: 0ms; init: 10; codeGeneration: 0!*/
+/*10/24/2015 9:43:32 PM | parsing: 0ms; init: 2; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class IfTest
+  public static class WhitespaceControlTest3
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
-      {
-        sb.Append("HasName");
-      }
-
+      sb.Append(viewModel.Name);
       return sb.ToString();
     }
 

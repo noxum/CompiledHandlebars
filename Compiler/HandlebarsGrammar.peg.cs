@@ -3407,7 +3407,7 @@ namespace
             IParseResult<string> r1 = null;
             if (r1 == null)
             {
-                r1 = this.ParseLiteral(ref cursor, "{{");
+                r1 = this.ParseLiteral(ref cursor, "{{{{");
             }
             if (r1 == null)
             {
@@ -3415,7 +3415,7 @@ namespace
             }
             if (r1 == null)
             {
-                r1 = this.ParseLiteral(ref cursor, "{{{{");
+                r1 = this.ParseLiteral(ref cursor, "{{");
             }
             if (r1 != null)
             {

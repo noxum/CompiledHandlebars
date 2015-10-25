@@ -26,10 +26,8 @@ namespace CompiledHandlebars.CompilerTests.Helper
       var solutionFile = Path.Combine(Directory.CreateDirectory(Environment.CurrentDirectory).Parent.Parent.Parent.FullName, "CompiledHandlebars.sln");
       List<SyntaxTree> compiledTemplates = new List<SyntaxTree>();
       var workspace = MSBuildWorkspace.Create();
-      var adHocWorkspace = new AdhocWorkspace();
       var sol = workspace.OpenSolutionAsync(solutionFile).Result;
       var project = sol.Projects.First(x => x.Name.Equals("CompiledHandlebars.CompilerTests"));
-
       foreach (MethodInfo methodInfo in (testClassType).GetMethods())
       {
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
