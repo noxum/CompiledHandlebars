@@ -354,9 +354,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 
 
     internal static StatementSyntax EmptyStatementWithComment(string comment)
-    {
+    {      
       return
-        SF.EmptyStatement().WithTrailingTrivia(
+        SF.EmptyStatement(SF.Token(SyntaxKind.SemicolonToken)).WithTrailingTrivia(
           SF.Comment(string.Concat("/*", comment, "*/")));
     }
 

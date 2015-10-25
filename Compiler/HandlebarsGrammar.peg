@@ -37,7 +37,7 @@ Element
     /  Leaf)*
 
 Leaf <ASTElementBase>
-    = Opening value:HandlebarsLeaf (TrimWhitespaceIdentifier Closing { {value.SetTokenType(TokenType.Encoded); return value;} }
+    = Opening value:HandlebarsLeaf Closing { {value.SetTokenType(TokenType.Encoded); return value;} }
     / EscapedOpening TrimWhitespaceIdentifier? value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
@@ -61,7 +61,7 @@ MarkupLiteral <MarkupLiteral>
     / value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
 Comment <ASTElementBase>
-    = "--" val:(!"--" .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
+    = "--" val:(!MultilineCommentClosing .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
     / val:(!Closing .)* { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
     
 //-----------------------------------------------
@@ -128,11 +128,19 @@ ElseToken
 //-----------------------------------------------
 
 MemberExpression <MemberExpression>
-    = Whitespace value:(ThisBasedPath/MemberPath) Whitespace { new MemberExpression(value)}
+    = Whitespace value:(SpecialPath/MemberPath) Whitespace { new MemberExpression(value)}
 
 MemberPath     
     = NestedMemberIdentifier
     / MemberIdentifier
+
+SpecialPath
+    = ThisBasedPath
+    / RootBasedPath
+
+RootBasedPath<IdentifierElement> 
+    = RootKeyword NameDelimiter next:MemberPath { new RootIdentifier(next)}
+    / RootKeyword { new ThisIdentifier(null) }
 
 ThisBasedPath<IdentifierElement> 
     = ThisKeyword NameDelimiter next:MemberPath { new ThisIdentifier(next)}
@@ -165,13 +173,6 @@ Identifier
 //      Keywords and Literals
 //-------------------------------
 
-/*
-PrecedingTrimWhitespace
-    = #STATE{state.Advance(-3); } "~}}"
-    / #STATE{state.Advance(-4); } "~}}}"
-    / #STATE{state.Advance(-5); } "~}}}}"
-*/
-
 ReservedKeywords 
   = ElseKeyword
   
@@ -186,10 +187,12 @@ IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
+RootKeyword = "@root"
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?
 EscapedClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}}"
+MultilineCommentClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"--}}"
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"

@@ -7,6 +7,23 @@ using System;
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
 
+  internal class RootIdentifier : IdentifierElement
+  {
+    internal RootIdentifier(IdentifierElement next) : base(next) { }
+
+    internal override Context Evaluate(Stack<Context> contextStack, CompilationState state)
+    {
+      if (_next == null)
+        return contextStack.Last();
+      else
+      {
+        var rootedContextStack = new Stack<Context>();
+        rootedContextStack.Push(contextStack.Last());
+        return _next.Evaluate(rootedContextStack, state);
+      }
+    }
+  }
+
   internal class ThisIdentifier : IdentifierElement
   {
 

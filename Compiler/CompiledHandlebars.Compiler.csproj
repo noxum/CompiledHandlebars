@@ -125,7 +125,6 @@
     <Compile Include="Compiler.cs" />
     <Compile Include="AST\HandlebarsTemplate.cs" />
     <Compile Include="HandlebarsException.cs" />
-    <Compile Include="HandlebarsGrammar.peg.cs" />
     <Compile Include="Introspection\Context.cs" />
     <Compile Include="Introspection\RoslynIntrospector.cs" />
     <Compile Include="Introspection\SymbolExtensions.cs" />
