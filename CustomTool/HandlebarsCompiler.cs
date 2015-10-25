@@ -1,5 +1,5 @@
 ﻿using CompiledHandlebars.Compiler;
-using EnvDTE;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -53,14 +54,27 @@ namespace CompiledHandlebars.CustomTool
       return VSConstants.S_OK;
     }
 
+    private Project FindContainingProject(List<Project> projects, string filePath)
+    {
+      foreach(var project in projects)
+      {//Assumption: The file is in the directory of the project...
+       //This assumption is probably not always true. So:
+       //TODO: Find a way to solve this problem correctly
+        var dirPath = Path.GetDirectoryName(project.FilePath);
+        if (filePath.StartsWith(dirPath))
+          return project;
+      }
+      return null;
+    }
+
     public int Generate(string wszInputFilePath, string bstrInputFileContents, string wszDefaultNamespace, IntPtr[] rgbOutputFileContents, out uint pcbOutput, IVsGeneratorProgress pGenerateProgress)
     {
       var sw = new Stopwatch();
       sw.Start();
       var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
-      var workspace = componentModel.GetService<VisualStudioWorkspace>();
+      var workspace = componentModel.GetService<VisualStudioWorkspace>();      
       var docIds = workspace.CurrentSolution.GetDocumentIdsWithFilePath(wszInputFilePath);
-      var project = workspace.CurrentSolution.GetDocument(docIds.First()).Project;
+      var project = FindContainingProject(workspace.CurrentSolution.Projects.ToList(), wszInputFilePath);
       var compilationResult = HbsCompiler.Compile(bstrInputFileContents, wszDefaultNamespace, Path.GetFileNameWithoutExtension(wszInputFilePath), project);
       sw.Stop();      
       if (compilationResult.Item2.Any())
