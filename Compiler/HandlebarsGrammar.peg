@@ -33,36 +33,37 @@ ModelNode <MemberExpression>
 //------------------------------
 
 Element 
-    = (Comment
-    / Node
-    / Token)*
+    = (Node
+    /  Token)*
 
 Token <ASTElementBase>
-    = "{{" TrimWhitespaceIdentifier? value:ASTLeaf TrimWhitespaceIdentifier? "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
-    / "{{{" TrimWhitespaceIdentifier? value:ASTLeaf TrimWhitespaceIdentifier? "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
+    = "{{" TrimWhitespaceIdentifier? value:ASTLeaf (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? "}}" { {value.SetTokenType(TokenType.Encoded); return value;} }
+    / "{{{" TrimWhitespaceIdentifier? value:YieldStatement (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? "}}}" { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
+
 ASTLeaf <ASTElementBase>
-    = PartialCall
+    = CommentIdentifier val:Comment { val }
+    / PartialCallIdentifier val:PartialCall { val } 
     / YieldStatement
 
 PartialCall <PartialCall>
-    = PartialCallIdentifier templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
-    / PartialCallIdentifier templateName:MemberExpression { new PartialCall(templateName.ToString(), templateNameStart.Line, templateNameStart.Column) }
-    / v:PartialCallIdentifier (!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, vStart.Line, vStart.Column) }
+    = templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
+    / templateName:MemberExpression { new PartialCall(templateName.ToString(), templateNameStart.Line, templateNameStart.Column) }
+    / v:(!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, vStart.Line, vStart.Column) }
 
 YieldStatement <YieldStatement>
     = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 MarkupLiteral <MarkupLiteral> 
-    = &TrimClosing value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
-    / &TrimClosing value:((!Opening !Closing .)+)  { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}
+    = &{ state["trimStart"]==true}value:((!Opening !Closing .)+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
+    / &{ state["trimStart"]==true} value:((!Opening !Closing .)+) #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}
     / value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
     / value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
 Comment <ASTElementBase>
-    = MultilineCommentOpening val:(!MultilineCommentClosing .)* MultilineCommentClosing { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
-    / CommentOpening val:(!CommentClosing .)* CommentClosing { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
+    = "--" val:(!"--" .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
+    / val:(!Closing .)* { new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)}
     
 //-----------------------------------------------
 //    Nodes and Blocks
@@ -181,6 +182,7 @@ PartialCallIdentifier = ">"
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 TrimWhitespaceIdentifier = "~"
+CommentIdentifier = "!"
 WithKeyword = "with"
 EachKeyword = "each"
 IfKeyword = "if"
@@ -188,13 +190,8 @@ UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
 Opening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier?
-Closing = TrimWhitespaceIdentifier?("}}"/"}}}"/"}}}}")
+Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })? ("}}"/"}}}"/"}}}}")
 TrimOpening = ("{{"/"{{{"/"{{{{")TrimWhitespaceIdentifier
-TrimClosing = TrimWhitespaceIdentifier("}}"/"}}}"/"}}}}")
-CommentOpening = "{{!"
-CommentClosing = "}}"
-MultilineCommentOpening = "{{!--"
-MultilineCommentClosing = "--}}"
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
 Whitespace = " "*
