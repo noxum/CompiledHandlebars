@@ -2,32 +2,18 @@
 using System.Net;
 using System;
 
-/*10/24/2015 9:10:34 PM | parsing: 0ms; init: 1; codeGeneration: 0!*/
+/*10/24/2015 9:10:34 PM | parsing: 0ms; init: 2; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class NestedIfTest
+  public static class CommentTest3
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Phobos))
-      {
-        sb.Append("Phobos:");
-        if (IsTruthy(viewModel.Phobos.Name))
-        {
-          sb.Append("HasName");
-        }
-        else
-        {
-          sb.Append("HasNoName");
-        }
-      }
-      else
-      {
-        sb.Append("NoPhobos");
-      }
-
+      sb.Append("No ");
+      ; /*Comment*/
+      sb.Append("Comment");
       return sb.ToString();
     }
 

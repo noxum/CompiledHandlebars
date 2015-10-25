@@ -121,6 +121,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\BasicTest.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest1.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest2.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest3.cs" />

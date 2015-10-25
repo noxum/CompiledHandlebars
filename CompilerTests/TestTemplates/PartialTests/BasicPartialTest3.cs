@@ -2,7 +2,7 @@
 using System.Net;
 using System;
 
-/*10/19/2015 11:10:17 PM | parsing: 1ms; init: 7; codeGeneration: 12!*/
+/*10/24/2015 9:10:31 PM | parsing: 3ms; init: 2; codeGeneration: 24!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]

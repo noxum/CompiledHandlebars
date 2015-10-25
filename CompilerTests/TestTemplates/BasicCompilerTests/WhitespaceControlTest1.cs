@@ -2,7 +2,7 @@
 using System.Net;
 using System;
 
-/*10/19/2015 11:10:22 PM | parsing: 0ms; init: 2; codeGeneration: 0!*/
+/*10/24/2015 9:10:34 PM | parsing: 4ms; init: 1; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -12,7 +12,6 @@ namespace TestTemplates
     {
       var sb = new StringBuilder();
       sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      sb.Append("  ");
       return sb.ToString();
     }
 

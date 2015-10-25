@@ -34,7 +34,7 @@ namespace CompiledHandlebars.Compiler.Tests
     [RegisterHandlebarsTemplate("BasicTest", "{{Name}}", _marsModel)]
     public void BasicTest()
     {
-      ShouldRender("BasicTest", MarsModelFactory.CreateFullMarsModel(), "Mars");  
+      ShouldRender("BasicTest", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
     [TestMethod()]
@@ -43,7 +43,7 @@ namespace CompiledHandlebars.Compiler.Tests
     public void HtmlEncodeTest()
     {
       ShouldRender("HtmlEncodeTest1", MarsModelFactory.CreateFullMarsModel(), @"&lt;b&gt;Mars&lt;/b&gt; is the fourth &lt;a href=&quot;/wiki/Planet&quot; title=&quot;Planet&quot;&gt;planet&lt;/a&gt; from the &lt;a href=&quot;/wiki/Sun&quot; title=&quot;Sun&quot;&gt;Sun&lt;/a&gt; and the second smallest planet in the &lt;a href=&quot;/wiki/Solar_System&quot; title=&quot;Solar System&quot;&gt;Solar System&lt;/a&gt;, after &lt;a href=&quot;/wiki/Mercury_(planet)&quot; title=&quot;Mercury (planet)&quot;&gt;Mercury&lt;/a&gt;.");
-      ShouldRender("HtmlEncodeTest2", MarsModelFactory.CreateFullMarsModel(), "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>.");          
+      ShouldRender("HtmlEncodeTest2", MarsModelFactory.CreateFullMarsModel(), "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>.");
     }
 
     [TestMethod()]
@@ -146,6 +146,17 @@ namespace CompiledHandlebars.Compiler.Tests
     {
       ShouldRender("WhitespaceControlTest1", MarsModelFactory.CreateFullMarsModel(), "Mars");
       ShouldRender("WhitespaceControlTest2", MarsModelFactory.CreateFullMarsModel(), "Acidalia PlanitiaUtopia Planitia");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("CommentTest1","{{!Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("CommentTest2", "{{!--{{Name}}--}}", _marsModel)]
+    [RegisterHandlebarsTemplate("CommentTest3", "No {{!Comment}}Comment", _marsModel)]
+    public void CommentTest()
+    {
+      ShouldRender("CommentTest1", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("CommentTest2", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("CommentTest3", MarsModelFactory.CreateFullMarsModel(), "No Comment");
     }
 
 
