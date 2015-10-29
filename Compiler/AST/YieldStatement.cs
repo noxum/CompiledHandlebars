@@ -5,9 +5,9 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class YieldStatement : ASTElementBase
   {
-    internal readonly Expression Member;
+    internal readonly MemberExpression Member;
 
-    internal YieldStatement(Expression member, int line, int column) : base(line, column)
+    internal YieldStatement(MemberExpression member, int line, int column) : base(line, column)
     {
       Member = member;
     }

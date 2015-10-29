@@ -101,19 +101,19 @@ EachClosingToken
 
 //#If
 IfBlock <IfBlock>
-  = member:IfOpeningToken body:BlockBody ElseToken elseBlock:BlockBody IfClosingToken { new IfBlock(member, IfType.If, elseBlock, body, memberStart.Line, memberStart.Column) }
-  / member:UnlessOpeningToken body:BlockBody ElseToken elseBlock:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, elseBlock, body, memberStart.Line, memberStart.Column) }
-  / member:IfOpeningToken body:BlockBody IfClosingToken { new IfBlock(member, IfType.If, body, memberStart.Line, memberStart.Column) }
-  / member:UnlessOpeningToken body:BlockBody UnlessClosingToken { new IfBlock(member, IfType.Unless, body, memberStart.Line, memberStart.Column) }
+  = expr:IfOpeningToken body:BlockBody ElseToken elseBlock:BlockBody IfClosingToken { new IfBlock(expr, IfType.If, elseBlock, body, exprStart.Line, exprStart.Column) }
+  / expr:UnlessOpeningToken body:BlockBody ElseToken elseBlock:BlockBody UnlessClosingToken { new IfBlock(expr, IfType.Unless, elseBlock, body, exprStart.Line, exprStart.Column) }
+  / expr:IfOpeningToken body:BlockBody IfClosingToken { new IfBlock(expr, IfType.If, body, exprStart.Line, exprStart.Column) }
+  / expr:UnlessOpeningToken body:BlockBody UnlessClosingToken { new IfBlock(expr, IfType.Unless, body, exprStart.Line, exprStart.Column) }
 
-IfOpeningToken <MemberExpression>
-  = Opening BlockOpeningIdentifier IfKeyword member:MemberExpression Closing { member }
+IfOpeningToken <Expression>
+  = Opening BlockOpeningIdentifier IfKeyword expr:Expression Closing { expr }
 
 IfClosingToken
   = Opening BlockClosingIdentifier IfKeyword Closing
 
-UnlessOpeningToken <MemberExpression>
-  = Opening BlockOpeningIdentifier UnlessKeyword member:MemberExpression Closing { member }
+UnlessOpeningToken <Expression>
+  = Opening BlockOpeningIdentifier UnlessKeyword expr:Expression Closing { expr }
 
 UnlessClosingToken
   = Opening BlockClosingIdentifier UnlessKeyword Closing
@@ -125,6 +125,17 @@ ElseToken
 //-----------------------------------------------
 //    Expressions, Statements
 //-----------------------------------------------
+
+Expression <Expression>
+    = FirstExpression
+    / LastExpression
+    / MemberExpression
+
+FirstExpression <FirstExpression>
+    = Whitespace FirstKeyword { new FirstExpression() }
+
+LastExpression <LastExpression>
+    = Whitespace LastKeyword { new LastExpression() }
 
 MemberExpression <MemberExpression>
     = Whitespace value:(SpecialPath/MemberPath) Whitespace { new MemberExpression(value)}
@@ -187,6 +198,8 @@ UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
 RootKeyword = "@root"
+FirstKeyword = "@first"
+LastKeyword = "@last"
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?

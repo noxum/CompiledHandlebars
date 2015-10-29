@@ -55,6 +55,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     internal static UsingDirectiveSyntax[] UsingDirectives =
       new UsingDirectiveSyntax[]
       {
+        SF.UsingDirective(SF.ParseName("System.Linq")),
         SF.UsingDirective(SF.ParseName("System.Text")),
         SF.UsingDirective(SF.ParseName("System.Net")),
         SF.UsingDirective(SF.ParseName("System"))
@@ -379,6 +380,130 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
     /// <summary>
+    /// Yields "bool name;"
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    internal static LocalDeclarationStatementSyntax DeclareBoolVariableInitialyFalse(string name)
+    {
+      return
+        SF.LocalDeclarationStatement(
+          SF.VariableDeclaration(
+            SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+            new SeparatedSyntaxList<VariableDeclaratorSyntax>().Add(
+              SF.VariableDeclarator(SF.Identifier(name), default(BracketedArgumentListSyntax),
+              SF.EqualsValueClause(SF.ParseExpression("false"))
+              )
+            )
+          )
+        );
+    }
+
+
+    /// <summary>
+    /// Yields "bool name;"
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    internal static LocalDeclarationStatementSyntax DeclareIntVariable(string name)
+    {
+      return
+        SF.LocalDeclarationStatement(
+          SF.VariableDeclaration(
+            SF.PredefinedType(SF.Token(SyntaxKind.IntKeyword)),
+            new SeparatedSyntaxList<VariableDeclaratorSyntax>().Add(
+              SF.VariableDeclarator(SF.Identifier(name), default(BracketedArgumentListSyntax),
+              SF.EqualsValueClause(SF.ParseExpression("0")))
+            )
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "bool name = true;"
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    internal static LocalDeclarationStatementSyntax DeclareBoolVariableInitialyTrue(string name)
+    {
+      return
+        SF.LocalDeclarationStatement(
+          SF.VariableDeclaration(
+            SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+            new SeparatedSyntaxList<VariableDeclaratorSyntax>().Add(
+              SF.VariableDeclarator(SF.Identifier(name), default(BracketedArgumentListSyntax),
+              SF.EqualsValueClause(SF.ParseExpression("true"))
+              )
+            )
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "variable = false;"
+    /// </summary>
+    /// <param name="variable"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax AssignFalse(string variable)
+    {
+      return
+        SF.ExpressionStatement(
+          SF.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            SF.ParseExpression(variable),
+            SF.ParseExpression($"false")
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "variable = value==0;"
+    /// </summary>
+    /// <param name="variable"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax AssignValueEqualsZero(string variable, string value)
+    {      
+      return
+        SF.ExpressionStatement(
+          SF.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            SF.ParseExpression(variable),
+            SF.ParseExpression($"{value}==0")
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "variable = lhs==rhs;"
+    /// </summary>
+    /// <param name="variable"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax AssignValueEqualsValue(string variable, string lhs, string rhs)
+    {
+
+      return
+        SF.ExpressionStatement(
+          SF.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            SF.ParseExpression(variable),
+            SF.ParseExpression($"{lhs}=={rhs}")
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "variable++;"
+    /// </summary>
+    /// <param name="variable"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax IncrementVariable(string variable)
+    {
+      return
+        SF.ExpressionStatement(
+          SF.PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, SF.ParseExpression(variable))
+        );
+    }
+
+    /// <summary>
     /// Concats elements to a condition (e.g. (a && b && c) or (!a || !b || !c))
     /// </summary>
     /// <param name="elementsToCheck"></param>
@@ -423,6 +548,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         SF.ParseExpression($"!IsTruthy({b})")
       );
     }
+
+    
 
   }
 

@@ -22,5 +22,29 @@ namespace CompiledHandlebars.Compiler.AST
         child.Accept(visitor);
       visitor.VisitLeave(this);
     }
+
+    /// <summary>
+    /// Returns true if any of the child elements have an LastExpression
+    /// </summary>
+    /// <returns></returns>
+    internal bool BodyContainsFirstExpression()
+    {
+      foreach (var child in _children)
+        if (child is IfBlock)
+          return ((child as IfBlock).Member is FirstExpression);
+      return false;
+    }
+
+    /// <summary>
+    /// Returns true if any of the child elements have a LastExpression
+    /// </summary>
+    /// <returns></returns>
+    internal bool BodyContainsLastExpression()
+    {
+      foreach (var child in _children)
+        if (child is IfBlock)
+          return ((child as IfBlock).Member is LastExpression);
+      return false;
+    }
   }
 }

@@ -122,15 +122,29 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitEnter(EachBlock astNode)
     {
       state.SetCursor(astNode);
-      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
+      var loopedVariable = astNode.Member.Evaluate(state);
+      state.PromiseTruthyCheck(loopedVariable);
       state.ContextStack.Push(astNode.Member.EvaluateLoop(state));
+      if (astNode.BodyContainsLastExpression())
+      {
+        state.DeclareIndexVariable();
+        state.DeclareLastVariable();      
+      }
+      if (astNode.BodyContainsFirstExpression())      
+        state.DeclareFirstVariable();      
       state.PushNewBlock();
       state.loopLevel++;
+      if (astNode.BodyContainsLastExpression())
+        state.SetLastVariable(loopedVariable.FullPath);
     }
 
     public void VisitLeave(EachBlock astNode)
     {
       //Leave loop context
+      if (astNode.BodyContainsLastExpression())
+        state.IncrementIndexVariable();
+      if (astNode.BodyContainsFirstExpression())
+        state.SetFirstVariable();
       state.ContextStack.Pop();
       state.loopLevel--;
       state.DoTruthyCheck(

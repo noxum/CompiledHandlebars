@@ -381,7 +381,7 @@ namespace
         }
 
         private IParseResult<
-            #line 39 "HandlebarsGrammar.peg"
+            #line 38 "HandlebarsGrammar.peg"
       ASTElementBase
             #line default
             > Leaf(ref Cursor cursor)
@@ -406,7 +406,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
-                                #line 40 "HandlebarsGrammar.peg"
+                                #line 39 "HandlebarsGrammar.peg"
                                              {value.SetTokenType(TokenType.Encoded); return value;}
                                 #line default
                                 );
@@ -464,7 +464,7 @@ namespace
                             if (r8 != null)
                             {
                                 r0 = this.ReturnHelper<ASTElementBase>(startCursor1, ref cursor, state =>
-                                    #line 41 "HandlebarsGrammar.peg"
+                                    #line 40 "HandlebarsGrammar.peg"
                                                                                      {value.SetTokenType(TokenType.Escaped); return value;}
                                     #line default
                                     );
@@ -497,7 +497,7 @@ namespace
         }
 
         private IParseResult<
-            #line 44 "HandlebarsGrammar.peg"
+            #line 43 "HandlebarsGrammar.peg"
                 ASTElementBase
             #line default
             > HandlebarsLeaf(ref Cursor cursor)
@@ -518,7 +518,7 @@ namespace
                     if (r2 != null)
                     {
                         r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
-                            #line 45 "HandlebarsGrammar.peg"
+                            #line 44 "HandlebarsGrammar.peg"
                                       val
                             #line default
                             );
@@ -548,7 +548,7 @@ namespace
                     if (r4 != null)
                     {
                         r0 = this.ReturnHelper<ASTElementBase>(startCursor1, ref cursor, state =>
-                            #line 46 "HandlebarsGrammar.peg"
+                            #line 45 "HandlebarsGrammar.peg"
                                               val
                             #line default
                             );
@@ -571,7 +571,7 @@ namespace
         }
 
         private IParseResult<
-            #line 49 "HandlebarsGrammar.peg"
+            #line 48 "HandlebarsGrammar.peg"
              PartialCall
             #line default
             > PartialCall(ref Cursor cursor)
@@ -595,7 +595,7 @@ namespace
                     if (r2 != null)
                     {
                         r0 = this.ReturnHelper<PartialCall>(startCursor0, ref cursor, state =>
-                            #line 50 "HandlebarsGrammar.peg"
+                            #line 49 "HandlebarsGrammar.peg"
                                                               new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)
                             #line default
                             );
@@ -621,7 +621,7 @@ namespace
                 if (r3 != null)
                 {
                     r0 = this.ReturnHelper<PartialCall>(startCursor1, ref cursor, state =>
-                        #line 51 "HandlebarsGrammar.peg"
+                        #line 50 "HandlebarsGrammar.peg"
                                       new PartialCall(templateName.ToString(), templateNameStart.Line, templateNameStart.Column)
                         #line default
                         );
@@ -694,7 +694,7 @@ namespace
                     var startCursor6 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 52 "HandlebarsGrammar.peg"
+                        #line 51 "HandlebarsGrammar.peg"
                               AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state);
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -703,7 +703,7 @@ namespace
                     if (r9 != null)
                     {
                         r0 = this.ReturnHelper<PartialCall>(startCursor2, ref cursor, state =>
-                            #line 52 "HandlebarsGrammar.peg"
+                            #line 51 "HandlebarsGrammar.peg"
                                                                                                                                                                                                        new PartialCall(null, vStart.Line, vStart.Column)
                             #line default
                             );
@@ -722,7 +722,7 @@ namespace
         }
 
         private IParseResult<
-            #line 54 "HandlebarsGrammar.peg"
+            #line 53 "HandlebarsGrammar.peg"
                 YieldStatement
             #line default
             > YieldStatement(ref Cursor cursor)
@@ -737,7 +737,7 @@ namespace
             if (r1 != null)
             {
                 r0 = this.ReturnHelper<YieldStatement>(startCursor0, ref cursor, state =>
-                    #line 55 "HandlebarsGrammar.peg"
+                    #line 54 "HandlebarsGrammar.peg"
                             new YieldStatement(val,valStart.Line,valStart.Column)
                     #line default
                     );
@@ -750,7 +750,7 @@ namespace
         }
 
         private IParseResult<
-            #line 57 "HandlebarsGrammar.peg"
+            #line 56 "HandlebarsGrammar.peg"
                MarkupLiteral
             #line default
             > MarkupLiteral(ref Cursor cursor)
@@ -761,7 +761,7 @@ namespace
                 var startCursor0 = cursor;
                 IParseResult<string> r1 = null;
                 if (new Func<Cursor, bool>(state =>
-                    #line 58 "HandlebarsGrammar.peg"
+                    #line 57 "HandlebarsGrammar.peg"
          state["trimStart"]==true
                     #line default
                     )(cursor))
@@ -867,7 +867,7 @@ namespace
                             var startCursor6 = cursor;
                             {
                                 var state = cursor.WithMutability(mutable: true);
-                                #line 58 "HandlebarsGrammar.peg"
+                                #line 57 "HandlebarsGrammar.peg"
                                                                                       state["trimStart"]=false;
                                 #line default
                                 cursor = state.WithMutability(mutable: false);
@@ -876,7 +876,7 @@ namespace
                             if (r11 != null)
                             {
                                 r0 = this.ReturnHelper<MarkupLiteral>(startCursor0, ref cursor, state =>
-                                    #line 58 "HandlebarsGrammar.peg"
+                                    #line 57 "HandlebarsGrammar.peg"
                                                                                                                     new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)
                                     #line default
                                     );
@@ -906,7 +906,7 @@ namespace
                 var startCursor7 = cursor;
                 IParseResult<string> r12 = null;
                 if (new Func<Cursor, bool>(state =>
-                    #line 59 "HandlebarsGrammar.peg"
+                    #line 58 "HandlebarsGrammar.peg"
          state["trimStart"]==true
                     #line default
                     )(cursor))
@@ -1001,7 +1001,7 @@ namespace
                         var startCursor12 = cursor;
                         {
                             var state = cursor.WithMutability(mutable: true);
-                            #line 59 "HandlebarsGrammar.peg"
+                            #line 58 "HandlebarsGrammar.peg"
                                                                           state["trimStart"]=false;
                             #line default
                             cursor = state.WithMutability(mutable: false);
@@ -1010,7 +1010,7 @@ namespace
                         if (r20 != null)
                         {
                             r0 = this.ReturnHelper<MarkupLiteral>(startCursor7, ref cursor, state =>
-                                #line 59 "HandlebarsGrammar.peg"
+                                #line 58 "HandlebarsGrammar.peg"
                                                                                                         new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)
                                 #line default
                                 );
@@ -1127,7 +1127,7 @@ namespace
                     if (r28 != null)
                     {
                         r0 = this.ReturnHelper<MarkupLiteral>(startCursor13, ref cursor, state =>
-                            #line 60 "HandlebarsGrammar.peg"
+                            #line 59 "HandlebarsGrammar.peg"
                                                     new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)
                             #line default
                             );
@@ -1228,7 +1228,7 @@ namespace
                 if (r30 != null)
                 {
                     r0 = this.ReturnHelper<MarkupLiteral>(startCursor19, ref cursor, state =>
-                        #line 61 "HandlebarsGrammar.peg"
+                        #line 60 "HandlebarsGrammar.peg"
                                        new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)
                         #line default
                         );
@@ -1242,7 +1242,7 @@ namespace
         }
 
         private IParseResult<
-            #line 63 "HandlebarsGrammar.peg"
+            #line 62 "HandlebarsGrammar.peg"
          ASTElementBase
             #line default
             > Comment(ref Cursor cursor)
@@ -1316,7 +1316,7 @@ namespace
                         if (r7 != null)
                         {
                             r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
-                                #line 64 "HandlebarsGrammar.peg"
+                                #line 63 "HandlebarsGrammar.peg"
                                                     new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)
                                 #line default
                                 );
@@ -1396,7 +1396,7 @@ namespace
                 if (r8 != null)
                 {
                     r0 = this.ReturnHelper<ASTElementBase>(startCursor4, ref cursor, state =>
-                        #line 65 "HandlebarsGrammar.peg"
+                        #line 64 "HandlebarsGrammar.peg"
                           new CommentLiteral(CommentType.Single, string.Concat(val), valStart.Line, valStart.Column)
                         #line default
                         );
@@ -1410,7 +1410,7 @@ namespace
         }
 
         private IParseResult<
-            #line 71 "HandlebarsGrammar.peg"
+            #line 70 "HandlebarsGrammar.peg"
       ASTElementBase
             #line default
             > Node(ref Cursor cursor)
@@ -1510,7 +1510,7 @@ namespace
                                 var startCursor4 = cursor;
                                 {
                                     var state = cursor.WithMutability(mutable: true);
-                                    #line 75 "HandlebarsGrammar.peg"
+                                    #line 74 "HandlebarsGrammar.peg"
                                                                         AddError(string.Format("Unknown Block Token '{0}'!",string.Concat(name)), HandlebarsSyntaxErrorKind.UnknownBlock, state);
                                     #line default
                                     cursor = state.WithMutability(mutable: false);
@@ -1519,7 +1519,7 @@ namespace
                                 if (r9 != null)
                                 {
                                     r0 = this.ReturnHelper<ASTElementBase>(startCursor0, ref cursor, state =>
-                                        #line 75 "HandlebarsGrammar.peg"
+                                        #line 74 "HandlebarsGrammar.peg"
                                                                                                                                                                                                      new MarkupLiteral(null,0,0)
                                         #line default
                                         );
@@ -1575,7 +1575,7 @@ namespace
         }
 
         private IParseResult<
-            #line 81 "HandlebarsGrammar.peg"
+            #line 80 "HandlebarsGrammar.peg"
            WithBlock
             #line default
             > WithBlock(ref Cursor cursor)
@@ -1603,7 +1603,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<WithBlock>(startCursor0, ref cursor, state =>
-                                #line 82 "HandlebarsGrammar.peg"
+                                #line 81 "HandlebarsGrammar.peg"
                                                                 new WithBlock(member, body, memberStart.Line, memberStart.Column )
                                 #line default
                                 );
@@ -1644,7 +1644,7 @@ namespace
                         var startCursor2 = cursor;
                         {
                             var state = cursor.WithMutability(mutable: true);
-                            #line 83 "HandlebarsGrammar.peg"
+                            #line 82 "HandlebarsGrammar.peg"
                                                      AddError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, state);
                             #line default
                             cursor = state.WithMutability(mutable: false);
@@ -1653,7 +1653,7 @@ namespace
                         if (r6 != null)
                         {
                             r0 = this.ReturnHelper<WithBlock>(startCursor1, ref cursor, state =>
-                                #line 83 "HandlebarsGrammar.peg"
+                                #line 82 "HandlebarsGrammar.peg"
                                                                                                                                                          new WithBlock(null, null, 0, 0)
                                 #line default
                                 );
@@ -1677,7 +1677,7 @@ namespace
         }
 
         private IParseResult<
-            #line 85 "HandlebarsGrammar.peg"
+            #line 84 "HandlebarsGrammar.peg"
                   MemberExpression
             #line default
             > WithOpeningToken(ref Cursor cursor)
@@ -1710,7 +1710,7 @@ namespace
                                 if (r5 != null)
                                 {
                                     r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                                        #line 86 "HandlebarsGrammar.peg"
+                                        #line 85 "HandlebarsGrammar.peg"
                                                                                 val
                                         #line default
                                         );
@@ -1819,7 +1819,7 @@ namespace
                                     var startCursor5 = cursor;
                                     {
                                         var state = cursor.WithMutability(mutable: true);
-                                        #line 87 "HandlebarsGrammar.peg"
+                                        #line 86 "HandlebarsGrammar.peg"
                                                                                  AddError("Missing MemberExpression in #with Token. Syntax: {{#with MemberExpression}}", HandlebarsSyntaxErrorKind.MissingMemberExpression, state );
                                         #line default
                                         cursor = state.WithMutability(mutable: false);
@@ -1828,7 +1828,7 @@ namespace
                                     if (r15 != null)
                                     {
                                         r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
-                                            #line 87 "HandlebarsGrammar.peg"
+                                            #line 86 "HandlebarsGrammar.peg"
                                                                                                                                                                                                                                          new MemberExpression(null)
                                             #line default
                                             );
@@ -1916,7 +1916,7 @@ namespace
         }
 
         private IParseResult<
-            #line 93 "HandlebarsGrammar.peg"
+            #line 92 "HandlebarsGrammar.peg"
            EachBlock
             #line default
             > EachBlock(ref Cursor cursor)
@@ -1942,7 +1942,7 @@ namespace
                     if (r3 != null)
                     {
                         r0 = this.ReturnHelper<EachBlock>(startCursor0, ref cursor, state =>
-                            #line 94 "HandlebarsGrammar.peg"
+                            #line 93 "HandlebarsGrammar.peg"
                                                                new EachBlock(member, body, memberStart.Line, memberStart.Column)
                             #line default
                             );
@@ -1965,7 +1965,7 @@ namespace
         }
 
         private IParseResult<
-            #line 96 "HandlebarsGrammar.peg"
+            #line 95 "HandlebarsGrammar.peg"
                   MemberExpression
             #line default
             > EachOpeningToken(ref Cursor cursor)
@@ -1996,7 +1996,7 @@ namespace
                             if (r5 != null)
                             {
                                 r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                                    #line 97 "HandlebarsGrammar.peg"
+                                    #line 96 "HandlebarsGrammar.peg"
                                                                                    member
                                     #line default
                                     );
@@ -2078,7 +2078,7 @@ namespace
         }
 
         private IParseResult<
-            #line 104 "HandlebarsGrammar.peg"
+            #line 103 "HandlebarsGrammar.peg"
          IfBlock
             #line default
             > IfBlock(ref Cursor cursor)
@@ -2087,11 +2087,11 @@ namespace
             if (r0 == null)
             {
                 var startCursor0 = cursor;
-                IParseResult<MemberExpression> r1 = null;
-                var memberStart = cursor;
+                IParseResult<Expression> r1 = null;
+                var exprStart = cursor;
                 r1 = this.IfOpeningToken(ref cursor);
-                var memberEnd = cursor;
-                var member = ValueOrDefault(r1);
+                var exprEnd = cursor;
+                var expr = ValueOrDefault(r1);
                 if (r1 != null)
                 {
                     IParseResult<IList<ASTElementBase>> r2 = null;
@@ -2117,8 +2117,8 @@ namespace
                                 if (r5 != null)
                                 {
                                     r0 = this.ReturnHelper<IfBlock>(startCursor0, ref cursor, state =>
-                                        #line 105 "HandlebarsGrammar.peg"
-                                                                                        new IfBlock(member, IfType.If, elseBlock, body, memberStart.Line, memberStart.Column)
+                                        #line 104 "HandlebarsGrammar.peg"
+                                                                                      new IfBlock(expr, IfType.If, elseBlock, body, exprStart.Line, exprStart.Column)
                                         #line default
                                         );
                                 }
@@ -2150,11 +2150,11 @@ namespace
             if (r0 == null)
             {
                 var startCursor1 = cursor;
-                IParseResult<MemberExpression> r6 = null;
-                var memberStart = cursor;
+                IParseResult<Expression> r6 = null;
+                var exprStart = cursor;
                 r6 = this.UnlessOpeningToken(ref cursor);
-                var memberEnd = cursor;
-                var member = ValueOrDefault(r6);
+                var exprEnd = cursor;
+                var expr = ValueOrDefault(r6);
                 if (r6 != null)
                 {
                     IParseResult<IList<ASTElementBase>> r7 = null;
@@ -2180,8 +2180,8 @@ namespace
                                 if (r10 != null)
                                 {
                                     r0 = this.ReturnHelper<IfBlock>(startCursor1, ref cursor, state =>
-                                        #line 106 "HandlebarsGrammar.peg"
-                                                                                                new IfBlock(member, IfType.Unless, elseBlock, body, memberStart.Line, memberStart.Column)
+                                        #line 105 "HandlebarsGrammar.peg"
+                                                                                              new IfBlock(expr, IfType.Unless, elseBlock, body, exprStart.Line, exprStart.Column)
                                         #line default
                                         );
                                 }
@@ -2213,11 +2213,11 @@ namespace
             if (r0 == null)
             {
                 var startCursor2 = cursor;
-                IParseResult<MemberExpression> r11 = null;
-                var memberStart = cursor;
+                IParseResult<Expression> r11 = null;
+                var exprStart = cursor;
                 r11 = this.IfOpeningToken(ref cursor);
-                var memberEnd = cursor;
-                var member = ValueOrDefault(r11);
+                var exprEnd = cursor;
+                var expr = ValueOrDefault(r11);
                 if (r11 != null)
                 {
                     IParseResult<IList<ASTElementBase>> r12 = null;
@@ -2232,8 +2232,8 @@ namespace
                         if (r13 != null)
                         {
                             r0 = this.ReturnHelper<IfBlock>(startCursor2, ref cursor, state =>
-                                #line 107 "HandlebarsGrammar.peg"
-                                                          new IfBlock(member, IfType.If, body, memberStart.Line, memberStart.Column)
+                                #line 106 "HandlebarsGrammar.peg"
+                                                        new IfBlock(expr, IfType.If, body, exprStart.Line, exprStart.Column)
                                 #line default
                                 );
                         }
@@ -2255,11 +2255,11 @@ namespace
             if (r0 == null)
             {
                 var startCursor3 = cursor;
-                IParseResult<MemberExpression> r14 = null;
-                var memberStart = cursor;
+                IParseResult<Expression> r14 = null;
+                var exprStart = cursor;
                 r14 = this.UnlessOpeningToken(ref cursor);
-                var memberEnd = cursor;
-                var member = ValueOrDefault(r14);
+                var exprEnd = cursor;
+                var expr = ValueOrDefault(r14);
                 if (r14 != null)
                 {
                     IParseResult<IList<ASTElementBase>> r15 = null;
@@ -2274,8 +2274,8 @@ namespace
                         if (r16 != null)
                         {
                             r0 = this.ReturnHelper<IfBlock>(startCursor3, ref cursor, state =>
-                                #line 108 "HandlebarsGrammar.peg"
-                                                                  new IfBlock(member, IfType.Unless, body, memberStart.Line, memberStart.Column)
+                                #line 107 "HandlebarsGrammar.peg"
+                                                                new IfBlock(expr, IfType.Unless, body, exprStart.Line, exprStart.Column)
                                 #line default
                                 );
                         }
@@ -2298,12 +2298,12 @@ namespace
         }
 
         private IParseResult<
-            #line 110 "HandlebarsGrammar.peg"
-                MemberExpression
+            #line 109 "HandlebarsGrammar.peg"
+                Expression
             #line default
             > IfOpeningToken(ref Cursor cursor)
         {
-            IParseResult<MemberExpression> r0 = null;
+            IParseResult<Expression> r0 = null;
             var startCursor0 = cursor;
             IParseResult<string> r1 = null;
             r1 = this.Opening(ref cursor);
@@ -2317,20 +2317,20 @@ namespace
                     r3 = this.IfKeyword(ref cursor);
                     if (r3 != null)
                     {
-                        IParseResult<MemberExpression> r4 = null;
-                        var memberStart = cursor;
-                        r4 = this.MemberExpression(ref cursor);
-                        var memberEnd = cursor;
-                        var member = ValueOrDefault(r4);
+                        IParseResult<Expression> r4 = null;
+                        var exprStart = cursor;
+                        r4 = this.Expression(ref cursor);
+                        var exprEnd = cursor;
+                        var expr = ValueOrDefault(r4);
                         if (r4 != null)
                         {
                             IParseResult<string> r5 = null;
                             r5 = this.Closing(ref cursor);
                             if (r5 != null)
                             {
-                                r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                                    #line 111 "HandlebarsGrammar.peg"
-                                                                               member
+                                r0 = this.ReturnHelper<Expression>(startCursor0, ref cursor, state =>
+                                    #line 110 "HandlebarsGrammar.peg"
+                                                                       expr
                                     #line default
                                     );
                             }
@@ -2411,12 +2411,12 @@ namespace
         }
 
         private IParseResult<
-            #line 116 "HandlebarsGrammar.peg"
-                    MemberExpression
+            #line 115 "HandlebarsGrammar.peg"
+                    Expression
             #line default
             > UnlessOpeningToken(ref Cursor cursor)
         {
-            IParseResult<MemberExpression> r0 = null;
+            IParseResult<Expression> r0 = null;
             var startCursor0 = cursor;
             IParseResult<string> r1 = null;
             r1 = this.Opening(ref cursor);
@@ -2430,20 +2430,20 @@ namespace
                     r3 = this.UnlessKeyword(ref cursor);
                     if (r3 != null)
                     {
-                        IParseResult<MemberExpression> r4 = null;
-                        var memberStart = cursor;
-                        r4 = this.MemberExpression(ref cursor);
-                        var memberEnd = cursor;
-                        var member = ValueOrDefault(r4);
+                        IParseResult<Expression> r4 = null;
+                        var exprStart = cursor;
+                        r4 = this.Expression(ref cursor);
+                        var exprEnd = cursor;
+                        var expr = ValueOrDefault(r4);
                         if (r4 != null)
                         {
                             IParseResult<string> r5 = null;
                             r5 = this.Closing(ref cursor);
                             if (r5 != null)
                             {
-                                r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                                    #line 117 "HandlebarsGrammar.peg"
-                                                                                   member
+                                r0 = this.ReturnHelper<Expression>(startCursor0, ref cursor, state =>
+                                    #line 116 "HandlebarsGrammar.peg"
+                                                                           expr
                                     #line default
                                     );
                             }
@@ -2564,7 +2564,97 @@ namespace
         }
 
         private IParseResult<
-            #line 130 "HandlebarsGrammar.peg"
+            #line 129 "HandlebarsGrammar.peg"
+            Expression
+            #line default
+            > Expression(ref Cursor cursor)
+        {
+            IParseResult<Expression> r0 = null;
+            if (r0 == null)
+            {
+                r0 = this.FirstExpression(ref cursor);
+            }
+            if (r0 == null)
+            {
+                r0 = this.LastExpression(ref cursor);
+            }
+            if (r0 == null)
+            {
+                r0 = this.MemberExpression(ref cursor);
+            }
+            return r0;
+        }
+
+        private IParseResult<
+            #line 134 "HandlebarsGrammar.peg"
+                 FirstExpression
+            #line default
+            > FirstExpression(ref Cursor cursor)
+        {
+            IParseResult<FirstExpression> r0 = null;
+            var startCursor0 = cursor;
+            IParseResult<IList<string>> r1 = null;
+            r1 = this.Whitespace(ref cursor);
+            if (r1 != null)
+            {
+                IParseResult<string> r2 = null;
+                r2 = this.FirstKeyword(ref cursor);
+                if (r2 != null)
+                {
+                    r0 = this.ReturnHelper<FirstExpression>(startCursor0, ref cursor, state =>
+                        #line 135 "HandlebarsGrammar.peg"
+                                new FirstExpression()
+                        #line default
+                        );
+                }
+                else
+                {
+                    cursor = startCursor0;
+                }
+            }
+            else
+            {
+                cursor = startCursor0;
+            }
+            return r0;
+        }
+
+        private IParseResult<
+            #line 137 "HandlebarsGrammar.peg"
+                LastExpression
+            #line default
+            > LastExpression(ref Cursor cursor)
+        {
+            IParseResult<LastExpression> r0 = null;
+            var startCursor0 = cursor;
+            IParseResult<IList<string>> r1 = null;
+            r1 = this.Whitespace(ref cursor);
+            if (r1 != null)
+            {
+                IParseResult<string> r2 = null;
+                r2 = this.LastKeyword(ref cursor);
+                if (r2 != null)
+                {
+                    r0 = this.ReturnHelper<LastExpression>(startCursor0, ref cursor, state =>
+                        #line 138 "HandlebarsGrammar.peg"
+                               new LastExpression()
+                        #line default
+                        );
+                }
+                else
+                {
+                    cursor = startCursor0;
+                }
+            }
+            else
+            {
+                cursor = startCursor0;
+            }
+            return r0;
+        }
+
+        private IParseResult<
+            #line 140 "HandlebarsGrammar.peg"
                   MemberExpression
             #line default
             > MemberExpression(ref Cursor cursor)
@@ -2594,7 +2684,7 @@ namespace
                     if (r3 != null)
                     {
                         r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                            #line 131 "HandlebarsGrammar.peg"
+                            #line 141 "HandlebarsGrammar.peg"
                                                              new MemberExpression(value)
                             #line default
                             );
@@ -2645,7 +2735,7 @@ namespace
         }
 
         private IParseResult<
-            #line 141 "HandlebarsGrammar.peg"
+            #line 151 "HandlebarsGrammar.peg"
               IdentifierElement
             #line default
             > RootBasedPath(ref Cursor cursor)
@@ -2670,7 +2760,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                                #line 142 "HandlebarsGrammar.peg"
+                                #line 152 "HandlebarsGrammar.peg"
                                                   new RootIdentifier(next)
                                 #line default
                                 );
@@ -2698,7 +2788,7 @@ namespace
                 if (r4 != null)
                 {
                     r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
-                        #line 143 "HandlebarsGrammar.peg"
+                        #line 153 "HandlebarsGrammar.peg"
                     new RootIdentifier(null)
                         #line default
                         );
@@ -2712,7 +2802,7 @@ namespace
         }
 
         private IParseResult<
-            #line 145 "HandlebarsGrammar.peg"
+            #line 155 "HandlebarsGrammar.peg"
               IdentifierElement
             #line default
             > ThisBasedPath(ref Cursor cursor)
@@ -2737,7 +2827,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                                #line 146 "HandlebarsGrammar.peg"
+                                #line 156 "HandlebarsGrammar.peg"
                                                   new ThisIdentifier(next)
                                 #line default
                                 );
@@ -2765,7 +2855,7 @@ namespace
                 if (r4 != null)
                 {
                     r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
-                        #line 147 "HandlebarsGrammar.peg"
+                        #line 157 "HandlebarsGrammar.peg"
                     new ThisIdentifier(null)
                         #line default
                         );
@@ -2779,7 +2869,7 @@ namespace
         }
 
         private IParseResult<
-            #line 150 "HandlebarsGrammar.peg"
+            #line 160 "HandlebarsGrammar.peg"
                   IdentifierElement
             #line default
             > MemberIdentifier(ref Cursor cursor)
@@ -2794,7 +2884,7 @@ namespace
             if (r1 != null)
             {
                 r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                    #line 151 "HandlebarsGrammar.peg"
+                    #line 161 "HandlebarsGrammar.peg"
                             new Identifier(value, null)
                     #line default
                     );
@@ -2821,7 +2911,7 @@ namespace
         }
 
         private IParseResult<
-            #line 157 "HandlebarsGrammar.peg"
+            #line 167 "HandlebarsGrammar.peg"
                    IdentifierElement
             #line default
             > ParentContextName(ref Cursor cursor)
@@ -2840,7 +2930,7 @@ namespace
                 if (r2 != null)
                 {
                     r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                        #line 158 "HandlebarsGrammar.peg"
+                        #line 168 "HandlebarsGrammar.peg"
                                          new PathUp(next)
                         #line default
                         );
@@ -2858,7 +2948,7 @@ namespace
         }
 
         private IParseResult<
-            #line 160 "HandlebarsGrammar.peg"
+            #line 170 "HandlebarsGrammar.peg"
                   IdentifierElement
             #line default
             > ChildContextName(ref Cursor cursor)
@@ -2886,7 +2976,7 @@ namespace
                         if (r3 != null)
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor0, ref cursor, state =>
-                                #line 161 "HandlebarsGrammar.peg"
+                                #line 171 "HandlebarsGrammar.peg"
                                                           new Identifier(value, next)
                                 #line default
                                 );
@@ -2954,7 +3044,7 @@ namespace
                                 var startCursor3 = cursor;
                                 {
                                     var state = cursor.WithMutability(mutable: true);
-                                    #line 162 "HandlebarsGrammar.peg"
+                                    #line 172 "HandlebarsGrammar.peg"
                                                                              AddError("Malformed MemberExpression: multiple identifier delimiter!", HandlebarsSyntaxErrorKind.MalformedMemberExpression, state);
                                     #line default
                                     cursor = state.WithMutability(mutable: false);
@@ -2963,7 +3053,7 @@ namespace
                                 if (r9 != null)
                                 {
                                     r0 = this.ReturnHelper<IdentifierElement>(startCursor1, ref cursor, state =>
-                                        #line 162 "HandlebarsGrammar.peg"
+                                        #line 172 "HandlebarsGrammar.peg"
                                                                                                                                                                                                                     new Identifier(null, null)
                                         #line default
                                         );
@@ -3011,7 +3101,7 @@ namespace
                         var startCursor5 = cursor;
                         {
                             var state = cursor.WithMutability(mutable: true);
-                            #line 163 "HandlebarsGrammar.peg"
+                            #line 173 "HandlebarsGrammar.peg"
                                                  AddError("Malformed MemberExpression: identifier delimiter without subsequent identifier!", HandlebarsSyntaxErrorKind.MalformedMemberExpression,  state);
                             #line default
                             cursor = state.WithMutability(mutable: false);
@@ -3020,7 +3110,7 @@ namespace
                         if (r12 != null)
                         {
                             r0 = this.ReturnHelper<IdentifierElement>(startCursor4, ref cursor, state =>
-                                #line 163 "HandlebarsGrammar.peg"
+                                #line 173 "HandlebarsGrammar.peg"
                                                                                                                                                                                                               new Identifier(null, null)
                                 #line default
                                 );
@@ -3044,7 +3134,7 @@ namespace
         }
 
         private IParseResult<
-            #line 166 "HandlebarsGrammar.peg"
+            #line 176 "HandlebarsGrammar.peg"
                 string
             #line default
             > NameIdentifier(ref Cursor cursor)
@@ -3073,7 +3163,7 @@ namespace
                 if (r3 != null)
                 {
                     r0 = this.ReturnHelper<string>(startCursor0, ref cursor, state =>
-                        #line 167 "HandlebarsGrammar.peg"
+                        #line 177 "HandlebarsGrammar.peg"
                                           string.Concat(val)
                         #line default
                         );
@@ -3221,6 +3311,20 @@ namespace
             return r0;
         }
 
+        private IParseResult<string> FirstKeyword(ref Cursor cursor)
+        {
+            IParseResult<string> r0 = null;
+            r0 = this.ParseLiteral(ref cursor, "@first");
+            return r0;
+        }
+
+        private IParseResult<string> LastKeyword(ref Cursor cursor)
+        {
+            IParseResult<string> r0 = null;
+            r0 = this.ParseLiteral(ref cursor, "@last");
+            return r0;
+        }
+
         private IParseResult<string> Opening(ref Cursor cursor)
         {
             IParseResult<string> r0 = null;
@@ -3286,7 +3390,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 192 "HandlebarsGrammar.peg"
+                        #line 204 "HandlebarsGrammar.peg"
                                             state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -3410,7 +3514,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 194 "HandlebarsGrammar.peg"
+                        #line 206 "HandlebarsGrammar.peg"
                                                    state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -3488,7 +3592,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 195 "HandlebarsGrammar.peg"
+                        #line 207 "HandlebarsGrammar.peg"
                                                             state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
