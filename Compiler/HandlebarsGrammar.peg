@@ -21,9 +21,9 @@
 }
 
 Template<HandlebarsTemplate> 
-    = model:ModelNode items:Element EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    = model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
 
-ModelNode <MemberExpression>
+ModelToken <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
     / v:Opening ModelKeyword (!Closing .)* Closing #STATE{ AddError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, state); } { default(MemberExpression)}
     / v:.* #STATE{ AddError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, state); } { default(MemberExpression) }
@@ -33,8 +33,7 @@ ModelNode <MemberExpression>
 //------------------------------
 
 Element 
-    = (Node
-    /  Leaf)*
+    = Node / Leaf
 
 Leaf <ASTElementBase>
     = Opening value:HandlebarsLeaf Closing { {value.SetTokenType(TokenType.Encoded); return value;} }
@@ -75,7 +74,7 @@ Node <ASTElementBase>
     / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",string.Concat(name)), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
 
 BlockBody 
-    = Element
+    = Element*
 
 //#With
 WithBlock <WithBlock>

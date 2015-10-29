@@ -87,25 +87,40 @@ namespace
             var startCursor0 = cursor;
             IParseResult<MemberExpression> r1 = null;
             var modelStart = cursor;
-            r1 = this.ModelNode(ref cursor);
+            r1 = this.ModelToken(ref cursor);
             var modelEnd = cursor;
             var model = ValueOrDefault(r1);
             if (r1 != null)
             {
                 IParseResult<IList<ASTElementBase>> r2 = null;
                 var itemsStart = cursor;
-                r2 = this.Element(ref cursor);
+                var startCursor1 = cursor;
+                var l0 = new List<ASTElementBase>();
+                while (true)
+                {
+                    IParseResult<ASTElementBase> r3 = null;
+                    r3 = this.Element(ref cursor);
+                    if (r3 != null)
+                    {
+                        l0.Add(r3.Value);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                r2 = this.ReturnHelper<IList<ASTElementBase>>(startCursor1, ref cursor, state => l0.AsReadOnly());
                 var itemsEnd = cursor;
                 var items = ValueOrDefault(r2);
                 if (r2 != null)
                 {
-                    IParseResult<string> r3 = null;
-                    r3 = this.EOF(ref cursor);
-                    if (r3 != null)
+                    IParseResult<string> r4 = null;
+                    r4 = this.EOF(ref cursor);
+                    if (r4 != null)
                     {
                         r0 = this.ReturnHelper<HandlebarsTemplate>(startCursor0, ref cursor, state =>
                             #line 24 "HandlebarsGrammar.peg"
-                                         new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)
+                                             new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)
                             #line default
                             );
                     }
@@ -128,9 +143,9 @@ namespace
 
         private IParseResult<
             #line 26 "HandlebarsGrammar.peg"
-           MemberExpression
+            MemberExpression
             #line default
-            > ModelNode(ref Cursor cursor)
+            > ModelToken(ref Cursor cursor)
         {
             IParseResult<MemberExpression> r0 = null;
             if (r0 == null)
@@ -351,32 +366,17 @@ namespace
             return r0;
         }
 
-        private IParseResult<IList<ASTElementBase>> Element(ref Cursor cursor)
+        private IParseResult<ASTElementBase> Element(ref Cursor cursor)
         {
-            IParseResult<IList<ASTElementBase>> r0 = null;
-            var startCursor0 = cursor;
-            var l0 = new List<ASTElementBase>();
-            while (true)
+            IParseResult<ASTElementBase> r0 = null;
+            if (r0 == null)
             {
-                IParseResult<ASTElementBase> r1 = null;
-                if (r1 == null)
-                {
-                    r1 = this.Node(ref cursor);
-                }
-                if (r1 == null)
-                {
-                    r1 = this.Leaf(ref cursor);
-                }
-                if (r1 != null)
-                {
-                    l0.Add(r1.Value);
-                }
-                else
-                {
-                    break;
-                }
+                r0 = this.Node(ref cursor);
             }
-            r0 = this.ReturnHelper<IList<ASTElementBase>>(startCursor0, ref cursor, state => l0.AsReadOnly());
+            if (r0 == null)
+            {
+                r0 = this.Leaf(ref cursor);
+            }
             return r0;
         }
 
@@ -1555,7 +1555,22 @@ namespace
         private IParseResult<IList<ASTElementBase>> BlockBody(ref Cursor cursor)
         {
             IParseResult<IList<ASTElementBase>> r0 = null;
-            r0 = this.Element(ref cursor);
+            var startCursor0 = cursor;
+            var l0 = new List<ASTElementBase>();
+            while (true)
+            {
+                IParseResult<ASTElementBase> r1 = null;
+                r1 = this.Element(ref cursor);
+                if (r1 != null)
+                {
+                    l0.Add(r1.Value);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            r0 = this.ReturnHelper<IList<ASTElementBase>>(startCursor0, ref cursor, state => l0.AsReadOnly());
             return r0;
         }
 

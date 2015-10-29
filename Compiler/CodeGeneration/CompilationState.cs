@@ -154,6 +154,15 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       }
     }
 
+    /// <summary>
+    /// Returns a list of strings of the elements of a context which needs to be checked.
+    /// I.e. if the path in contextToCheck is "viewModel.Parent.Child" and the path in lastCheckedContext is 
+    /// "viewModel" it will return { "viewModel.Parent", "viewModel.Parent.Child" }
+    /// Also unreachable code is detected
+    /// </summary>
+    /// <param name="lastCheckedContext"></param>
+    /// <param name="contextToCheck"></param>
+    /// <returns></returns>
     private List<string> GetQueryElements(Context lastCheckedContext, Context contextToCheck)
     {
       var argumentList = new List<string>();
