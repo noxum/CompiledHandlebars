@@ -11,7 +11,12 @@ namespace CompiledHandlebars.Compiler.AST
   internal class WithBlock : ASTNode
   {
 
-    internal WithBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(member, children, line, column) {}
+    internal readonly Expression Member;
+
+    internal WithBlock(Expression member, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+    {
+      Member = member;
+    }
 
     internal override void Accept(IASTVisitor visitor)
     {

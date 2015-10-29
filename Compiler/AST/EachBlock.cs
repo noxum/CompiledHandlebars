@@ -10,7 +10,11 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class EachBlock : ASTNode
   {
-    internal EachBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(member, children, line, column) { }
+    internal readonly MemberExpression Member;
+    internal EachBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+    {
+      Member = member;
+    }
     internal override void Accept(IASTVisitor visitor)
     {
       visitor.VisitEnter(this);
