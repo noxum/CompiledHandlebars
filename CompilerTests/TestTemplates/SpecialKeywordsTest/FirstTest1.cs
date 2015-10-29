@@ -3,22 +3,27 @@ using System.Text;
 using System.Net;
 using System;
 
-/*29.10.2015 17:37:31 | parsing: 0ms; init: 1; codeGeneration: 0!*/
+/*29.10.2015 17:37:30 | parsing: 0ms; init: 1; codeGeneration: 1!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class ThisTest4
+  public static class FirstTest1
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel))
+      bool first0 = true;
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Plains))
       {
-        sb.Append("Model");
-      }
-      else
-      {
-        sb.Append("NoModel");
+        foreach (var loopItem0 in viewModel.Plains)
+        {
+          if (IsTruthy(first0))
+          {
+            sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
+          }
+
+          first0 = false;
+        }
       }
 
       return sb.ToString();

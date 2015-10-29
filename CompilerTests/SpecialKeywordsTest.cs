@@ -28,5 +28,31 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("RootTest2", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("FirstTest1", "{{#each Plains}}{{#if @first}}{{Name}}{{/if}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("FirstTest2", "{{#each Plains}}{{#if @first}}{{else}}{{Name}}{{/if}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("FirstTest3", "{{#each Plains}}{{#unless @first}}{{Name}}{{/unless}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("FirstTest4", "{{#each Plains}}{{#unless @first}}{{else}}{{Name}}{{/unless}}{{/each}}", _marsModel)]
+    public void FirstTest()
+    {
+      ShouldRender("FirstTest1", MarsModelFactory.CreateFullMarsModel(), "Acidalia Planitia");
+      ShouldRender("FirstTest2", MarsModelFactory.CreateFullMarsModel(), "Utopia Planitia");
+      ShouldRender("FirstTest3", MarsModelFactory.CreateFullMarsModel(), "Utopia Planitia");
+      ShouldRender("FirstTest4", MarsModelFactory.CreateFullMarsModel(), "Acidalia Planitia");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("LastTest1", "{{#each Plains}}{{#if @last}}{{Name}}{{/if}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("LastTest2", "{{#each Plains}}{{#if @last}}{{else}}{{Name}}{{/if}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("LastTest3", "{{#each Plains}}{{#unless @last}}{{Name}}{{/unless}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("LastTest4", "{{#each Plains}}{{#unless @last}}{{else}}{{Name}}{{/unless}}{{/each}}", _marsModel)]
+    public void LastTest()
+    {
+      ShouldRender("LastTest1", MarsModelFactory.CreateFullMarsModel(), "Utopia Planitia");
+      ShouldRender("LastTest2", MarsModelFactory.CreateFullMarsModel(), "Acidalia Planitia");
+      ShouldRender("LastTest3", MarsModelFactory.CreateFullMarsModel(), "Acidalia Planitia");
+      ShouldRender("LastTest4", MarsModelFactory.CreateFullMarsModel(), "Utopia Planitia");
+    }
+
   }
 }

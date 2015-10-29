@@ -155,6 +155,14 @@
     <Compile Include="TestTemplates\PartialTests\ImpliedThisParameterTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\NullParameterPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\SelfReferencingPartialTest1.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest1.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest2.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest3.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest4.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest1.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest2.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest3.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest4.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest1.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest2.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest3.cs" />
