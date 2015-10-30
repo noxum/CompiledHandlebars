@@ -3,20 +3,22 @@ using System.Text;
 using System.Net;
 using System;
 
-/*10/30/2015 8:55:27 AM | parsing: 0ms; init: 2; codeGeneration: 0!*/
+/*10/30/2015 8:55:26 AM | parsing: 0ms; init: 1; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class RedundantTruthynessCheckTest1
+  public static class IndexTest1
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Phobos))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Plains))
       {
-        if (IsTruthy(viewModel.Phobos.Name))
+        int index1 = 0;
+        foreach (var loopItem0 in viewModel.Plains)
         {
-          sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+          sb.Append(WebUtility.HtmlEncode(index1.ToString()));
+          index1++;
         }
       }
 

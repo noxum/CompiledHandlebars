@@ -3,7 +3,7 @@ using System.Text;
 using System.Net;
 using System;
 
-/*29.10.2015 17:37:30 | parsing: 0ms; init: 1; codeGeneration: 2!*/
+/*10/30/2015 8:55:26 AM | parsing: 0ms; init: 2; codeGeneration: 2!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -12,19 +12,19 @@ namespace TestTemplates
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      int index0 = 0;
-      bool last0 = false;
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Plains))
       {
+        int index1 = 0;
+        bool last1 = false;
         foreach (var loopItem0 in viewModel.Plains)
         {
-          last0 = index0 == (viewModel.Plains.Count() - 1);
-          if (IsTruthy(last0))
+          last1 = index1 == (viewModel.Plains.Count() - 1);
+          if (IsTruthy(last1))
           {
             sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
           }
 
-          index0++;
+          index1++;
         }
       }
 

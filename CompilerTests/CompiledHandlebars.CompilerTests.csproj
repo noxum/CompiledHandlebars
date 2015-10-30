@@ -159,6 +159,7 @@
     <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest2.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest3.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\FirstTest4.cs" />
+    <Compile Include="TestTemplates\SpecialKeywordsTest\IndexTest1.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest1.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest2.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\LastTest3.cs" />

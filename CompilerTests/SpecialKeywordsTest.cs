@@ -54,5 +54,11 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("LastTest4", MarsModelFactory.CreateFullMarsModel(), "Utopia Planitia");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("IndexTest1", "{{#each Plains}}{{@index}}{{/each}}", _marsModel)]
+    public void IndexTest()
+    {
+      ShouldRender("IndexTest1", MarsModelFactory.CreateFullMarsModel(), "01");
+    }
   }
 }
