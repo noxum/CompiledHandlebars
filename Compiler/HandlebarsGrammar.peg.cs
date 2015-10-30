@@ -729,16 +729,16 @@ namespace
         {
             IParseResult<YieldStatement> r0 = null;
             var startCursor0 = cursor;
-            IParseResult<MemberExpression> r1 = null;
+            IParseResult<Expression> r1 = null;
             var valStart = cursor;
-            r1 = this.MemberExpression(ref cursor);
+            r1 = this.Expression(ref cursor);
             var valEnd = cursor;
             var val = ValueOrDefault(r1);
             if (r1 != null)
             {
                 r0 = this.ReturnHelper<YieldStatement>(startCursor0, ref cursor, state =>
                     #line 54 "HandlebarsGrammar.peg"
-                            new YieldStatement(val,valStart.Line,valStart.Column)
+                      new YieldStatement(val,valStart.Line,valStart.Column)
                     #line default
                     );
             }

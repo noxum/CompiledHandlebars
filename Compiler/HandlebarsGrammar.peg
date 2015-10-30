@@ -51,7 +51,7 @@ PartialCall <PartialCall>
     / v:(!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, vStart.Line, vStart.Column) }
 
 YieldStatement <YieldStatement>
-    = val:MemberExpression {new YieldStatement(val,valStart.Line,valStart.Column)}
+    = val:Expression {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 MarkupLiteral <MarkupLiteral> 
     = &{ state["trimStart"]==true}value:((!Opening !Closing .)+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}

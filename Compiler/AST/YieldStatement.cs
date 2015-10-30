@@ -6,11 +6,11 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class YieldStatement : ASTElementBase
   {
-    internal readonly MemberExpression Member;
+    internal readonly Expression Expr;
     internal TokenType Type { get; set; } = TokenType.Encoded;
-    internal YieldStatement(MemberExpression member, int line, int column) : base(line, column)
+    internal YieldStatement(Expression expr, int line, int column) : base(line, column)
     {
-      Member = member;
+      Expr = expr;
     }
 
     internal void SetTokenType(TokenType type)
@@ -25,7 +25,7 @@ namespace CompiledHandlebars.Compiler.AST
 
     internal override bool HasExpressionOnLoopLevel<T>()
     {
-      return (Member is T);
+      return (Expr is T);
     }
   }
 }
