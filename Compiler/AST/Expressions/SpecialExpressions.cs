@@ -23,4 +23,13 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
       return new Context($"last{state.loopLevel-1}", null);
     }
   }
+
+  internal class IndexExpression : Expression
+  {
+    internal override Context Evaluate(CompilationState state)
+    {
+      return new Context($"index{state.loopLevel - 1}", null);
+    }
+
+  }
 }

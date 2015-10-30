@@ -31,7 +31,7 @@ namespace CompiledHandlebars.Compiler.AST
     {
       foreach (var child in _children)
         if (child is IfBlock)
-          return ((child as IfBlock).Member is FirstExpression);
+          return ((child as IfBlock).Expr is FirstExpression);
       return false;
     }
 
@@ -43,7 +43,18 @@ namespace CompiledHandlebars.Compiler.AST
     {
       foreach (var child in _children)
         if (child is IfBlock)
-          return ((child as IfBlock).Member is LastExpression);
+          return ((child as IfBlock).Expr is LastExpression);
+      return false;
+    }
+
+    internal override bool HasElement<T>(bool includeChildren = false)
+    {
+      if (Member is T)
+        return true;
+      if (includeChildren)
+      {
+        return _children.Any(x => x.HasElement<T>(includeChildren));
+      }
       return false;
     }
   }

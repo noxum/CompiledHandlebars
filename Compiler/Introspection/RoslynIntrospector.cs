@@ -76,5 +76,6 @@ namespace CompiledHandlebars.Compiler.Introspection
       }
       return null;
     }
+    
   }
 }

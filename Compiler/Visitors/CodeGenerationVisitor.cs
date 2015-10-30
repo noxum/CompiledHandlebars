@@ -47,9 +47,9 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(MarkupLiteral astLeaf)
     {
       state.SetCursor(astLeaf);
-      if (!string.IsNullOrEmpty(astLeaf._Value))
+      if (!string.IsNullOrEmpty(astLeaf.Value))
       {//Do not append empty strings (possible through whitespace control)
-        state.PushStatement(SyntaxHelper.AppendStringLiteral(astLeaf._Value));
+        state.PushStatement(SyntaxHelper.AppendStringLiteral(astLeaf.Value));
       }
     }
 
@@ -58,7 +58,7 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astLeaf);
       Context yieldContext = astLeaf.Member.Evaluate(state);
 
-      if (astLeaf._type == TokenType.Encoded)
+      if (astLeaf.Type == TokenType.Encoded)
         state.PushStatement(SyntaxHelper.AppendMemberEncoded(yieldContext.FullPath, yieldContext.Symbol.IsString()));
       else
         state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol.IsString()));
@@ -79,8 +79,8 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astNode);
       state.PushNewBlock();
       //Enter new Context and promise to check its truthyness
-      state.PromiseTruthyCheck(astNode.Member.Evaluate(state));
-      state.ContextStack.Push(astNode.Member.Evaluate(state));
+      state.PromiseTruthyCheck(astNode.Expr.Evaluate(state));
+      state.ContextStack.Push(astNode.Expr.Evaluate(state));
     }
 
     public void VisitLeave(WithBlock astNode)
@@ -94,7 +94,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
-      state.PromiseTruthyCheck(astNode.Member.Evaluate(state), astNode.QueryType);
+      state.PromiseTruthyCheck(astNode.Expr.Evaluate(state), astNode.QueryType);
     }
 
     public void VisitLeave(IfBlock astNode)
@@ -158,19 +158,19 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(PartialCall astLeaf)
     {
       state.SetCursor(astLeaf);
-      string memberName = astLeaf._HasMember ?
-                            astLeaf._Member.Evaluate(state).FullPath :
+      string memberName = astLeaf.HasExpr ?
+                            astLeaf.Expr.Evaluate(state).FullPath :
                             state.ContextStack.Peek().FullPath;
-      if (astLeaf._TemplateName.Equals(state.Template.Name))
+      if (astLeaf.TemplateName.Equals(state.Template.Name))
       {//Self referencing Template
         state.PushStatement(SyntaxHelper.SelfReferencingPartialCall(memberName));
       }
       else
       {
-        var partial = state.Introspector.GetPartialHbsTemplate(astLeaf._TemplateName);
+        var partial = state.Introspector.GetPartialHbsTemplate(astLeaf.TemplateName);
         if (partial == null)
         {        
-          state.AddTypeError($"Could not find partial '{astLeaf._TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
+          state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
           return;
         }        
         state.PushStatement(

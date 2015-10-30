@@ -10,27 +10,32 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class PartialCall : ASTElementBase
   {
-    internal readonly Expression _Member;
-    internal readonly string _TemplateName;
-    internal readonly bool _HasMember;
+    internal readonly Expression Expr;
+    internal readonly string TemplateName;
+    internal readonly bool HasExpr;
 
     public PartialCall(string templateName, Expression member, int line, int column) : base(line, column)
     {
-      _HasMember = true;
-      _Member = member;
-      _TemplateName = templateName;
+      HasExpr = true;
+      Expr = member;
+      TemplateName = templateName;
     }
 
     public PartialCall(string templateName, int line, int column) : base(line, column)
     {
-      _HasMember = false;
-      _TemplateName = templateName;
+      HasExpr = false;
+      TemplateName = templateName;
     }
 
 
     internal override void Accept(IASTVisitor visitor)
     {
       visitor.Visit(this);
+    }
+
+    internal override bool HasElement<T>(bool includeChildren = false)
+    {
+      return (Expr is T);
     }
   }
 }

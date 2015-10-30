@@ -21,6 +21,11 @@ namespace CompiledHandlebars.Compiler.AST
     {
       visitor.Visit(this);
     }
+
+    internal override bool HasElement<T>(bool includeChildren = false)
+    {
+      return false;
+    }
   }
 
   internal enum CommentType { Single, Multi }

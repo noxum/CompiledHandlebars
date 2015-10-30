@@ -36,7 +36,7 @@ Element
     = Node / Leaf
 
 Leaf <ASTElementBase>
-    = Opening value:HandlebarsLeaf Closing { {value.SetTokenType(TokenType.Encoded); return value;} }
+    = Opening value:HandlebarsLeaf Closing { value }
     / EscapedOpening TrimWhitespaceIdentifier? value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
@@ -129,7 +129,11 @@ ElseToken
 Expression <Expression>
     = FirstExpression
     / LastExpression
+    / IndexExpression
     / MemberExpression
+
+IndexExpression <IndexExpression>
+    = Whitespace IndexKeyword { new IndexExpression() }
 
 FirstExpression <FirstExpression>
     = Whitespace FirstKeyword { new FirstExpression() }
@@ -200,6 +204,7 @@ ModelKeyword = "model"
 RootKeyword = "@root"
 FirstKeyword = "@first"
 LastKeyword = "@last"
+IndexKeyword = "@index"
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?

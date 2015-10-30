@@ -11,7 +11,6 @@ namespace CompiledHandlebars.Compiler.AST
     /// </summary>
     internal readonly int Line;
     internal readonly int Column;
-    internal TokenType _type { get; private set; }
 
     internal ASTElementBase(int line, int column)
     {
@@ -19,12 +18,9 @@ namespace CompiledHandlebars.Compiler.AST
       Column = column;
     }
 
-    internal void SetTokenType(TokenType type)
-    {
-      _type = type;
-    }
-
     internal abstract void Accept(IASTVisitor visitor);
+
+    internal abstract bool HasElement<T>(bool includeChildren = false);
   }
 
   internal enum TokenType { Undefined, Encoded, Escaped }

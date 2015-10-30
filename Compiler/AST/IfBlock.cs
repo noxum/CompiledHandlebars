@@ -12,7 +12,7 @@ namespace CompiledHandlebars.Compiler.AST
   {
     private readonly IList<ASTElementBase> _elseBlock;
 
-    internal readonly Expression Member;
+    internal readonly Expression Expr;
     internal readonly IfType QueryType;
     internal readonly bool HasElseBlock;
 
@@ -21,16 +21,16 @@ namespace CompiledHandlebars.Compiler.AST
     {
       QueryType = type;
       HasElseBlock = false;
-      Member = member;
+      Expr = member;
     }
 
-    internal IfBlock(Expression member, IfType type, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column) 
+    internal IfBlock(Expression expr, IfType type, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column) 
                     : base(children, line, column)
     {
       QueryType = type;
       _elseBlock = elseBlock;
       HasElseBlock = true;
-      Member = member;
+      Expr = expr;
     }
 
 
@@ -48,6 +48,20 @@ namespace CompiledHandlebars.Compiler.AST
         }
       }
       visitor.VisitLeave(this);
+    }
+
+    internal override bool HasElement<T>(bool includeChildren = false)
+    {
+      if (Expr is T)
+        return true;
+      if (includeChildren)
+      {
+        if (HasElseBlock)
+          return _elseBlock.Any(x => x.HasElement<T>(includeChildren)) || _children.Any(x => x.HasElement<T>(includeChildren));
+        else
+          return _children.Any(x => x.HasElement<T>(includeChildren));
+      }
+      return false;
     }
   }
 

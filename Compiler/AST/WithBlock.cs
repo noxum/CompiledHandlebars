@@ -11,11 +11,11 @@ namespace CompiledHandlebars.Compiler.AST
   internal class WithBlock : ASTNode
   {
 
-    internal readonly Expression Member;
+    internal readonly Expression Expr;
 
-    internal WithBlock(Expression member, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+    internal WithBlock(Expression expr, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
     {
-      Member = member;
+      Expr = expr;
     }
 
     internal override void Accept(IASTVisitor visitor)
@@ -24,6 +24,17 @@ namespace CompiledHandlebars.Compiler.AST
       foreach (var child in _children)
         child.Accept(visitor);
       visitor.VisitLeave(this);
+    }
+
+    internal override bool HasElement<T>(bool includeChildren = false)
+    {
+      if (Expr is T)
+        return true;
+      if (includeChildren)
+      {
+        return _children.Any(x => x.HasElement<T>(includeChildren));
+      }
+      return false;
     }
   }
 }
