@@ -29,10 +29,7 @@ namespace CompiledHandlebars.Compiler.AST
     /// <returns></returns>
     internal bool BodyContainsFirstExpression()
     {
-      foreach (var child in _children)
-        if (child is IfBlock)
-          return ((child as IfBlock).Expr is FirstExpression);
-      return false;
+      return _children.Any(x => x.HasExpressionOnLoopLevel<FirstExpression>());
     }
 
     /// <summary>
@@ -41,21 +38,12 @@ namespace CompiledHandlebars.Compiler.AST
     /// <returns></returns>
     internal bool BodyContainsLastExpression()
     {
-      foreach (var child in _children)
-        if (child is IfBlock)
-          return ((child as IfBlock).Expr is LastExpression);
-      return false;
+      return _children.Any(x => x.HasExpressionOnLoopLevel<LastExpression>());
     }
 
-    internal override bool HasExpression<T>(bool includeChildren = false)
+    internal override bool HasExpressionOnLoopLevel<T>()
     {
-      if (Member is T)
-        return true;
-      if (includeChildren)
-      {
-        return _children.Any(x => x.HasExpression<T>(includeChildren));
-      }
-      return false;
+      return (Member is T);
     }
   }
 }

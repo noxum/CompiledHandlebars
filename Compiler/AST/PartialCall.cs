@@ -33,7 +33,7 @@ namespace CompiledHandlebars.Compiler.AST
       visitor.Visit(this);
     }
 
-    internal override bool HasExpression<T>(bool includeChildren = false)
+    internal override bool HasExpressionOnLoopLevel<T>()
     {
       return (Expr is T);
     }

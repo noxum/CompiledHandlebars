@@ -50,18 +50,14 @@ namespace CompiledHandlebars.Compiler.AST
       visitor.VisitLeave(this);
     }
 
-    internal override bool HasExpression<T>(bool includeChildren = false)
+    internal override bool HasExpressionOnLoopLevel<T>()
     {
       if (Expr is T)
         return true;
-      if (includeChildren)
-      {
-        if (HasElseBlock)
-          return _elseBlock.Any(x => x.HasExpression<T>(includeChildren)) || _children.Any(x => x.HasExpression<T>(includeChildren));
-        else
-          return _children.Any(x => x.HasExpression<T>(includeChildren));
-      }
-      return false;
+      if (HasElseBlock)
+        return _elseBlock.Any(x => x.HasExpressionOnLoopLevel<T>()) || _children.Any(x => x.HasExpressionOnLoopLevel<T>());
+      else
+        return _children.Any(x => x.HasExpressionOnLoopLevel<T>());
     }
   }
 
