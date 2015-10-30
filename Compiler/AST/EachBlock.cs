@@ -10,7 +10,27 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class EachBlock : ASTNode
   {
+    internal enum ForLoopFlags { None = 0, First = 1, Last = 2, Index = 4 }
+
     internal readonly MemberExpression Member;
+    private ForLoopFlags? _flags = null;
+    internal ForLoopFlags Flags
+    {
+      get
+      {
+        if (!_flags.HasValue)
+        {
+          _flags = ForLoopFlags.None;
+          if (_children.Any(x => x.HasExpressionOnLoopLevel<FirstExpression>()))
+            _flags |= ForLoopFlags.First;
+          if (_children.Any(x => x.HasExpressionOnLoopLevel<LastExpression>()))
+            _flags |= ForLoopFlags.Last;
+          if (_children.Any(x => x.HasExpressionOnLoopLevel<IndexExpression>()))
+            _flags |= ForLoopFlags.Index;
+        }
+        return _flags.Value;
+      }
+    }
     internal EachBlock(MemberExpression member, IList<ASTElementBase> children, int line, int column) : base(children, line, column)
     {
       Member = member;
@@ -21,24 +41,6 @@ namespace CompiledHandlebars.Compiler.AST
       foreach (var child in _children)
         child.Accept(visitor);
       visitor.VisitLeave(this);
-    }
-
-    /// <summary>
-    /// Returns true if any of the child elements have an LastExpression
-    /// </summary>
-    /// <returns></returns>
-    internal bool BodyContainsFirstExpression()
-    {
-      return _children.Any(x => x.HasExpressionOnLoopLevel<FirstExpression>());
-    }
-
-    /// <summary>
-    /// Returns true if any of the child elements have a LastExpression
-    /// </summary>
-    /// <returns></returns>
-    internal bool BodyContainsLastExpression()
-    {
-      return _children.Any(x => x.HasExpressionOnLoopLevel<LastExpression>());
     }
 
     internal override bool HasExpressionOnLoopLevel<T>()

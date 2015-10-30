@@ -124,34 +124,26 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astNode);
       var loopedVariable = astNode.Member.Evaluate(state);
       state.PromiseTruthyCheck(loopedVariable);
-      state.ContextStack.Push(astNode.Member.EvaluateLoop(state));
-      if (astNode.BodyContainsLastExpression())
-      {
-        state.DeclareIndexVariable();
-        state.DeclareLastVariable();      
-      }
-      if (astNode.BodyContainsFirstExpression())      
-        state.DeclareFirstVariable();      
+      state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
       state.PushNewBlock();
       state.loopLevel++;
-      if (astNode.BodyContainsLastExpression())
+      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
         state.SetLastVariable(loopedVariable.FullPath);
     }
 
     public void VisitLeave(EachBlock astNode)
     {
       //Leave loop context
-      if (astNode.BodyContainsLastExpression())
+      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Index)|| astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
         state.IncrementIndexVariable();
-      if (astNode.BodyContainsFirstExpression())
+      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.First))
         state.SetFirstVariable();
       state.ContextStack.Pop();
       state.loopLevel--;
+      var prepareStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.loopLevel + 1);
+      prepareStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
       state.DoTruthyCheck(
-        new List<StatementSyntax>()
-        {
-          SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock())
-        }                        
+          prepareStatements                        
       );
     }
 

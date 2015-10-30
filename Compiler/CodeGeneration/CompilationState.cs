@@ -69,34 +69,19 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       PushStatement(SyntaxHelper.EmptyStatementWithComment(comment));
     }
 
-    public void DeclareFirstVariable()
-    {
-      PushStatement(SyntaxHelper.DeclareBoolVariableInitialyTrue($"first{loopLevel}"));
-    }
-
-    public void DeclareLastVariable()
-    {
-      PushStatement(SyntaxHelper.DeclareBoolVariableInitialyFalse($"last{loopLevel}"));
-    }
-
-    public void DeclareIndexVariable()
-    {
-      PushStatement(SyntaxHelper.DeclareIntVariable($"index{loopLevel}"));
-    }
-
     public void SetFirstVariable()
     {
-      PushStatement(SyntaxHelper.AssignFalse($"first{loopLevel-1}"));
+      PushStatement(SyntaxHelper.AssignFalse($"first{loopLevel}"));
     }
 
     public void SetLastVariable(string loopedVariable)
     {
-      PushStatement(SyntaxHelper.AssignValueEqualsValue($"last{(loopLevel - 1)}", $"index{(loopLevel - 1)}", $"({loopedVariable}.Count()-1)"));
+      PushStatement(SyntaxHelper.AssignValueEqualsValue($"last{loopLevel}", $"index{(loopLevel)}", $"({loopedVariable}.Count()-1)"));
     }
 
     public void IncrementIndexVariable()
     {
-      PushStatement(SyntaxHelper.IncrementVariable($"index{loopLevel - 1}"));
+      PushStatement(SyntaxHelper.IncrementVariable($"index{loopLevel}"));
     }
 
     public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)

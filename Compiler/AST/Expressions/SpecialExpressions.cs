@@ -12,7 +12,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"first{state.loopLevel-1}", null);
+      return new Context($"first{state.loopLevel}", null);
     }
   }
 
@@ -20,7 +20,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"last{state.loopLevel-1}", null);
+      return new Context($"last{state.loopLevel}", null);
     }
   }
 
@@ -28,7 +28,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"index{state.loopLevel - 1}", null);
+      return new Context($"index{state.loopLevel}", null);
     }
 
   }

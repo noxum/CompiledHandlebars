@@ -368,7 +368,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// <param name="loopedVariable"></param>
     /// <param name="block"></param>
     /// <returns></returns>
-    internal static StatementSyntax ForLoop(string loopVariable, string loopedVariable, List<StatementSyntax> block)
+    internal static ForEachStatementSyntax ForLoop(string loopVariable, string loopedVariable, List<StatementSyntax> block)
     {
       return
         SF.ForEachStatement(
@@ -377,6 +377,18 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
              SF.ParseExpression(loopedVariable),
              SF.Block(block)
           );
+    }   
+    
+    internal static List<StatementSyntax> PrepareForLoop(AST.EachBlock.ForLoopFlags flags, int loopLevel)
+    {
+      var result = new List<StatementSyntax>();
+      if (flags.HasFlag(AST.EachBlock.ForLoopFlags.Last) || flags.HasFlag(AST.EachBlock.ForLoopFlags.Index))
+        result.Add(DeclareIntVariable($"index{loopLevel}"));
+      if (flags.HasFlag(AST.EachBlock.ForLoopFlags.Last))
+        result.Add(DeclareBoolVariableInitialyFalse($"last{loopLevel}"));
+      if (flags.HasFlag(AST.EachBlock.ForLoopFlags.First))
+        result.Add(DeclareBoolVariableInitialyTrue($"first{loopLevel}"));
+      return result;
     }
 
     /// <summary>
