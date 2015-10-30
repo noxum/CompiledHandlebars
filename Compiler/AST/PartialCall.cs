@@ -33,7 +33,7 @@ namespace CompiledHandlebars.Compiler.AST
       visitor.Visit(this);
     }
 
-    internal override bool HasElement<T>(bool includeChildren = false)
+    internal override bool HasExpression<T>(bool includeChildren = false)
     {
       return (Expr is T);
     }

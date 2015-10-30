@@ -47,13 +47,13 @@ namespace CompiledHandlebars.Compiler.AST
       return false;
     }
 
-    internal override bool HasElement<T>(bool includeChildren = false)
+    internal override bool HasExpression<T>(bool includeChildren = false)
     {
       if (Member is T)
         return true;
       if (includeChildren)
       {
-        return _children.Any(x => x.HasElement<T>(includeChildren));
+        return _children.Any(x => x.HasExpression<T>(includeChildren));
       }
       return false;
     }
