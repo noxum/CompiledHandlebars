@@ -186,6 +186,52 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );
     }
 
+    internal static ExpressionStatementSyntax AppendFuntionCallResultEncoded(string functionName, IList<string> parameters)
+    {
+      return
+        SF.ExpressionStatement(
+          SF.InvocationExpression(
+            SF.ParseExpression("sb.Append")
+          )
+          .AddArgumentListArguments(
+            SF.Argument(
+              SF.InvocationExpression(
+                SF.ParseExpression("WebUtility.HtmlEncode")
+              ).AddArgumentListArguments(
+                SF.Argument(
+                  SF.InvocationExpression(
+                    SF.ParseExpression(functionName)
+                  )
+                  .AddArgumentListArguments(
+                    parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()
+                  )
+                )
+              )
+            )
+          )
+        );
+    }
+
+
+    internal static ExpressionStatementSyntax AppendFuntionCallResult(string functionName, IList<string> parameters)
+    {
+      return
+        SF.ExpressionStatement(
+          SF.InvocationExpression(
+            SF.ParseExpression("sb.Append")
+          )
+          .AddArgumentListArguments(
+            SF.Argument(
+              SF.InvocationExpression(
+                SF.ParseExpression(functionName)
+              )
+              .AddArgumentListArguments(
+                parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()           
+              )
+            )
+          )
+        );
+    }
 
     /// <summary>
     /// private static bool IsTruthy(bool b)

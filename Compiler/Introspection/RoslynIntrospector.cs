@@ -68,11 +68,29 @@ namespace CompiledHandlebars.Compiler.Introspection
     {
       foreach(var comp in projectCompilations.Values)
       {
-        var allSymbols = comp.GetSymbolsWithName(x => true);
-        var symbols = comp.GetSymbolsWithName(x => x.Contains(templateName));
-        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName)).OfType<INamedTypeSymbol>().FirstOrDefault(x => x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName))
+                                        .OfType<INamedTypeSymbol>()
+                                        .FirstOrDefault(x => x.GetAttributes()
+                                                              .Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
         if (template != null)
           return template;
+      }
+      return null;
+    }
+
+    public IMethodSymbol GetHelperMethod(string funtionName, int parameterCount = 1)
+    {
+      foreach(var comp in projectCompilations.Values)
+      {
+        var methodSymbols = comp.GetSymbolsWithName(x => x.Equals(funtionName))
+                                          .OfType<IMethodSymbol>();
+        IMethodSymbol helperMethod =  comp.GetSymbolsWithName(x => x.Equals(funtionName))
+                                          .OfType<IMethodSymbol>()
+                                          .FirstOrDefault(x => x.IsStatic &&
+                                                                x.Parameters.Count().Equals(parameterCount) &&
+                                                                x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsHelperMethodAttribute")));
+        if (helperMethod != null)
+          return helperMethod;
       }
       return null;
     }
