@@ -80,7 +80,7 @@ namespace CompiledHandlebars.CustomTool
       if (compilationResult.Item2.Any())
       {
         foreach(var error in compilationResult.Item2)        
-          pGenerateProgress.GeneratorError(0, 1, error.Message, (uint)error.Line, (uint)error.Column);
+          pGenerateProgress.GeneratorError(0, 1, error.Message, (uint)error.Line-1, (uint)error.Column-1);
       }
       byte[] bytes = Encoding.UTF8.GetBytes(string.Concat(compilationResult.Item1, $"/*compiled in {sw.ElapsedMilliseconds}ms*/"));
       rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);
