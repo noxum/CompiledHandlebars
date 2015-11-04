@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="BasicCompilerTests.cs" />
     <Compile Include="BasicFailingCompilerTests.cs" />
+    <Compile Include="HelperTests.cs" />
     <Compile Include="Helper\CompilerTestBase.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
     <Compile Include="PartialTests.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
+    <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />

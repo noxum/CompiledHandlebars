@@ -2,17 +2,18 @@
 using System.Text;
 using System.Net;
 using System;
+using CompiledHandlebars.CompilerTests;
 
-/*04.11.2015 15:35:18 | parsing: 2ms; init: 1; codeGeneration: 0!*/
+/*04.11.2015 15:35:14 | parsing: 1ms; init: 79; codeGeneration: 19!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class CommentTest2
+  public static class BasicHelperTest1
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      ; /*{{Name}}*/
+      sb.Append(HelperTests.ToUpper(viewModel.Name));
       return sb.ToString();
     }
 
