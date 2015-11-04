@@ -175,7 +175,8 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(HelperCall astLeaf)
     {
       state.SetCursor(astLeaf);
-      var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, astLeaf.Parameters.Count);
+      var parameterSymbols = astLeaf.Parameters.Select(x => x.Evaluate(state).Symbol).ToList();
+      var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, parameterSymbols);
       if (helperMethod != null)
       {
         state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
