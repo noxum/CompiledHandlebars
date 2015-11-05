@@ -221,7 +221,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       return argumentList;
     }
 
-    internal Context BuildLoopContext(ISymbol symbol)
+    internal Context BuildLoopContext(ITypeSymbol symbol)
     {
       return new Context($"loopItem{LoopLevel}", symbol);
     }

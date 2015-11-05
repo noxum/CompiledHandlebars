@@ -5,10 +5,10 @@ namespace CompiledHandlebars.Compiler.Introspection
   internal class Context
   {
     internal readonly string FullPath;
-    internal readonly ISymbol Symbol;
+    internal readonly ITypeSymbol Symbol;
 
     internal bool Truthy { get; set; }
-    public Context(string fullPath, ISymbol symbol)
+    public Context(string fullPath, ITypeSymbol symbol)
     {
       FullPath = fullPath;
       Symbol = symbol;

@@ -78,7 +78,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       return null;
     }
 
-    public IMethodSymbol GetHelperMethod(string funtionName, List<ISymbol> parameters)
+    public IMethodSymbol GetHelperMethod(string funtionName, List<ITypeSymbol> parameters)
     {
       foreach(var comp in projectCompilations.Values)
       {
@@ -94,15 +94,16 @@ namespace CompiledHandlebars.Compiler.Introspection
     }
 
 
-    private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ISymbol> parameters)
-    {//TODO: Implement fully
+    private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ITypeSymbol> parameters)
+    {
       if (methodSymbol.Parameters.Count() != parameters.Count)
         return false;
       for(int i = 0;i<methodSymbol.Parameters.Count();i++)
-      {//Not correct... fix it to work with any ISymbol
-        return methodSymbol.Parameters[i].Type.Equals((parameters[0] as IPropertySymbol).Type);
+      {
+        if (!methodSymbol.Parameters[i].Type.Equals(parameters[0]))
+          return false;
       }
-      return false;
+      return true;
     }
     
   }

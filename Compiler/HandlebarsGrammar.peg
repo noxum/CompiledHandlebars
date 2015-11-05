@@ -55,7 +55,7 @@ YieldStatement <YieldStatement>
     = val:Expression &Closing {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 HelperCall <HelperCall>
-    = name:FunctionIdentifier parameters:(Expression+)  { new HelperCall(name, parameters, nameStart.Line, nameStart.Column) }
+    = name:FunctionIdentifier parameters:(Expression+) &Closing { new HelperCall(name, parameters, nameStart.Line, nameStart.Column) }
 
 MarkupLiteral <MarkupLiteral> 
     = &{ state["trimStart"]==true}value:(LiteralContent+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}

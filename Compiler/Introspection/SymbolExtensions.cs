@@ -9,7 +9,7 @@ namespace CompiledHandlebars.Compiler.Introspection
 {
   public static class SymbolExtensions
   {
-    public static ISymbol FindMember(this ISymbol symbol, string name)
+    public static ITypeSymbol FindMember(this ISymbol symbol, string name)
     {
       if (symbol == null)
         return null;
@@ -25,7 +25,7 @@ namespace CompiledHandlebars.Compiler.Introspection
     /// </summary>
     /// <param name=""></param>
     /// <returns></returns>
-    public static ISymbol GetElementSymbol(this ISymbol symbol)
+    public static ITypeSymbol GetElementSymbol(this ISymbol symbol)
     {
       if (symbol.Kind == SymbolKind.Property)
         return (symbol as IPropertySymbol).Type.GetElementSymbol();
@@ -54,13 +54,19 @@ namespace CompiledHandlebars.Compiler.Introspection
       return false;
     }
 
-    private static ISymbol FindMemberRec(this ITypeSymbol symbol, string name)
+    private static ITypeSymbol FindMemberRec(this ITypeSymbol symbol, string name)
     {
       var result = symbol.GetMembers(name).FirstOrDefault();
       if (result == null && symbol.BaseType != null)
         //Ask base type
         return symbol.BaseType.FindMemberRec(name);
-      return result;
+      if (!(result is ITypeSymbol))
+      {
+        if (result is IPropertySymbol)
+          return (result as IPropertySymbol).Type;
+      } else
+        return (result as ITypeSymbol);
+      return null;
     }
   }
 }
