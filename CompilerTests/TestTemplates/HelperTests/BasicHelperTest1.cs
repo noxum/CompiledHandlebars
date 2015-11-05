@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using CompiledHandlebars.CompilerTests;
 
-/*11/4/2015 10:19:56 PM | parsing: 1ms; init: 186; codeGeneration: 133!*/
+/*05.11.2015 10:55:34 | parsing: 1ms; init: 87; codeGeneration: 20!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]

@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using CompiledHandlebars.CompilerTests;
 
-/*11/4/2015 10:11:47 PM | parsing: 0ms; init: 1; codeGeneration: 4!*/
+/*05.11.2015 10:55:34 | parsing: 0ms; init: 1; codeGeneration: 6!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -13,7 +13,23 @@ namespace TestTemplates
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(HelperTests.IndexPlusOne(viewModel.MoonCount));
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Plains))
+      {
+        int index1 = 0;
+        bool last1 = false;
+        bool first1 = true;
+        foreach (var loopItem0 in viewModel.Plains)
+        {
+          last1 = index1 == (viewModel.Plains.Count() - 1);
+          sb.Append("first:");
+          sb.Append(HelperTests.BoolToYesNo(first1));
+          sb.Append(";last:");
+          sb.Append(HelperTests.BoolToYesNo(last1));
+          index1++;
+          first1 = false;
+        }
+      }
+
       return sb.ToString();
     }
 

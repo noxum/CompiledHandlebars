@@ -55,17 +55,19 @@ namespace CompiledHandlebars.CompilerTests
     }    
 
     [CompiledHandlebarsHelperMethod]
-    public static string IndexPlusOne(int index)
-    {
-      return (++index).ToString();
-    }
+    public static string IndexPlusOne(int index) => (++index).ToString();    
+    [CompiledHandlebarsHelperMethod]
+    public static string BoolToYesNo(bool input) => input ? "yes" : "no";
 
     [TestMethod]
     [RegisterHandlebarsTemplate("SpecialParametersHelperTest1", "{{#each Plains}}{{IndexPlusOne @index}}:{{Name}}{{/each}}", _marsModel)]
+    [RegisterHandlebarsTemplate("SpecialParametersHelperTest2", "{{#each Plains}}first:{{BoolToYesNo @first}};last:{{BoolToYesNo @last}}{{/each}}", _marsModel)]
     public void SpecialParametersHelperTest()
     {
       ShouldRender("SpecialParametersHelperTest1", MarsModelFactory.CreateFullMarsModel(), "1:Acidalia Planitia2:Utopia Planitia");
+      ShouldRender("SpecialParametersHelperTest2", MarsModelFactory.CreateFullMarsModel(), "first:yes;last:nofirst:no;last:yes");
     }
+
 
     private class CompiledHandlebarsHelperMethodAttribute : Attribute
     {
