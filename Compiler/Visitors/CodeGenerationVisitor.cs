@@ -126,7 +126,7 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.PromiseTruthyCheck(loopedVariable);
       state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
       state.PushNewBlock();
-      state.loopLevel++;
+      state.LoopLevel++;
       if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
         state.SetLastVariable(loopedVariable.FullPath);
     }
@@ -139,8 +139,8 @@ namespace CompiledHandlebars.Compiler.Visitors
       if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.First))
         state.SetFirstVariable();
       state.ContextStack.Pop();
-      state.loopLevel--;
-      var prepareStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.loopLevel + 1);
+      state.LoopLevel--;
+      var prepareStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);
       prepareStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
       state.DoTruthyCheck(
           prepareStatements                        
@@ -169,6 +169,26 @@ namespace CompiledHandlebars.Compiler.Visitors
           SyntaxHelper.PartialTemplateCall(
             partial.Name, 
             memberName));        
+      }
+    }
+
+    public void Visit(HelperCall astLeaf)
+    {
+      state.SetCursor(astLeaf);
+      var parameterSymbols = astLeaf.Parameters.Select(x => x.Evaluate(state).Symbol).ToList();
+      var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, parameterSymbols);
+      if (helperMethod != null)
+      {
+        state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
+        state.PushStatement(
+          SyntaxHelper.AppendFuntionCallResult(
+            string.Concat(helperMethod.ContainingType.Name,".",helperMethod.Name),
+            astLeaf.Parameters.Select(x => x.Evaluate(state).FullPath).ToList()));
+      } 
+      else
+      {//HelperMethod not found
+        state.AddTypeError($"Could not find Helper Method '{astLeaf.FunctionName}'", HandlebarsTypeErrorKind.UnknownHelper);
+        return;
       }
     }
   }

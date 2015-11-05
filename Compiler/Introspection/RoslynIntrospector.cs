@@ -68,13 +68,41 @@ namespace CompiledHandlebars.Compiler.Introspection
     {
       foreach(var comp in projectCompilations.Values)
       {
-        var allSymbols = comp.GetSymbolsWithName(x => true);
-        var symbols = comp.GetSymbolsWithName(x => x.Contains(templateName));
-        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName)).OfType<INamedTypeSymbol>().FirstOrDefault(x => x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName))
+                                        .OfType<INamedTypeSymbol>()
+                                        .FirstOrDefault(x => x.GetAttributes()
+                                                              .Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
         if (template != null)
           return template;
       }
       return null;
+    }
+
+    public IMethodSymbol GetHelperMethod(string funtionName, List<ISymbol> parameters)
+    {
+      foreach(var comp in projectCompilations.Values)
+      {
+        var candidates =  comp.GetSymbolsWithName(x => x.Equals(funtionName))
+                                          .OfType<IMethodSymbol>()
+                                          .Where(x => x.IsStatic &&
+                                                      x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsHelperMethodAttribute")));
+        var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
+        if (helperMethod != null)
+          return helperMethod;
+      }
+      return null;
+    }
+
+
+    private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ISymbol> parameters)
+    {//TODO: Implement fully
+      if (methodSymbol.Parameters.Count() != parameters.Count)
+        return false;
+      for(int i = 0;i<methodSymbol.Parameters.Count();i++)
+      {//Not correct... fix it to work with any ISymbol
+        return methodSymbol.Parameters[i].Type.Equals((parameters[0] as IPropertySymbol).Type);
+      }
+      return false;
     }
     
   }

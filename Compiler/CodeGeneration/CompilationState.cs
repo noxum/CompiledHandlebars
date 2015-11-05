@@ -15,18 +15,19 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
   {
     private int line { get; set; }
     private int column { get; set; }
-    public string ResultingCode { get; set; }
-    public int loopLevel { get; set; } = 0;
-    public List<HandlebarsException> Errors { get; private set; } = new List<HandlebarsException>();
-    public RoslynIntrospector Introspector { get; set; }
-    public Stack<List<StatementSyntax>> resultStack { get; private set; } = new Stack<List<StatementSyntax>>();
-    internal Stack<Context> ContextStack { get; set; } = new Stack<Context>();
+    private Stack<List<StatementSyntax>> resultStack { get; set; } = new Stack<List<StatementSyntax>>();
+    private List<string> usings { get; set; } = new List<string>();
+    internal int LoopLevel { get; set; } = 0;
+    internal RoslynIntrospector Introspector { get; set; }
+    internal HandlebarsTemplate Template { get; private set; }
+    internal List<HandlebarsException> Errors { get; private set; } = new List<HandlebarsException>();
+    internal Stack<Context> ContextStack { get; set; } = new Stack<Context>();   
+     
     /// <summary>
     /// Contains the status about already checked variables.
     /// Needs to be seperated from the context stack, as truthyness check does not always change context (e.g. #if)
     /// </summary>
-    internal Stack<Context> TruthyStack { get; set; } = new Stack<Context>();
-    internal HandlebarsTemplate Template { get; private set; }
+    internal Stack<Context> TruthyStack { get; set; } = new Stack<Context>();   
 
     public CompilationState(RoslynIntrospector introspector, HandlebarsTemplate template)
     {
@@ -39,27 +40,27 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       resultStack.Push(new List<StatementSyntax>());
     }
 
-    public void AddTypeError(string message, HandlebarsTypeErrorKind kind)
+    internal void AddTypeError(string message, HandlebarsTypeErrorKind kind)
     {
       Errors.Add(new HandlebarsTypeError(message, kind, line, column));
     }
 
-    public void AddTypeError(HandlebarsTypeError error)
+    internal void AddTypeError(HandlebarsTypeError error)
     {
       Errors.Add(error);
     }
 
-    public void PushStatement(StatementSyntax statement)
+    internal void PushStatement(StatementSyntax statement)
     {
       resultStack.Peek().Add(statement);
     }
 
-    public void PushNewBlock()
+    internal void PushNewBlock()
     {
       resultStack.Push(new List<StatementSyntax>());
     }
 
-    public List<StatementSyntax> PopBlock()
+    internal List<StatementSyntax> PopBlock()
     {
       return resultStack.Pop();
     }
@@ -69,24 +70,29 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       PushStatement(SyntaxHelper.EmptyStatementWithComment(comment));
     }
 
-    public void SetFirstVariable()
+    internal void SetFirstVariable()
     {
-      PushStatement(SyntaxHelper.AssignFalse($"first{loopLevel}"));
+      PushStatement(SyntaxHelper.AssignFalse($"first{LoopLevel}"));
     }
 
-    public void SetLastVariable(string loopedVariable)
+    internal void SetLastVariable(string loopedVariable)
     {
-      PushStatement(SyntaxHelper.AssignValueEqualsValue($"last{loopLevel}", $"index{(loopLevel)}", $"({loopedVariable}.Count()-1)"));
+      PushStatement(SyntaxHelper.AssignValueEqualsValue($"last{LoopLevel}", $"index{(LoopLevel)}", $"({loopedVariable}.Count()-1)"));
     }
 
-    public void IncrementIndexVariable()
+    internal void IncrementIndexVariable()
     {
-      PushStatement(SyntaxHelper.IncrementVariable($"index{loopLevel}"));
+      PushStatement(SyntaxHelper.IncrementVariable($"index{LoopLevel}"));
     }
 
-    public CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
+    internal void RegisterUsing(string nameSpace)
     {
-      var ws = new AdhocWorkspace();
+      usings.Add(nameSpace);
+    }
+
+    internal CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
+    {
+      var ws = new AdhocWorkspace();        
       if (Introspector.RuntimeUtilsReferenced())
       {
         return SyntaxFactory.CompilationUnit()
@@ -96,6 +102,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         .AddUsings(
           SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")),
           SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper")
+        )
+        .AddUsings(
+          usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray()
         )
         .AddMembers(
           SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)
@@ -114,6 +123,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
           SyntaxHelper.UsingDirectives
+        )
+        .AddUsings(
+          usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray()
         )
         .AddMembers(
           SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)          
@@ -211,7 +223,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 
     internal Context BuildLoopContext(ISymbol symbol)
     {
-      return new Context($"loopItem{loopLevel}", symbol);
+      return new Context($"loopItem{LoopLevel}", symbol);
     }
 
     internal void SetCursor(ASTElementBase element)

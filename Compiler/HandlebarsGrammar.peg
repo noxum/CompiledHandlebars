@@ -44,6 +44,7 @@ HandlebarsLeaf <ASTElementBase>
     = CommentIdentifier val:Comment { val }
     / PartialCallIdentifier val:PartialCall { val } 
     / YieldStatement
+    / HelperCall
 
 PartialCall <PartialCall>
     = templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
@@ -51,7 +52,10 @@ PartialCall <PartialCall>
     / v:(!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, vStart.Line, vStart.Column) }
 
 YieldStatement <YieldStatement>
-    = val:Expression {new YieldStatement(val,valStart.Line,valStart.Column)}
+    = val:Expression &Closing {new YieldStatement(val,valStart.Line,valStart.Column)}
+
+HelperCall <HelperCall>
+    = name:FunctionIdentifier parameters:(Expression+)  { new HelperCall(name, parameters, nameStart.Line, nameStart.Column) }
 
 MarkupLiteral <MarkupLiteral> 
     = &{ state["trimStart"]==true}value:(LiteralContent+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
@@ -183,6 +187,11 @@ ChildContextName <IdentifierElement>
       
 
 NameIdentifier <string>
+    = (!ReservedKeywords) val:Identifier {string.Concat(val)}
+
+FunctionIdentifier <string>
+    = (!ReservedKeywords) val:Identifier {string.Concat(val)}
+TypeIdentifier <string>
     = (!ReservedKeywords) val:Identifier {string.Concat(val)}
 
 Identifier
