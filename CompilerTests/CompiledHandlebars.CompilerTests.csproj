@@ -158,6 +158,10 @@
     <Compile Include="TestTemplates\BasicTests\Escaping5.cs" />
     <Compile Include="TestTemplates\BasicTests\MostBasic1.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\BasicHelperTest2.cs" />
+    <Compile Include="TestTemplates\HelperTests\MultipleParametersHelperTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />

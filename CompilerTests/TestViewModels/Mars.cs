@@ -8,6 +8,7 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
 {
   public class MarsModel : PlanetModel
   {
+    public int MoonCount { get; set; }
     public MoonModel Phobos { get; set; }
     public MoonModel Deimos { get; set; }
     public Planitia[] Plains { get; set; }
@@ -37,6 +38,7 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
       model.Name = "Mars";
       model.Phobos = new MoonModel() { Name = "Phobos" };
       model.Deimos = new MoonModel() { Name = "Deimos" };
+      model.MoonCount = 2;
       model.WikiLink = new LinkModel()
       {
         Url = "https://en.wikipedia.org/wiki/Mars",

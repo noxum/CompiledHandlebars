@@ -2,17 +2,29 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using CompiledHandlebars.CompilerTests;
 
-/*11/4/2015 10:20:04 PM | parsing: 2ms; init: 1; codeGeneration: 0!*/
+/*11/4/2015 10:19:56 PM | parsing: 3ms; init: 2; codeGeneration: 25!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class CommentTest2
+  public static class SpecialParametersHelperTest1
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      ; /*{{Name}}*/
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Plains))
+      {
+        int index1 = 0;
+        foreach (var loopItem0 in viewModel.Plains)
+        {
+          sb.Append(HelperTests.IndexPlusOne(index1));
+          sb.Append(":");
+          sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
+          index1++;
+        }
+      }
+
       return sb.ToString();
     }
 

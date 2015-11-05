@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System;
+using System.Linq;
 using System.Net;
-using System;
+using System.Text;
 
-/*11/4/2015 4:50:21 PM | parsing: 0ms; init: 159; codeGeneration: 1!*/
+/*11/4/2015 10:20:03 PM | parsing: 0ms; init: 185; codeGeneration: 2!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -35,4 +35,4 @@ namespace TestTemplates
     {
     }
   }
-}
+}/**/

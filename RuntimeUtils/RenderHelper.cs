@@ -25,4 +25,5 @@ namespace CompiledHandlebars.RuntimeUtils
   }
 
   public class CompiledHandlebarsTemplateAttribute : Attribute { }
+  public class CompiledHandlebarsHelperMethodAttribute : Attribute { }
 }

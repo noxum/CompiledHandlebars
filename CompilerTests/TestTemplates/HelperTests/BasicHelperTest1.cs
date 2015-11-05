@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System;
+using System.Linq;
 using System.Net;
-using System;
+using System.Text;
 using CompiledHandlebars.CompilerTests;
 
-/*04.11.2015 15:35:14 | parsing: 1ms; init: 79; codeGeneration: 19!*/
+/*11/4/2015 10:19:56 PM | parsing: 1ms; init: 186; codeGeneration: 133!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -36,4 +36,4 @@ namespace TestTemplates
     {
     }
   }
-}
+}/**/

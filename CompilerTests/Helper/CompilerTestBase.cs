@@ -41,10 +41,10 @@ namespace CompiledHandlebars.CompilerTests.Helper
             var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(template._name, ".cs")));
             if (doc != null)
             {//And change it if it does
-              project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(code.Item1).GetRoot()).Project;
+              project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(AppendErrorsToCode(code.Item1, code.Item2))).GetRoot()).Project;
             } else
             {//Otherwise add a new document
-              project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(code.Item1), new string[] { "TestTemplates", testClassType.Name }).Project;
+              project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(AppendErrorsToCode(code.Item1, code.Item2)), new string[] { "TestTemplates", testClassType.Name }).Project;
             }
             //Then add the new version
             compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
@@ -87,6 +87,11 @@ namespace CompiledHandlebars.CompilerTests.Helper
         ms.Seek(0, SeekOrigin.Begin);
         return Assembly.Load(ms.ToArray());
       }
+    }
+
+    private static string AppendErrorsToCode(string code, IEnumerable<HandlebarsException> errors)
+    {
+      return string.Concat(code, "/*", string.Join("\n", errors.Select(x => x.Message)), "*/");
     }
 
     protected void ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string expectedResult)

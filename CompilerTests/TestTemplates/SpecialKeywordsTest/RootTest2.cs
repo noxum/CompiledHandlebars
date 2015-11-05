@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System;
+using System.Linq;
 using System.Net;
-using System;
+using System.Text;
 
-/*11/4/2015 4:50:19 PM | parsing: 0ms; init: 2; codeGeneration: 25!*/
+/*11/4/2015 10:20:00 PM | parsing: 0ms; init: 2; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -12,14 +12,7 @@ namespace TestTemplates
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Rovers))
-      {
-        foreach (var loopItem0 in viewModel.Rovers)
-        {
-          sb.Append(RootTest3.Render(viewModel));
-        }
-      }
-
+      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
       return sb.ToString();
     }
 
@@ -42,4 +35,4 @@ namespace TestTemplates
     {
     }
   }
-}
+}/**/

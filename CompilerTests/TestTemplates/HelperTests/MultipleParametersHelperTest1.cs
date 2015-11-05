@@ -2,17 +2,18 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using CompiledHandlebars.CompilerTests;
 
-/*11/4/2015 10:20:03 PM | parsing: 0ms; init: 1; codeGeneration: 0!*/
+/*11/4/2015 10:19:56 PM | parsing: 0ms; init: 1; codeGeneration: 4!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class Escaping2
+  public static class MultipleParametersHelperTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append("content {{Foo}}");
+      sb.Append(HelperTests.IsMoonOf(viewModel, viewModel.Deimos));
       return sb.ToString();
     }
 

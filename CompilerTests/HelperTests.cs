@@ -26,11 +26,45 @@ namespace CompiledHandlebars.CompilerTests
       return input.ToUpper();
     }
 
+    [CompiledHandlebarsHelperMethod]
+    public static string ToLower(string input)
+    {
+      return input.ToLower();
+    }
+
     [TestMethod]
     [RegisterHandlebarsTemplate("BasicHelperTest1", "{{ToUpper Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("BasicHelperTest2", "{{ToUpper Name}}{{ToLower Name}}", _marsModel)]
     public void BasicHelperTest()
     {
       ShouldRender("BasicHelperTest1", MarsModelFactory.CreateFullMarsModel(), "MARS");
+      ShouldRender("BasicHelperTest2", MarsModelFactory.CreateFullMarsModel(), "MARSmars");
+    }
+
+    [CompiledHandlebarsHelperMethod]
+    public static string IsMoonOf(MarsModel mars, MoonModel moon)
+    {
+      return $"{moon.Name} is a moon of {mars.Name}";
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("MultipleParametersHelperTest1", "{{IsMoonOf this Deimos}}", _marsModel)]
+    public void MultipleParametersHelperTest()
+    {
+      ShouldRender("MultipleParametersHelperTest1", MarsModelFactory.CreateFullMarsModel(), "Deimos is a moon of Mars");
+    }    
+
+    [CompiledHandlebarsHelperMethod]
+    public static string IndexPlusOne(int index)
+    {
+      return (++index).ToString();
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("SpecialParametersHelperTest1", "{{#each Plains}}{{IndexPlusOne @index}}:{{Name}}{{/each}}", _marsModel)]
+    public void SpecialParametersHelperTest()
+    {
+      ShouldRender("SpecialParametersHelperTest1", MarsModelFactory.CreateFullMarsModel(), "1:Acidalia Planitia2:Utopia Planitia");
     }
 
     private class CompiledHandlebarsHelperMethodAttribute : Attribute

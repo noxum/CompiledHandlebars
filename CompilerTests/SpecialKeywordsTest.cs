@@ -20,12 +20,12 @@ namespace CompiledHandlebars.CompilerTests
 
     [TestMethod]
     [RegisterHandlebarsTemplate("RootTest1", "{{#each Rovers}}{{@root.Name}}{{/each}}", _marsModel)]
-    [RegisterHandlebarsTemplate("RootTest2", "{{#each Rovers}}{{> RootTest3 @root}}{{/each}}", _marsModel)]
-    [RegisterHandlebarsTemplate("RootTest3", "{{Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("RootTest2", "{{Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("RootTest3", "{{#each Rovers}}{{> RootTest2 @root}}{{/each}}", _marsModel)]
     public void RootTest()
     {
       ShouldRender("RootTest1", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
-      ShouldRender("RootTest2", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
+      ShouldRender("RootTest3", MarsModelFactory.CreateFullMarsModel(), "MarsMars");
     }
 
     [TestMethod]

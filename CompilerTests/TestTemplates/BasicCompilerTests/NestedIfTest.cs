@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System;
+using System.Linq;
 using System.Net;
-using System;
+using System.Text;
 
-/*11/4/2015 4:50:22 PM | parsing: 0ms; init: 1; codeGeneration: 0!*/
+/*11/4/2015 10:20:04 PM | parsing: 0ms; init: 3; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
@@ -51,4 +51,4 @@ namespace TestTemplates
     {
     }
   }
-}
+}/*Line: 1; Column 123: Unreachable code detected*/
