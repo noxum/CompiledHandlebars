@@ -12,7 +12,6 @@ namespace CompiledHandlebars.Compiler.AST
   {
     internal readonly IList<Expression> Parameters;
     internal readonly string FunctionName;
-    internal TokenType Type { get; set; } = TokenType.Encoded;
 
     internal HelperCall(string functionName, IList<Expression> parameters, int line, int column) : base(line, column)
     {

@@ -1,4 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,7 +44,6 @@ namespace CompiledHandlebars.Compiler.Introspection
           projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
         solution = project.Solution;
       }
-
     }
 
     private Compilation GetCompilationForProject(Project proj)
@@ -50,7 +51,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       Compilation comp;
       if (proj.TryGetCompilation(out comp))
         return comp;
-      else return proj.GetCompilationAsync().Result;
+      else return proj.GetCompilationAsync().Result;      
     }
 
     public INamedTypeSymbol GetTypeSymbol(string fullTypeName)
@@ -93,18 +94,26 @@ namespace CompiledHandlebars.Compiler.Introspection
       return null;
     }
 
-
     private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ITypeSymbol> parameters)
     {
       if (methodSymbol.Parameters.Count() != parameters.Count)
         return false;
-      for(int i = 0;i<methodSymbol.Parameters.Count();i++)
+      for (int i = 0; i < methodSymbol.Parameters.Count(); i++)
       {
-        if (!methodSymbol.Parameters[i].Type.Equals(parameters[0]))
+        if (!methodSymbol.Parameters[i].Type.Equals(parameters[i]))
           return false;
       }
       return true;
     }
-    
+
+    public INamedTypeSymbol GetIntTypeSymbol()
+    {
+      return projectCompilations.First().Value.GetSpecialType(SpecialType.System_Int32);
+    }
+
+    public INamedTypeSymbol GetBoolTypeSymbol()
+    {
+      return projectCompilations.First().Value.GetSpecialType(SpecialType.System_Boolean);
+    }
   }
 }

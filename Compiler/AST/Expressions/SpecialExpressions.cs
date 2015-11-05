@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CompiledHandlebars.Compiler.CodeGeneration;
+﻿using CompiledHandlebars.Compiler.CodeGeneration;
 using CompiledHandlebars.Compiler.Introspection;
+using Microsoft.CodeAnalysis;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
@@ -12,7 +8,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"first{state.LoopLevel}", null);
+      return new Context($"first{state.LoopLevel}", state.Introspector.GetBoolTypeSymbol());
     }
   }
 
@@ -20,16 +16,18 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
   {
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"last{state.LoopLevel}", null);
+      return new Context($"last{state.LoopLevel}", state.Introspector.GetBoolTypeSymbol());
     }
   }
 
   internal class IndexExpression : Expression
   {
+
     internal override Context Evaluate(CompilationState state)
     {
-      return new Context($"index{state.LoopLevel}", null);
+      return new Context($"index{state.LoopLevel}", state.Introspector.GetIntTypeSymbol());
     }
-
   }
+
+
 }

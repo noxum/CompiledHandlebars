@@ -48,20 +48,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
 
 
-    /// <summary>
-    /// Yields using Directives:
-    /// using System.Text;
-    /// </summary>
-    internal static UsingDirectiveSyntax[] UsingDirectives =
-      new UsingDirectiveSyntax[]
-      {
-        SF.UsingDirective(SF.ParseName("System.Linq")),
-        SF.UsingDirective(SF.ParseName("System.Text")),
-        SF.UsingDirective(SF.ParseName("System.Net")),
-        SF.UsingDirective(SF.ParseName("System"))
-      };
-
-
     internal static UsingDirectiveSyntax UsingStatic(string name)
     {
       return SF.UsingDirective(SF.Token(SyntaxKind.StaticKeyword), default(NameEqualsSyntax), SF.ParseName(name));

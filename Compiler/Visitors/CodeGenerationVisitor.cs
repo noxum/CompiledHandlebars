@@ -164,7 +164,8 @@ namespace CompiledHandlebars.Compiler.Visitors
         {        
           state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
           return;
-        }        
+        }
+        state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
         state.PushStatement(
           SyntaxHelper.PartialTemplateCall(
             partial.Name, 

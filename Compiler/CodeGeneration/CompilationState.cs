@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     private int line { get; set; }
     private int column { get; set; }
     private Stack<List<StatementSyntax>> resultStack { get; set; } = new Stack<List<StatementSyntax>>();
-    private List<string> usings { get; set; } = new List<string>();
+    private List<string> usings { get; set; } = new List<string>() { "System", "System.Linq", "System.Net", "System.Text" };
     internal int LoopLevel { get; set; } = 0;
     internal RoslynIntrospector Introspector { get; set; }
     internal HandlebarsTemplate Template { get; private set; }
@@ -87,7 +87,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 
     internal void RegisterUsing(string nameSpace)
     {
-      usings.Add(nameSpace);
+      if (!Template.Namespace.Equals(nameSpace) && !usings.Contains(nameSpace))
+        usings.Add(nameSpace);
     }
 
     internal CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
@@ -96,9 +97,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (Introspector.RuntimeUtilsReferenced())
       {
         return SyntaxFactory.CompilationUnit()
-        .AddUsings(
-          SyntaxHelper.UsingDirectives
-        )
         .AddUsings(
           SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")),
           SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper")
@@ -121,9 +119,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       } else
       {
         return SyntaxFactory.CompilationUnit()
-        .AddUsings(
-          SyntaxHelper.UsingDirectives
-        )
         .AddUsings(
           usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray()
         )
