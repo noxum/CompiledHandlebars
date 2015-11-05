@@ -1,6 +1,7 @@
 ﻿using System;
 using CompiledHandlebars.Compiler.AST.Expressions;
 using CompiledHandlebars.Compiler.Visitors;
+using System.Collections.Generic;
 
 namespace CompiledHandlebars.Compiler.AST
 {
@@ -26,6 +27,15 @@ namespace CompiledHandlebars.Compiler.AST
     internal override bool HasExpressionOnLoopLevel<T>()
     {
       return (Expr is T);
+    }
+
+    internal HelperCall TransformToHelperCall()
+    {
+      return new HelperCall(
+          Expr.ToString(),
+          new List<Expression>() { new MemberExpression(new ThisIdentifier(null)) },
+          Line,
+          Column);
     }
   }
 }

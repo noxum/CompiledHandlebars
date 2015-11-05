@@ -64,8 +64,8 @@ namespace CompiledHandlebars.Compiler.Visitors
         else
           state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
       } else
-      {//TODO: Fallback to YieldStatement as HelperCall
-
+      {
+        astLeaf.TransformToHelperCall().Accept(this);
       }
     }
 
