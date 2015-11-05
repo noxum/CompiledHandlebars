@@ -136,19 +136,17 @@ ElseToken
 //-----------------------------------------------
 
 Expression <Expression>
-    = FirstExpression
-    / LastExpression
-    / IndexExpression
+    = SpecialExpression
     / MemberExpression
 
-IndexExpression <IndexExpression>
-    = Whitespace IndexKeyword { new IndexExpression() }
+SpecialExpression <Expression>
+    = Whitespace SpecialExpressionIdentifier v:SpecialExpressionInner { v }
 
-FirstExpression <FirstExpression>
-    = Whitespace FirstKeyword { new FirstExpression() }
-
-LastExpression <LastExpression>
-    = Whitespace LastKeyword { new LastExpression() }
+SpecialExpressionInner <Expression>
+        = FirstKeyword { new FirstExpression() }
+        / LastKeyword { new LastExpression() }
+        / IndexKeyword { new IndexExpression() }
+        / v:(!SpecialKeyword Identifier) #STATE{ AddError(string.Format("Unkown Special Expression '{0}'", v), HandlebarsSyntaxErrorKind.UnknownSpecialExpression, state); } { new MemberExpression(new ThisIdentifier(null)) }   
 
 MemberExpression <MemberExpression>
     = Whitespace value:(SpecialPath/MemberPath) Whitespace { new MemberExpression(value)}
@@ -162,8 +160,8 @@ SpecialPath
     / RootBasedPath
 
 RootBasedPath<IdentifierElement> 
-    = RootKeyword NameDelimiter next:MemberPath { new RootIdentifier(next)}
-    / RootKeyword { new RootIdentifier(null) }
+    = SpecialExpressionIdentifier RootKeyword NameDelimiter next:MemberPath { new RootIdentifier(next)}
+    / SpecialExpressionIdentifier RootKeyword { new RootIdentifier(null) }
 
 ThisBasedPath<IdentifierElement> 
     = ThisKeyword NameDelimiter next:MemberPath { new ThisIdentifier(next)}
@@ -203,7 +201,9 @@ Identifier
 
 ReservedKeywords 
   = ElseKeyword
-  
+ 
+SpecialExpressionIdentifier = "@"  
+SpecialKeyword = FirstKeyword / LastKeyword / IndexKeyword / RootKeyword 
 PartialCallIdentifier = ">"
 BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
@@ -215,10 +215,10 @@ IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"
 ModelKeyword = "model"
-RootKeyword = "@root"
-FirstKeyword = "@first"
-LastKeyword = "@last"
-IndexKeyword = "@index"
+RootKeyword = "root"
+FirstKeyword = "first"
+LastKeyword = "last"
+IndexKeyword = "index"
 AnyOpening = EscapedOpening / Opening
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
