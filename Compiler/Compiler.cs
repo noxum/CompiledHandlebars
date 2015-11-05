@@ -10,7 +10,7 @@ namespace CompiledHandlebars.Compiler
 {
   public static class HbsCompiler
   {
-    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Project project)
+    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Project project, bool includeTimestamp = true)
     {
       var parser = new HbsParser();
       try
@@ -34,7 +34,8 @@ namespace CompiledHandlebars.Compiler
             long generationTime = sw.ElapsedMilliseconds;
             return new Tuple<string, IEnumerable<HandlebarsException>>(
               codeGenerator.CompilationUnit(
-                $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
+                includeTimestamp ? $"{DateTime.Now} | parsing: {parseTime}ms; init: {initTime}; codeGeneration: {generationTime}!"
+                                 : string.Empty
               ).NormalizeWhitespace(indentation: "  ").ToFullString(), codeGenerator.ErrorList);
           }
           return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);

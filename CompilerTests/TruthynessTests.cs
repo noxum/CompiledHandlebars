@@ -22,7 +22,7 @@ namespace CompiledHandlebars.CompilerTests
 
     [TestMethod()]
     [RegisterHandlebarsTemplate("UnreachableCodeTest1", "{{#with Phobos}}{{#if this}}{{else}}{{/if}}{{/with}}", _marsModel, false)]
-    [RegisterHandlebarsTemplate("UnreachableCodeTest2", "{{#with Phobos}}{{#unless this}}{{/unless}}{{/with}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("UnreachableCodeTest2", "{{#with Phobos}}{{#unless this}}{{else}}{{/unless}}{{/with}}", _marsModel, false)]
     public void UnreachableCodeTest()
     {
       ShouldRaiseError("UnreachableCodeTest1", HandlebarsTypeErrorKind.UnreachableCode);

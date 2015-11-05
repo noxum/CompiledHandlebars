@@ -159,6 +159,7 @@
     <Compile Include="TestTemplates\BasicTests\MostBasic1.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest2.cs" />
+    <Compile Include="TestTemplates\HelperTests\ImplicitThisParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\MultipleParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />

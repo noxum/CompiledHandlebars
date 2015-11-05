@@ -2,18 +2,18 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using CompiledHandlebars.CompilerTests;
 
 /**/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class Escaping5
+  public static class ImplicitThisParameterTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append("\\\\ ");
-      sb.Append(WebUtility.HtmlEncode(viewModel.Foo));
+      sb.Append(HelperTests.MarsHelper(viewModel));
       return sb.ToString();
     }
 
@@ -36,4 +36,4 @@ namespace TestTemplates
     {
     }
   }
-}/**/
+}/*Line: 1; Column 70: Could not find Member 'MarsHelper' in Type 'viewModel'!*/

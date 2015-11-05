@@ -76,6 +76,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRaiseError("MalformedPartialCallTest2", HandlebarsSyntaxErrorKind.MalformedPartialCallToken);
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("UnknownSpecialExpressionTest1", "{{@mars}}", _marsModel, false)]
+    public void UnkownSpecialExpressionTest()
+    {
+      ShouldRaiseError("UnknownSpecialExpressionTest1", HandlebarsSyntaxErrorKind.UnknownSpecialExpression);
+    }
+
 
 
   }

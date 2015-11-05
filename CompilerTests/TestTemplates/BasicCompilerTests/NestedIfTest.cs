@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-/*05.11.2015 10:55:39 | parsing: 0ms; init: 1; codeGeneration: 0!*/
+/**/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]

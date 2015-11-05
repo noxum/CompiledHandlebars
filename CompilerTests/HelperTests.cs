@@ -68,6 +68,16 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("SpecialParametersHelperTest2", MarsModelFactory.CreateFullMarsModel(), "first:yes;last:nofirst:no;last:yes");
     }
 
+    [CompiledHandlebarsHelperMethod]
+    public static string MarsHelper(MarsModel mars) => "this is mars";
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("ImplicitThisParameterTest1", "{{MarsHelper}}", _marsModel)]
+    public void ImplicitThisParameterTest()
+    {
+      ShouldRender("ImplicitThisParameterTest1", MarsModelFactory.CreateFullMarsModel(), "this is mars");
+    }
+
 
     private class CompiledHandlebarsHelperMethodAttribute : Attribute
     {
