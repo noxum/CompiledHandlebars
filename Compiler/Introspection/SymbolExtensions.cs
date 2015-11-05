@@ -34,7 +34,9 @@ namespace CompiledHandlebars.Compiler.Introspection
 
       if (symbol.Kind == SymbolKind.NamedType && (symbol as INamedTypeSymbol).IsGenericType)
       {
-        return (symbol as INamedTypeSymbol).AllInterfaces.First(x => x.MetadataName.Equals("IEnumerable`1")).TypeArguments.First();
+        if (symbol.MetadataName.Equals("IEnumerable`1"))
+          return (symbol as INamedTypeSymbol).TypeArguments.First();
+        return (symbol as INamedTypeSymbol).AllInterfaces.First(x => x.MetadataName.Equals("IEnumerable`1"))?.TypeArguments.First();
       }
       return null;
     }
