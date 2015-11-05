@@ -6,6 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+/// <summary>
+/// Tries to adopt the UnitTests from the original repository: https://github.com/wycats/handlebars.js/blob/master/spec/
+/// </summary>
 namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
 {
 
@@ -14,10 +18,24 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
     public string Foo { get; set; }
   }
   
+  //These JavaScript guys... are they all depressed?
+  public class GoodbyeCruelWorldModel
+  {
+    public string Goodbye { get; set; }
+    public string Cruel { get; set; }
+    public string World { get; set; }
+  }
+
+
+  /// <summary>
+  /// https://github.com/wycats/handlebars.js/blob/master/spec/basic.js
+  /// </summary>
   [TestClass]
   public class BasicTests : CompilerTestBase
   {
     private const string _fooModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel}}";
+    private const string _goodbyeCruelWorldModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.GoodbyeCruelWorldModel}}";
+
     static BasicTests()
     {
       assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(BasicTests));
@@ -44,6 +62,60 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
       ShouldRender("Escaping4", new FooModel() { Foo = "food" }, "content \\food");
       ShouldRender("Escaping5", new FooModel() { Foo = "food" }, "\\\\ food");
     }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("CompilingWithBasicContext1", "Goodbye\n{{Cruel}}\n{{World}}!", _goodbyeCruelWorldModel)]
+    public void CompilingWithBasicContext()
+    {
+      ShouldRender("CompilingWithBasicContext1", new GoodbyeCruelWorldModel() { Cruel = "cruel", World = "world" }, "Goodbye\ncruel\nworld!");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("CompilingWithStringContext1", "{{model System.String}}{{.}}{{Length}}")]
+    public void CompilingWithStringContext()
+    {
+      ShouldRender("CompilingWithStringContext1", "bye", "bye3");
+    }
+
+
+    //These tests do not quite fit. Both templates throw compile-time errors 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("CompileWithUndefinedContext1", "Goodbye\n{{cruel}}\n{{world.bar}}!", _fooModel)]
+    [RegisterHandlebarsTemplate("CompileWithUndefinedContext2", "{{#unless Foo}}Goodbye{{../test}}{{test2}}{{/unless}}", _fooModel)]
+    public void CompileWithUndefinedContext()
+    {
+      ShouldRender("CompileWithUndefinedContext1", default(FooModel), "Goodbye\n\n!");
+      ShouldRender("CompileWithUndefinedContext2", default(FooModel), "Goodbye");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("Comments1", "{{! Goodbye}}Goodbye\n{{Cruel}}\n{{World}}!", _goodbyeCruelWorldModel)]
+    [RegisterHandlebarsTemplate("Comments2", "    {{~! comment ~}}      blah", _fooModel)]
+    [RegisterHandlebarsTemplate("Comments3", "    {{~!-- long-comment --~}}      blah", _fooModel)]
+    [RegisterHandlebarsTemplate("Comments4", "    {{! comment ~}}      blah", _fooModel)]
+    [RegisterHandlebarsTemplate("Comments5", "    {{!-- long-comment --~}}      blah", _fooModel)]
+    [RegisterHandlebarsTemplate("Comments6", "    {{~! comment}}      blah", _fooModel)]
+    [RegisterHandlebarsTemplate("Comments7", "    {{~!-- long-comment --}}      blah", _fooModel)]
+    public void Comments()
+    {
+      ShouldRender("Comments1", new GoodbyeCruelWorldModel() { Cruel = "cruel", World = "world" }, "Goodbye\ncruel\nworld!");
+      ShouldRender("Comments2", default(FooModel), "blah");
+      ShouldRender("Comments3", default(FooModel), "blah");
+      ShouldRender("Comments4", default(FooModel), "    blah");
+      ShouldRender("Comments5", default(FooModel), "    blah");
+      ShouldRender("Comments6", default(FooModel), "      blah");
+      ShouldRender("Comments7", default(FooModel), "      blah");
+    }
+
+    /* Mustache blocks not supported 
+    it('boolean', function() {
+    var string = '{{#goodbye}}GOODBYE {{/goodbye}}cruel {{world}}!';
+    shouldCompileTo(string, {goodbye: true, world: 'world'}, 'GOODBYE cruel world!',
+                    'booleans show the contents when true');
+
+    shouldCompileTo(string, {goodbye: false, world: 'world'}, 'cruel world!',
+                    'booleans do not show the contents when false');
+  });*/
 
   }
 }

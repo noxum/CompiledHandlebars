@@ -151,6 +151,17 @@
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments1.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments2.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments3.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments4.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments5.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments6.cs" />
+    <Compile Include="TestTemplates\BasicTests\Comments7.cs" />
+    <Compile Include="TestTemplates\BasicTests\CompileWithUndefinedContext1.cs" />
+    <Compile Include="TestTemplates\BasicTests\CompileWithUndefinedContext2.cs" />
+    <Compile Include="TestTemplates\BasicTests\CompilingWithBasicContext1.cs" />
+    <Compile Include="TestTemplates\BasicTests\CompilingWithStringContext1.cs" />
     <Compile Include="TestTemplates\BasicTests\Escaping1.cs" />
     <Compile Include="TestTemplates\BasicTests\Escaping2.cs" />
     <Compile Include="TestTemplates\BasicTests\Escaping3.cs" />
