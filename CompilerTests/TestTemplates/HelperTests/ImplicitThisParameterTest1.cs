@@ -36,4 +36,4 @@ namespace TestTemplates
     {
     }
   }
-}/*Line: 1; Column 70: Could not find Member 'MarsHelper' in Type 'viewModel'!*/
+}/*Line: 1; Column 70: Could not find Member 'MarsHelper' in Type 'CompiledHandlebars.CompilerTests.TestViewModels.MarsModel'!*/

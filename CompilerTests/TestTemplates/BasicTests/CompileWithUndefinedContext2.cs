@@ -41,5 +41,5 @@ namespace TestTemplates
   }
 }/*Line: 1; Column 93: Error in MemberExpression: Empty ContextStack but PathUp Element ('../')!
 Line: 1; Column 93: Could not find Helper Method '../test'
-Line: 1; Column 104: Could not find Member 'test2' in Type 'viewModel'!
+Line: 1; Column 104: Could not find Member 'test2' in Type 'CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel'!
 Line: 1; Column 104: Could not find Helper Method 'test2'*/

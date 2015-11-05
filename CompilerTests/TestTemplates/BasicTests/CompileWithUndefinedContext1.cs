@@ -37,7 +37,7 @@ namespace TestTemplates
     {
     }
   }
-}/*Line: 2; Column 3: Could not find Member 'cruel' in Type 'viewModel'!
+}/*Line: 2; Column 3: Could not find Member 'cruel' in Type 'CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel'!
 Line: 2; Column 3: Could not find Helper Method 'cruel'
-Line: 3; Column 3: Could not find Member 'world' in Type 'viewModel'!
+Line: 3; Column 3: Could not find Member 'world' in Type 'CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel'!
 Line: 3; Column 3: Could not find Helper Method 'world.bar'*/
