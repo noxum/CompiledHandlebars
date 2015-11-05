@@ -3,23 +3,17 @@ using System.Text;
 using System.Net;
 using System;
 
-/*11/4/2015 4:50:20 PM | parsing: 0ms; init: 3; codeGeneration: 1!*/
+/*11/4/2015 4:50:21 PM | parsing: 0ms; init: 1; codeGeneration: 0!*/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class RedundantTruthynessCheckTest2
+  public static class Escaping4
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Rovers))
-      {
-        foreach (var loopItem0 in viewModel.Rovers)
-        {
-          sb.Append(WebUtility.HtmlEncode(loopItem0.Value.Name));
-        }
-      }
-
+      sb.Append("content \\");
+      sb.Append(WebUtility.HtmlEncode(viewModel.Foo));
       return sb.ToString();
     }
 
