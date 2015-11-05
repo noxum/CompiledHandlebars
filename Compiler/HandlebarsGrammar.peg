@@ -54,10 +54,15 @@ YieldStatement <YieldStatement>
     = val:Expression {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 MarkupLiteral <MarkupLiteral> 
-    = &{ state["trimStart"]==true}value:((!Opening !Closing .)+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
-    / &{ state["trimStart"]==true} value:((!Opening !Closing .)+) #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}
-    / value:((!Opening !Closing .)+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
-    / value:((!Opening !Closing .)+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
+    = &{ state["trimStart"]==true}value:(LiteralContent+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
+    / &{ state["trimStart"]==true} value:(LiteralContent+) #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, false, valueStart.Line, valueStart.Column)}
+    / value:(LiteralContent+) &TrimOpening { new MarkupLiteral(string.Concat(value), false, true, valueStart.Line, valueStart.Column)}
+    / value:(LiteralContent+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
+
+LiteralContent 
+    = "\\" val:"\\" &AnyOpening { val }
+    / "\\"val:AnyOpening  { val }
+    / (!AnyOpening .)
 
 Comment <ASTElementBase>
     = "--" val:(!MultilineCommentClosing .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}
@@ -205,6 +210,7 @@ RootKeyword = "@root"
 FirstKeyword = "@first"
 LastKeyword = "@last"
 IndexKeyword = "@index"
+AnyOpening = EscapedOpening / Opening
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?
