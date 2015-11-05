@@ -2,6 +2,7 @@
 using CompiledHandlebars.Compiler.Introspection;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
@@ -12,12 +13,13 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     {
       Path = path;
     }
-    internal override Context Evaluate(CompilationState state)
+
+    internal override bool TryEvaluate(CompilationState state, out Context context)
     {
       //Copy Stack as identifier elements manipulate (push, pop)
       var cpContextStack = new Stack<Context>();
-      cpContextStack = new Stack<Context>(state.ContextStack.Reverse());
-      return Path.Evaluate(cpContextStack, state);
+      cpContextStack = new Stack<Context>(state.ContextStack.Reverse());      
+      return Path.TryEvaluate(cpContextStack, state, out context);
     }
 
     /// <summary>
@@ -27,14 +29,17 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     /// <returns></returns>
     internal Context EvaluateLoop(CompilationState state)
     {
-      var loopVariable = Evaluate(state);
-      return state.BuildLoopContext(loopVariable.Symbol.GetElementSymbol());
+      Context loopVariable; 
+      if (TryEvaluate(state, out loopVariable))
+        return state.BuildLoopContext(loopVariable.Symbol.GetElementSymbol());
+      return null;
     }
 
     public override string ToString()
     {
       return Path.ToString();
     }
+
 
   }
 }

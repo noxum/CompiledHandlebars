@@ -56,12 +56,17 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(YieldStatement astLeaf)
     {
       state.SetCursor(astLeaf);
-      Context yieldContext = astLeaf.Expr.Evaluate(state);
+      Context yieldContext;
+      if (astLeaf.Expr.TryEvaluate(state, out yieldContext))
+      {
+        if (astLeaf.Type == TokenType.Encoded)
+          state.PushStatement(SyntaxHelper.AppendMemberEncoded(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
+        else
+          state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
+      } else
+      {//TODO: Fallback to YieldStatement as HelperCall
 
-      if (astLeaf.Type == TokenType.Encoded)
-        state.PushStatement(SyntaxHelper.AppendMemberEncoded(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
-      else
-        state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
+      }
     }
 
     public void VisitEnter(HandlebarsTemplate template)
@@ -79,8 +84,12 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astNode);
       state.PushNewBlock();
       //Enter new Context and promise to check its truthyness
-      state.PromiseTruthyCheck(astNode.Expr.Evaluate(state));
-      state.ContextStack.Push(astNode.Expr.Evaluate(state));
+      Context context;
+      if (astNode.Expr.TryEvaluate(state, out context))
+      {
+        state.PromiseTruthyCheck(context);
+        state.ContextStack.Push(context);
+      }
     }
 
     public void VisitLeave(WithBlock astNode)
@@ -93,8 +102,12 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitEnter(IfBlock astNode)
     {
       state.SetCursor(astNode);
-      state.PushNewBlock();
-      state.PromiseTruthyCheck(astNode.Expr.Evaluate(state), astNode.QueryType);
+      Context context;
+      if (astNode.Expr.TryEvaluate(state, out context))
+      {
+        state.PushNewBlock();
+        state.PromiseTruthyCheck(context, astNode.QueryType);
+      }
     }
 
     public void VisitLeave(IfBlock astNode)
@@ -122,13 +135,16 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitEnter(EachBlock astNode)
     {
       state.SetCursor(astNode);
-      var loopedVariable = astNode.Member.Evaluate(state);
-      state.PromiseTruthyCheck(loopedVariable);
-      state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
-      state.PushNewBlock();
-      state.LoopLevel++;
-      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
-        state.SetLastVariable(loopedVariable.FullPath);
+      Context loopedVariable;
+      if (astNode.Member.TryEvaluate(state, out loopedVariable))
+      {
+        state.PromiseTruthyCheck(loopedVariable);
+        state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
+        state.PushNewBlock();
+        state.LoopLevel++;
+        if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
+          state.SetLastVariable(loopedVariable.FullPath);
+      }
     }
 
     public void VisitLeave(EachBlock astNode)
@@ -141,7 +157,11 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.ContextStack.Pop();
       state.LoopLevel--;
       var prepareStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);
-      prepareStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, astNode.Member.Evaluate(state).FullPath, state.PopBlock()));
+      Context context;
+      if (astNode.Member.TryEvaluate(state, out context))
+      {
+        prepareStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, context.FullPath, state.PopBlock()));
+      }
       state.DoTruthyCheck(
           prepareStatements                        
       );
@@ -150,41 +170,48 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void Visit(PartialCall astLeaf)
     {
       state.SetCursor(astLeaf);
-      string memberName = astLeaf.HasExpr ?
-                            astLeaf.Expr.Evaluate(state).FullPath :
-                            state.ContextStack.Peek().FullPath;
-      if (astLeaf.TemplateName.Equals(state.Template.Name))
-      {//Self referencing Template
-        state.PushStatement(SyntaxHelper.SelfReferencingPartialCall(memberName));
-      }
-      else
+      Context argumentContext;
+      if (astLeaf.Expr.TryEvaluate(state, out argumentContext))
       {
-        var partial = state.Introspector.GetPartialHbsTemplate(astLeaf.TemplateName);
-        if (partial == null)
-        {        
-          state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
-          return;
+        if (astLeaf.TemplateName.Equals(state.Template.Name))
+        {//Self referencing Template
+          state.PushStatement(SyntaxHelper.SelfReferencingPartialCall(argumentContext.FullPath));
         }
-        state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
-        state.PushStatement(
-          SyntaxHelper.PartialTemplateCall(
-            partial.Name, 
-            memberName));        
+        else
+        {
+          var partial = state.Introspector.GetPartialHbsTemplate(astLeaf.TemplateName);
+          if (partial == null)
+          {        
+            state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
+            return;
+          }
+          state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
+          state.PushStatement(
+            SyntaxHelper.PartialTemplateCall(
+              partial.Name,
+              argumentContext.FullPath));        
+        }
       }
     }
 
     public void Visit(HelperCall astLeaf)
     {
       state.SetCursor(astLeaf);
-      var parameterSymbols = astLeaf.Parameters.Select(x => x.Evaluate(state).Symbol).ToList();
-      var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, parameterSymbols);
+      var paramContextList = new List<Context>();
+      foreach(var param in astLeaf.Parameters)
+      {
+        Context paramContext;
+        if (param.TryEvaluate(state, out paramContext))
+          paramContextList.Add(paramContext);
+      }            
+      var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, paramContextList.Select(x => x.Symbol).ToList());
       if (helperMethod != null)
       {
         state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
         state.PushStatement(
           SyntaxHelper.AppendFuntionCallResult(
             string.Concat(helperMethod.ContainingType.Name,".",helperMethod.Name),
-            astLeaf.Parameters.Select(x => x.Evaluate(state).FullPath).ToList()));
+            paramContextList.Select(x => x.FullPath).ToList()));
       } 
       else
       {//HelperMethod not found

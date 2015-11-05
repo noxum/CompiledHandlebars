@@ -626,7 +626,7 @@ namespace
                 {
                     r0 = this.ReturnHelper<PartialCall>(startCursor1, ref cursor, state =>
                         #line 51 "HandlebarsGrammar.peg"
-                                      new PartialCall(templateName.ToString(), templateNameStart.Line, templateNameStart.Column)
+                                      new PartialCall(templateName.ToString(), new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column)
                         #line default
                         );
                 }
@@ -708,7 +708,7 @@ namespace
                     {
                         r0 = this.ReturnHelper<PartialCall>(startCursor2, ref cursor, state =>
                             #line 52 "HandlebarsGrammar.peg"
-                                                                                                                                                                                                       new PartialCall(null, vStart.Line, vStart.Column)
+                                                                                                                                                                                                       new PartialCall(null, null, vStart.Line, vStart.Column)
                             #line default
                             );
                     }
