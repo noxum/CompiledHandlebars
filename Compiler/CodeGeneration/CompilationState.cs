@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     private int line { get; set; }
     private int column { get; set; }
     private Stack<List<StatementSyntax>> resultStack { get; set; } = new Stack<List<StatementSyntax>>();
-    private List<string> usings { get; set; } = new List<string>() { "System", "System.Linq", "System.Net", "System.Text" };
+    private List<string> usings { get; set; } = new List<string>() { "System", "System.Linq", "System.Net", "System.Text", "System.Collections.Generic" };
     internal int LoopLevel { get; set; } = 0;
     internal RoslynIntrospector Introspector { get; set; }
     internal HandlebarsTemplate Template { get; private set; }
@@ -37,7 +37,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (modelSymbol == null)
         Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
       ContextStack.Push(new Context("viewModel", modelSymbol));
-      resultStack.Push(new List<StatementSyntax>());
+      resultStack.Push(new List<StatementSyntax>());      
     }
 
     internal void AddTypeError(string message, HandlebarsTypeErrorKind kind)
@@ -137,6 +137,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                     SyntaxHelper.IsTruthyMethodBool(),
                     SyntaxHelper.IsTruthyMethodString(),
                     SyntaxHelper.IsTruthyMethodObject(),
+                    SyntaxHelper.IsTruthyMethodIEnumerableT(),
                     SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
                   )
               )

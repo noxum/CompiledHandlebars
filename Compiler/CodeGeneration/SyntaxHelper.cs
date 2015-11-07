@@ -286,6 +286,40 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       );
     }
 
+
+    /// <summary>
+    ///     public static bool IsTruthy<T>(IEnumerable<T> ie)
+    /// </summary>
+    /// <returns></returns>
+    internal static MethodDeclarationSyntax IsTruthyMethodIEnumerableT()
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PrivateKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier("IsTruthy"),
+          SF.TypeParameterList(new SeparatedSyntaxList<TypeParameterSyntax>().Add(
+            SF.TypeParameter("T"))            
+          ),
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+            default(SyntaxList<AttributeListSyntax>),
+            default(SyntaxTokenList),
+            SF.ParseTypeName("IEnumerable<T>"),
+            SF.Identifier("ie"),
+            default(EqualsValueClauseSyntax)))
+          ),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(
+            SF.ReturnStatement(SF.ParseExpression("ie!=null && ie.Any()"))
+          ),
+          default(SyntaxToken)
+      );
+    }
+
     /// <summary>
     /// sb.Append(Template.Render(membername))
     /// </summary>
