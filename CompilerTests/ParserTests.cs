@@ -11,8 +11,6 @@ namespace CompiledHandlebars.CompilerTests
     //Acts as Dummy inside this class
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
 
-    private readonly HbsParser _parser = new HbsParser();
-
     static ParserTests()
     {
       assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(ParserTests));

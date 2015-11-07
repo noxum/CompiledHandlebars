@@ -92,7 +92,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
 
     private static string AppendErrorsToCode(string code, IEnumerable<HandlebarsException> errors)
     {
-      return string.Concat(code, "/*", string.Join("\n", errors.Select(x => x.Message)), "*/");
+      return string.Concat(code, "/*", string.Join(Environment.NewLine, errors.Select(x => x.Message)), "*/");
     }
 
     protected void ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string expectedResult)
