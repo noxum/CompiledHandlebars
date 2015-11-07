@@ -27,6 +27,17 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
   }
 
 
+  public class NumModel1
+  {
+    public int Num1 { get; set; }
+    public int Num2 { get; set; }
+  }
+
+  public class NumModel2
+  {
+    public NumModel1 Num1 { get; set; }
+  }
+
   /// <summary>
   /// https://github.com/wycats/handlebars.js/blob/master/spec/basic.js
   /// </summary>
@@ -35,6 +46,8 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
   {
     private const string _fooModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel}}";
     private const string _goodbyeCruelWorldModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.GoodbyeCruelWorldModel}}";
+    private const string _numModel1 = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.NumModel1}}";
+    private const string _numModel2 = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.NumModel2}}";
 
     static BasicTests()
     {
@@ -107,7 +120,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
       ShouldRender("Comments7", default(FooModel), "      blah");
     }
 
-    /* Mustache blocks not supported 
+    /* Mustache blocks not supported (yet?!)
     it('boolean', function() {
     var string = '{{#goodbye}}GOODBYE {{/goodbye}}cruel {{world}}!';
     shouldCompileTo(string, {goodbye: true, world: 'world'}, 'GOODBYE cruel world!',
@@ -116,6 +129,17 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
     shouldCompileTo(string, {goodbye: false, world: 'world'}, 'cruel world!',
                     'booleans do not show the contents when false');
   });*/
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("Zeros1", "num1: {{Num1}}, num2: {{Num2}}", _numModel1)]
+    [RegisterHandlebarsTemplate("Zeros2", "{{model System.Int32}}num: {{.}}")]
+    [RegisterHandlebarsTemplate("Zeros3", "num: {{Num1/Num2}}", _numModel2)]
+    public void Zeros()
+    {
+      ShouldRender("Zeros1", new NumModel1() { Num1 = 42, Num2 = 0 }, "num1: 42, num2: 0");
+      ShouldRender("Zeros2", 0, "num: 0");
+      ShouldRender("Zeros3", new NumModel2() { Num1 = new NumModel1() { Num2 = 0 } }, "num: 0");
+    }
 
   }
 }
