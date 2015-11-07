@@ -22,8 +22,16 @@ namespace CompiledHandlebars.RuntimeUtils
     {
       return o != null;
     }
+
+    public static bool IsTruthy<T>(IEnumerable<T> ie)
+    {
+      return (ie != null && ie.Any());
+    }
+
   }
 
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
   public class CompiledHandlebarsTemplateAttribute : Attribute { }
+  [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
   public class CompiledHandlebarsHelperMethodAttribute : Attribute { }
 }

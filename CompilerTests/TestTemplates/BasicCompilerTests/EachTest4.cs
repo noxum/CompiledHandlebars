@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Collections.Generic;
 
 /**/
 namespace TestTemplates
@@ -46,6 +47,11 @@ namespace TestTemplates
     private static bool IsTruthy(object o)
     {
       return o != null;
+    }
+
+    private static bool IsTruthy<T>(IEnumerable<T> ie)
+    {
+      return ie != null && ie.Any();
     }
 
     private class CompiledHandlebarsTemplateAttribute : Attribute
