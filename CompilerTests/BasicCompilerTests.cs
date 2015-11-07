@@ -139,6 +139,16 @@ namespace CompiledHandlebars.Compiler.Tests
       ShouldRender("EachTest5", CelestialBodyFactory.CreateSolarSystem(), "Mercury;Venus;Earth;Mars;");
     }
 
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("EmptyListsAreFalsyTest1", @"{{#if Mountains}}Mountains{{else}}no Mountains{{/if}}", _marsModel)]
+    public void EmptyListsAreFalsyTest()
+    {
+      ShouldRender("EmptyListsAreFalsyTest1", MarsModelFactory.CreateFullMarsModel(), "Mountains");
+      ShouldRender("EmptyListsAreFalsyTest1", new MarsModel(), "no Mountains");
+      ShouldRender("EmptyListsAreFalsyTest1", new MarsModel() { Mountains = new List<MarsModel.Mountain>() } , "no Mountains");
+    }
+    
+
     [TestMethod]
     [RegisterHandlebarsTemplate("WhitespaceControlTest1", @"  {{~Name~}}  ", _marsModel)]
     [RegisterHandlebarsTemplate("WhitespaceControlTest2", "{{#each Plains~}}\n{{Name}}\n{{~/each}}", _marsModel)]
