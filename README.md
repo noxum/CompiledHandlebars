@@ -1,5 +1,7 @@
-# Compiled Handlebars for C#
-A compiler that compiles Handlebars-Templates into native C# code for performant and type-safe serverside HTML rendering.
+Compiled Handlebars for C#
+==========================
+
+Compiling Handlebars-Templates into native C# code for performant and type-safe serverside HTML rendering.
 
 ### Project Status
 This project is currently in an alpha phase. Most of the features planned for the release are implemented but not yet thoroughly tested.
