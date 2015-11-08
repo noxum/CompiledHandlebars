@@ -1,9 +1,10 @@
 ﻿@namespace CompiledHandlebars.Compiler
 @classname HbsParser
+@accessibility internal
 @using CompiledHandlebars.Compiler.AST
 @using CompiledHandlebars.Compiler.AST.Expressions
-
 @using System.Linq
+
 @members
 {
     private static void AddError(string message, HandlebarsSyntaxErrorKind kind, Cursor state)
@@ -21,12 +22,20 @@
 }
 
 Template<HandlebarsTemplate> 
-    = model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    = model:ModelToken preItems:(Element*) RenderBodyToken postItems:(Element*) EOF { new HandlebarsLayout(preItems, postItems, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    / model:ModelToken layout:LayoutToken items:(Element*) EOF { new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    / model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
 
 ModelToken <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
     / v:Opening ModelKeyword (!Closing .)* Closing #STATE{ AddError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, state); } { default(MemberExpression)}
     / v:.* #STATE{ AddError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, state); } { default(MemberExpression) }
+
+LayoutToken
+    = Opening LayoutKeyword value:MemberExpression Closing { value.ToString() }
+
+RenderBodyToken 
+    = Opening RenderBodyKeyword Closing
 
 //------------------------------
 //        ASTElements
@@ -187,6 +196,7 @@ ChildContextName <IdentifierElement>
 NameIdentifier <string>
     = (!ReservedKeywords) val:Identifier {string.Concat(val)}
 
+//TODO: FIX there can be delimiters in these identifiers
 FunctionIdentifier <string>
     = (!ReservedKeywords) val:Identifier {string.Concat(val)}
 TypeIdentifier <string>
@@ -200,7 +210,7 @@ Identifier
 //-------------------------------
 
 ReservedKeywords 
-  = ElseKeyword
+  = ElseKeyword / RenderBodyKeyword
  
 SpecialExpressionIdentifier = "@"  
 SpecialKeyword = FirstKeyword / LastKeyword / IndexKeyword / RootKeyword 
@@ -214,7 +224,9 @@ EachKeyword = "each"
 IfKeyword = "if"
 UnlessKeyword = "unless"
 ElseKeyword = "else"
+RenderBodyKeyword = "body"
 ModelKeyword = "model"
+LayoutKeyword = "layout"
 RootKeyword = "root"
 FirstKeyword = "first"
 LastKeyword = "last"

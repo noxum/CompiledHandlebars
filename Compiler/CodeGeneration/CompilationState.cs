@@ -29,7 +29,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// </summary>
     internal Stack<Context> TruthyStack { get; set; } = new Stack<Context>();   
 
-    public CompilationState(RoslynIntrospector introspector, HandlebarsTemplate template)
+    internal CompilationState(RoslynIntrospector introspector, HandlebarsTemplate template)
     {
       Introspector = introspector;
       Template = template; 
@@ -91,58 +91,92 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         usings.Add(nameSpace);
     }
 
-    internal CompilationUnitSyntax GetCompilationUnit(string nameSpaceComment)
+    internal CompilationUnitSyntax GetCompilationUnitHandlebarsLayout()
     {
-      var ws = new AdhocWorkspace();      
-      if (resultStack.Any())
+      //Two Lists of StatementSyntax for the body of two render methods
+      if (resultStack.Count == 2)
       {
+        var additionalMemberSyntax = new List<MemberDeclarationSyntax>();
+        var usingsSyntax = new List<UsingDirectiveSyntax>();
+        usingsSyntax.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
         if (Introspector.RuntimeUtilsReferenced())
         {
-          return SyntaxFactory.CompilationUnit()
-          .AddUsings(
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")),
-            SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper")
-          )
-          .AddUsings(
-            usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray()
-          )
-          .AddMembers(
-            SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)
-              .AddMembers(
-                SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
-                  .AddMembers(
-                    SyntaxHelper.RenderWithParameter(Template.Model.ToString())
-                      .AddBodyStatements(
-                        resultStack.Pop().ToArray()
-                      )
-                  )
-              )
-          );
+          usingsSyntax.Add(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")));
+          usingsSyntax.Add(SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper"));
         }
         else
         {
-          return SyntaxFactory.CompilationUnit()
-          .AddUsings(
-            usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray()
-          )
-          .AddMembers(
-            SyntaxHelper.HandlebarsNamespace(Template.Namespace, nameSpaceComment)
-              .AddMembers(
-                SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name)
-                  .AddMembers(
-                    SyntaxHelper.RenderWithParameter(Template.Model.ToString())
-                      .AddBodyStatements(
-                        resultStack.Pop().ToArray()
-                      ),
-                    SyntaxHelper.IsTruthyMethodBool(),
-                    SyntaxHelper.IsTruthyMethodString(),
-                    SyntaxHelper.IsTruthyMethodObject(),
-                    SyntaxHelper.IsTruthyMethodIEnumerableT(),
-                    SyntaxHelper.CompiledHandlebarsTemplateAttributeClass()
-                  )
-              )
-          );
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodBool());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodString());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodObject());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
+          additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsLayoutAttributeClass());
         }
+        return SyntaxFactory.CompilationUnit()
+        .AddUsings(
+          usingsSyntax.ToArray()
+        )
+        .AddMembers(
+          SyntaxHelper.HandlebarsNamespace(Template.Namespace)
+            .AddMembers(
+              SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.LAYOUTATTRIBUTE)
+                .AddMembers(
+                  SyntaxHelper.RenderWithParameter(Template.Model.ToString(), "PostRender")
+                    .AddBodyStatements(
+                      resultStack.Pop().ToArray()
+                    ),
+                  SyntaxHelper.RenderWithParameter(Template.Model.ToString(), "PreRender")
+                    .AddBodyStatements(
+                      resultStack.Pop().ToArray()
+                    )
+                ).AddMembers(
+                  additionalMemberSyntax.ToArray()
+                )
+            )
+        );
+      }
+      return SyntaxFactory.CompilationUnit();
+    }
+
+    //TODO: Too similar to GetCompilationUnitHandlebarsLayout. Clean up
+    internal CompilationUnitSyntax GetCompilationUnitHandlebarsTemplate()
+    {
+      //One List of StatementSyntax for the body of one render method
+      if (resultStack.Count == 1)
+      {        
+        var additionalMemberSyntax = new List<MemberDeclarationSyntax>();
+        var usingsSyntax = new List<UsingDirectiveSyntax>();
+        usingsSyntax.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
+        if (Introspector.RuntimeUtilsReferenced())
+        {
+          usingsSyntax.Add(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")));
+          usingsSyntax.Add(SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper"));
+        } else
+        {
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodBool());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodString());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodObject());
+          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
+          additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());          
+        }
+        return SyntaxFactory.CompilationUnit()
+        .AddUsings(
+          usingsSyntax.ToArray()
+        )
+        .AddMembers(
+          SyntaxHelper.HandlebarsNamespace(Template.Namespace)
+            .AddMembers(
+              SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.TEMPLATEATTRIBUTE)
+                .AddMembers(
+                  SyntaxHelper.RenderWithParameter(Template.Model.ToString())
+                    .AddBodyStatements(
+                      resultStack.Pop().ToArray()
+                    )
+                ).AddMembers(
+                  additionalMemberSyntax.ToArray()
+                )
+            )
+        );        
       }
       return SyntaxFactory.CompilationUnit();      
     }

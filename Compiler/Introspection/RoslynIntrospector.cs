@@ -67,12 +67,23 @@ namespace CompiledHandlebars.Compiler.Introspection
 
     public INamedTypeSymbol GetPartialHbsTemplate(string templateName)
     {
-      foreach(var comp in projectCompilations.Values)
+      return FindClassesWithNameAndAttribute(templateName, StringConstants.TEMPLATEATTRIBUTEFULL);
+    }
+
+    public INamedTypeSymbol GetLayoutHbsTemplate(string layoutName)
+    {
+      return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL);
+    }
+
+    private INamedTypeSymbol FindClassesWithNameAndAttribute(string name, string attribute)
+    {
+      //TODO: Search projects in correct order (e.g. first containing project then referenced)
+      foreach (var comp in projectCompilations.Values)
       {
-        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(templateName))
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(name))
                                         .OfType<INamedTypeSymbol>()
                                         .FirstOrDefault(x => x.GetAttributes()
-                                                              .Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsTemplateAttribute")));
+                                                              .Any(y => y.AttributeClass.Name.Equals(attribute)));
         if (template != null)
           return template;
       }

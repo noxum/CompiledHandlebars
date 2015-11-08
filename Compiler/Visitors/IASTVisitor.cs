@@ -27,5 +27,11 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     void VisitEnter(HandlebarsTemplate template);
     void VisitLeave(HandlebarsTemplate template);
+
+    void VisitEnter(LayoutedHandlebarsTemplate layoutedTemplate);
+    void VisitLeave(LayoutedHandlebarsTemplate layoutedTemplate);
+
+    void VisitRenderBody(HandlebarsLayout layout);
+    void VisitLeave(HandlebarsLayout layout);
   }
 }

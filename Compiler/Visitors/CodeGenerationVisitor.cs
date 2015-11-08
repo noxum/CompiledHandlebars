@@ -7,12 +7,15 @@ using CompiledHandlebars.Compiler.AST;
 using CompiledHandlebars.Compiler.Introspection;
 using CompiledHandlebars.Compiler.CodeGeneration;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CompiledHandlebars.Compiler.Visitors
 {
   internal class CodeGenerationVisitor : IASTVisitor
   {
     private CompilationState state { get; set; }
+    private CompilationUnitSyntax resultingCompilationUnit { get; set; } 
+
 
     public List<HandlebarsException> ErrorList
     {
@@ -26,11 +29,12 @@ namespace CompiledHandlebars.Compiler.Visitors
       state = new CompilationState(introspector, template);
       state.Introspector = introspector;
     }
-    public void GenerateCode()
+    public CompilationUnitSyntax GenerateCode()
     {
       try
       {
         state.Template.Accept(this);
+        return resultingCompilationUnit;
       } catch(HandlebarsTypeError e)
       {
         state.AddTypeError(e);
@@ -38,10 +42,7 @@ namespace CompiledHandlebars.Compiler.Visitors
       {
         state.AddTypeError($"Compilation failed: {e.Message}", HandlebarsTypeErrorKind.CompilationFailed);
       }
-    }
-    public CompilationUnitSyntax CompilationUnit(string templateComment)
-    {
-      return state.GetCompilationUnit(templateComment);
+      return SyntaxFactory.CompilationUnit();
     }
 
     public void Visit(MarkupLiteral astLeaf)
@@ -69,15 +70,6 @@ namespace CompiledHandlebars.Compiler.Visitors
       }
     }
 
-    public void VisitEnter(HandlebarsTemplate template)
-    {
-      state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
-    }
-
-    public void VisitLeave(HandlebarsTemplate template)
-    {
-      state.PushStatement(SyntaxHelper.ReturnSBToString);
-    }
 
     public void VisitEnter(WithBlock astNode)
     {
@@ -187,7 +179,7 @@ namespace CompiledHandlebars.Compiler.Visitors
           }
           state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
           state.PushStatement(
-            SyntaxHelper.PartialTemplateCall(
+            SyntaxHelper.HbsTemplateCall(
               partial.Name,
               argumentContext.FullPath));        
         }
@@ -219,5 +211,68 @@ namespace CompiledHandlebars.Compiler.Visitors
         return;
       }
     }
+
+
+    public void VisitEnter(HandlebarsTemplate template)
+    {
+      state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+    }
+
+
+    public void VisitLeave(HandlebarsTemplate template)
+    {
+      state.PushStatement(SyntaxHelper.ReturnSBToString);
+      resultingCompilationUnit = state.GetCompilationUnitHandlebarsTemplate();
+    }
+
+    public void VisitEnter(LayoutedHandlebarsTemplate layoutedTemplate)
+    {
+      VisitEnter(layoutedTemplate as HandlebarsTemplate);
+      var layout = state.Introspector.GetLayoutHbsTemplate(layoutedTemplate.LayoutName);
+      if (layout == null)
+      {
+        state.AddTypeError($"Could not find layout '{layoutedTemplate.LayoutName}'", HandlebarsTypeErrorKind.UnknownLayout);
+        return;
+      }
+      state.RegisterUsing(layout.ContainingNamespace.ToDisplayString());
+      state.PushStatement(
+        SyntaxHelper.HbsTemplateCall(
+          layout.Name,
+          //Correct here as the ContextStack contains only the root context at the beginning
+          state.ContextStack.Peek().FullPath, 
+          methodName: "PreRender"));              
+    }
+
+    public void VisitLeave(LayoutedHandlebarsTemplate layoutedTemplate)
+    {
+      var layout = state.Introspector.GetLayoutHbsTemplate(layoutedTemplate.LayoutName);
+      if (layout == null)
+      {
+        state.AddTypeError($"Could not find layout '{layoutedTemplate.LayoutName}'", HandlebarsTypeErrorKind.UnknownLayout);
+        return;
+      }
+      state.PushStatement(
+        SyntaxHelper.HbsTemplateCall(
+          layout.Name,
+          //Correct here as the ContextStack contains only the root context at the end
+          state.ContextStack.Peek().FullPath,
+          methodName: "PostRender"));
+      VisitLeave(layoutedTemplate as HandlebarsTemplate);
+    }
+
+
+    public void VisitRenderBody(HandlebarsLayout layout)
+    {
+      state.PushStatement(SyntaxHelper.ReturnSBToString);
+      state.PushNewBlock();
+      state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+    }
+
+    public void VisitLeave(HandlebarsLayout layout)
+    {
+      state.PushStatement(SyntaxHelper.ReturnSBToString);
+      resultingCompilationUnit = state.GetCompilationUnitHandlebarsLayout();
+    }
+
   }
 }

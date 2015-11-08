@@ -57,11 +57,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// Yields a NamespaceDeclaration:
     /// namespace CompiledHandlebars{}
     /// </summary>
-    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string nameSpace, string comment)
+    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string nameSpace)
     {
-      return SF.NamespaceDeclaration(SF.ParseName(nameSpace))
-              .WithLeadingTrivia(
-                SF.SyntaxTrivia(SyntaxKind.MultiLineCommentTrivia, string.Concat("/*",comment,"*/")));
+      return SF.NamespaceDeclaration(SF.ParseName(nameSpace));
     }
 
 
@@ -69,13 +67,13 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// Yields the CompiledHandlebars Class Declaration ClassDeclaration
     /// public static class CompiledHandlebarsTemplate<TViewModel> {}
     /// </summary>
-    internal static ClassDeclarationSyntax CompiledHandlebarsClassDeclaration(string templateName)
+    internal static ClassDeclarationSyntax CompiledHandlebarsClassDeclaration(string templateName, string attribute)
     {
       return
         SF.ClassDeclaration(
           new SyntaxList<AttributeListSyntax>().Add(
           SF.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().Add(
-            SF.Attribute(SF.ParseName("CompiledHandlebarsTemplate")))
+            SF.Attribute(SF.ParseName(attribute)))
           )),
           SF.TokenList(
             SF.Token(SyntaxKind.PublicKeyword),
@@ -92,7 +90,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// Yields the Render Method with ViewModel Parameter:
     /// public static string Render(TViewModel viewModel){}
     /// </summary>
-    internal static MethodDeclarationSyntax RenderWithParameter(string typeName)
+    internal static MethodDeclarationSyntax RenderWithParameter(string typeName, string methodName = "Render")
     {
       return
         SF.MethodDeclaration(
@@ -102,7 +100,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             SF.Token(SyntaxKind.StaticKeyword)),
           SF.PredefinedType(SF.Token(SyntaxKind.StringKeyword)),
           default(ExplicitInterfaceSpecifierSyntax),
-          SF.Identifier("Render"),
+          SF.Identifier(methodName),
           default(TypeParameterListSyntax),
           SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SF.Parameter(
             default(SyntaxList<AttributeListSyntax>),
@@ -326,7 +324,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// <param name="templateTypeName"></param>
     /// <param name="memberName"></param>
     /// <returns></returns>
-    internal static ExpressionStatementSyntax PartialTemplateCall(string templateTypeName, string memberName)
+    internal static ExpressionStatementSyntax HbsTemplateCall(string templateTypeName, string memberName, string methodName = "Render")
     {
       return
         SF.ExpressionStatement(
@@ -336,7 +334,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
           .AddArgumentListArguments(
             SF.Argument(
               SF.InvocationExpression(
-                SF.ParseExpression($"{templateTypeName}.Render")
+                SF.ParseExpression($"{templateTypeName}.{methodName}")
               ).AddArgumentListArguments(
                 SF.Argument(SF.ParseExpression(memberName))
               )
@@ -375,7 +373,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             default(SyntaxList<AttributeListSyntax>),
             SF.TokenList(
               SF.Token(SyntaxKind.PrivateKeyword)),
-            SF.Identifier("CompiledHandlebarsTemplateAttribute"),
+            SF.Identifier(StringConstants.TEMPLATEATTRIBUTEFULL),
             default(TypeParameterListSyntax),
             SF.BaseList(new SeparatedSyntaxList<BaseTypeSyntax>().Add(
               SF.SimpleBaseType(SF.ParseTypeName("Attribute")))),
@@ -383,6 +381,28 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             default(SyntaxList<MemberDeclarationSyntax>)
           );
     }
+
+    /// <summary>
+    /// private class CompiledHandlebarsTemplateAttribute : Attribute
+    /// </summary>
+    /// <returns></returns>
+    internal static ClassDeclarationSyntax CompiledHandlebarsLayoutAttributeClass()
+    {
+      return
+        SF.ClassDeclaration(
+            default(SyntaxList<AttributeListSyntax>),
+            SF.TokenList(
+              SF.Token(SyntaxKind.PrivateKeyword)),
+            SF.Identifier(StringConstants.LAYOUTATTRIBUTEFULL),
+            default(TypeParameterListSyntax),
+            SF.BaseList(new SeparatedSyntaxList<BaseTypeSyntax>().Add(
+              SF.SimpleBaseType(SF.ParseTypeName("Attribute")))),
+            default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+            default(SyntaxList<MemberDeclarationSyntax>)
+          );
+    }
+    
+
 
 
     internal static IfStatementSyntax IfIsTruthy(List<string> elementsToCheck, AST.IfType ifType)
