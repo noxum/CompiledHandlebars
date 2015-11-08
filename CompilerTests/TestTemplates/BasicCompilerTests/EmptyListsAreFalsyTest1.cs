@@ -4,7 +4,6 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-/**/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]

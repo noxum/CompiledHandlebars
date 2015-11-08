@@ -6,15 +6,20 @@ using System.Collections.Generic;
 
 namespace TestTemplates
 {
-  [CompiledHandlebarsTemplate]
-  public static class PathTest2
+  [CompiledHandlebarsLayout]
+  public static class BasicLayoutTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string PostRender(System.String viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      sb.Append(":");
-      sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+      sb.Append("</h1>");
+      return sb.ToString();
+    }
+
+    public static string PreRender(System.String viewModel)
+    {
+      var sb = new StringBuilder();
+      sb.Append("<h1>");
       return sb.ToString();
     }
 
@@ -38,7 +43,7 @@ namespace TestTemplates
       return ie != null && ie.Any();
     }
 
-    private class CompiledHandlebarsTemplateAttribute : Attribute
+    private class CompiledHandlebarsLayoutAttribute : Attribute
     {
     }
   }

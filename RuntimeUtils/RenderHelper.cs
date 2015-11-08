@@ -32,6 +32,12 @@ namespace CompiledHandlebars.RuntimeUtils
 
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
   public class CompiledHandlebarsTemplateAttribute : Attribute { }
+
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+  public class CompiledHandlebarsLayoutAttribute : Attribute
+  {
+  }
+
   [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
   public class CompiledHandlebarsHelperMethodAttribute : Attribute { }
 }

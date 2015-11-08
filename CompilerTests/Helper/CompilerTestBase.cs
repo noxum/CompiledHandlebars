@@ -34,7 +34,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
         foreach (var template in attrList)
         {//Get compiled templates
           //Dont include timestamp as then everytime the unittests are run, the resulting templates are checked out
-          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, project, includeTimestamp: false);
+          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, project);
           compiledCode.Add(template._name, code);
           if (template._include)
           {

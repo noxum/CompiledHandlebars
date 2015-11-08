@@ -7,14 +7,14 @@ using System.Collections.Generic;
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class PathTest2
+  public static class BasicLayoutTest2
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string Render(System.String viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      sb.Append(":");
-      sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+      sb.Append(BasicLayoutTest1.PreRender(viewModel));
+      sb.Append(WebUtility.HtmlEncode(viewModel));
+      sb.Append(BasicLayoutTest1.PostRender(viewModel));
       return sb.ToString();
     }
 

@@ -5,7 +5,6 @@ using System.Text;
 using System.Collections.Generic;
 using CompiledHandlebars.CompilerTests;
 
-/**/
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]

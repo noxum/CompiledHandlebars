@@ -119,6 +119,7 @@
     <Compile Include="HelperTests.cs" />
     <Compile Include="Helper\CompilerTestBase.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
+    <Compile Include="LayoutTests.cs" />
     <Compile Include="PartialTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserTests.cs" />
@@ -178,6 +179,8 @@
     <Compile Include="TestTemplates\HelperTests\MultipleParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
+    <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest1.cs" />
+    <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />
