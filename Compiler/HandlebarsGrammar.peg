@@ -46,7 +46,7 @@ Element
 
 Leaf <ASTElementBase>
     = Opening value:HandlebarsLeaf Closing { value }
-    / EscapedOpening TrimWhitespaceIdentifier? value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
+    / EscapedOpening value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
     / MarkupLiteral
 
 HandlebarsLeaf <ASTElementBase>
