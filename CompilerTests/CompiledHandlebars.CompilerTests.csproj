@@ -181,6 +181,8 @@
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest1.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest2.cs" />
+    <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest1.cs" />
+    <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />
@@ -206,6 +208,7 @@
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest3.cs" />
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
+    <Compile Include="TestViewModels\PageModel.cs" />
     <Compile Include="TestViewModels\SelfReferencingViewModel.cs" />
     <Compile Include="TestViewModels\SolarSystem.cs" />
     <Compile Include="TruthynessTests.cs" />
