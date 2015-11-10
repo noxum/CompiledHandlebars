@@ -78,7 +78,6 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("ImplicitThisParameterTest1", MarsModelFactory.CreateFullMarsModel(), "this is mars");
     }
 
-
     private class CompiledHandlebarsHelperMethodAttribute : Attribute
     {
     }

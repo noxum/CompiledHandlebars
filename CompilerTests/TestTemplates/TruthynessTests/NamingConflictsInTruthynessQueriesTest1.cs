@@ -7,26 +7,19 @@ using System.Collections.Generic;
 namespace TestTemplates
 {
   [CompiledHandlebarsTemplate]
-  public static class NestedIfTest
+  public static class NamingConflictsInTruthynessQueriesTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.NamingConflictsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Phobos))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Items))
       {
-        sb.Append("Phobos:");
-        if (IsTruthy(viewModel.Phobos.Name))
+        if (IsTruthy(viewModel.ItemsTitle))
         {
-          sb.Append("HasName");
+          sb.Append("<h1>");
+          sb.Append(WebUtility.HtmlEncode(viewModel.ItemsTitle));
+          sb.Append("</h1>");
         }
-        else
-        {
-          sb.Append("HasNoName");
-        }
-      }
-      else
-      {
-        sb.Append("NoPhobos");
       }
 
       return sb.ToString();

@@ -79,8 +79,7 @@ namespace CompiledHandlebars.CompilerTests
     public void UnkownSpecialExpressionTest()
     {
       ShouldRaiseError("UnknownSpecialExpressionTest1", HandlebarsSyntaxErrorKind.UnknownSpecialExpression);
-    }
-
+    }    
 
 
   }

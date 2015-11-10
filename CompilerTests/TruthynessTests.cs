@@ -15,6 +15,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
     private const string _starModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.StarModel}}";
+    private const string _namingConfModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.NamingConflictsModel}}";
     static TruthynessTests()
     {
       assemblyWithCompiledTemplates = CompileTemplatesToAssembly(typeof(TruthynessTests));
@@ -54,6 +55,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("RedundantTruthynessCheckTest3", MarsModelFactory.CreateFullMarsModel(), "OpportunityCuriosity");
       ShouldContainCode("RedundantTruthynessCheckTest3", @"IsTruthy\(viewModel\)", 1);
       ShouldContainCode("RedundantTruthynessCheckTest3", @"IsTruthy\(viewModel.Rovers\)", 1);
+    }
+
+    [TestMethod()]
+    [RegisterHandlebarsTemplate("NamingConflictsInTruthynessQueriesTest1", "{{#if Items}}{{#if ItemsTitle}}<h1>{{ItemsTitle}}</h1>{{/if}}{{/if}}", _namingConfModel)]
+    public void NamingConflictsInTruthynessQueriesTest()
+    {
+      ShouldRender("NamingConflictsInTruthynessQueriesTest1", new NamingConflictsModel() { Items = new List<string>() { "Item1" }, ItemsTitle = "Title" }, "<h1>Title</h1>");
     }
 
   }

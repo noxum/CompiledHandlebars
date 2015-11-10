@@ -203,11 +203,13 @@
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest3.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest2.cs" />
+    <Compile Include="TestTemplates\TruthynessTests\NamingConflictsInTruthynessQueriesTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest2.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest3.cs" />
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
+    <Compile Include="TestViewModels\NamingConflicts.cs" />
     <Compile Include="TestViewModels\PageModel.cs" />
     <Compile Include="TestViewModels\SelfReferencingViewModel.cs" />
     <Compile Include="TestViewModels\SolarSystem.cs" />
