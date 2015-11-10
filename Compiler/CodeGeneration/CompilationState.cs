@@ -226,34 +226,32 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// <param name="contextToCheck"></param>
     /// <returns></returns>
     private List<string> GetQueryElements(Context lastCheckedContext, Context contextToCheck)
-    {
-      var argumentList = new List<string>();
-      var pathToCheck = contextToCheck.FullPath;
-      if (lastCheckedContext != null
-          && contextToCheck.FullPath.StartsWith(lastCheckedContext.FullPath)
-          && lastCheckedContext.FullPath.Contains("."))
-      {//The context to check is directly depended from the context checked before
-        if (lastCheckedContext.Truthy != contextToCheck.Truthy)//Unreachable Code
-          AddTypeError("Unreachable code detected", HandlebarsTypeErrorKind.UnreachableCode); 
-        if (lastCheckedContext.FullPath.Equals(contextToCheck.FullPath))
-          return null;//Context has already been checked. Nothing to check
-        //Get the unchecked subpath
-        pathToCheck = contextToCheck.FullPath.Substring(lastCheckedContext.FullPath.Length + 1);
-        //Split it into elements
-        var elements = pathToCheck.Split('.');
-        for(int i = 1; i<=elements.Length;i++)
-        {//then join them back together with the prefix
-          argumentList.Add(string.Join(".", lastCheckedContext.FullPath, string.Join(".", elements.Take(i).ToArray())));
-        }
-      } else
-      {//The context to check is independed from the context checked before
-        var elements = pathToCheck.Split('.');
-        for (int i = 1; i <= elements.Length; i++)
+    {//Items -> ItemsTitle
+      var resultList = new List<string>();      
+      var lastCheckedElements = lastCheckedContext?.FullPath.Split('.') ?? new string[0];
+      var pathToCheckElements = contextToCheck.FullPath.Split('.');        
+      List<string> relevantElements = new List<string>();
+      List<string> prefixElements = new List<string>();
+      if (lastCheckedElements.Any())
+      {
+        int i = 0;
+        for (i = 0; i < lastCheckedElements.Length; i++)
         {
-          argumentList.Add(string.Join(".", elements.Take(i).ToArray()));
+          if (lastCheckedElements[i].Equals(pathToCheckElements[i]))
+            prefixElements.Add(lastCheckedElements[i]);
+          else
+            break;
         }
+        relevantElements.AddRange(pathToCheckElements.Skip(i));
       }
-      return argumentList;
+      else
+        relevantElements = pathToCheckElements.ToList();
+      string prefix = prefixElements.Any() ? string.Join(".", prefixElements) + ".": string.Empty;
+      for (int i = 1; i <= relevantElements.Count; i++)
+      {//then join them back together with the prefix        
+        resultList.Add(string.Concat(prefix, string.Join(".", relevantElements.Take(i).ToArray())));
+      }
+      return resultList;
     }
 
     internal Context BuildLoopContext(ITypeSymbol symbol)
