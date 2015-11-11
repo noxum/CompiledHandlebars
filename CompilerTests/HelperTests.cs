@@ -42,10 +42,7 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     [CompiledHandlebarsHelperMethod]
-    public static string IsMoonOf(MarsModel mars, MoonModel moon)
-    {
-      return $"{moon.Name} is a moon of {mars.Name}";
-    }
+    public static string IsMoonOf(MarsModel mars, MoonModel moon) => $"{moon.Name} is a moon of {mars.Name}";
 
     [TestMethod]
     [RegisterHandlebarsTemplate("MultipleParametersHelperTest1", "{{IsMoonOf this Deimos}}", _marsModel)]

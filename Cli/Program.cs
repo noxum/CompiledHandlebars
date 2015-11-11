@@ -11,7 +11,7 @@ namespace CompiledHandlebars.Cli
   {
     static void Main(string[] args)
     {
-      HbsCompiler.Compile("{{model Test}} test {{Test}}", string.Empty, string.Empty, null);
+      //TODO::
     }
   }
 }

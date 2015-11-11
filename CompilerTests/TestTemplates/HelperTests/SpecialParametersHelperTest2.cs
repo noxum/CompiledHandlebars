@@ -21,9 +21,7 @@ namespace CompiledHandlebars.CompilerTests
         {
           last1 = index1 == (viewModel.Plains.Count() - 1);
           sb.Append("first:");
-          sb.Append(HelperTests.BoolToYesNo(first1));
           sb.Append(";last:");
-          sb.Append(HelperTests.BoolToYesNo(last1));
           index1++;
           first1 = false;
         }
@@ -56,4 +54,5 @@ namespace CompiledHandlebars.CompilerTests
     {
     }
   }
-}/**/
+}/*Line: 1; Column 92: Could not find Helper Method 'BoolToYesNo'
+Line: 1; Column 120: Could not find Helper Method 'BoolToYesNo'*/
