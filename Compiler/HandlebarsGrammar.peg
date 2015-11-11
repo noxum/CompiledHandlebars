@@ -46,14 +46,14 @@ Element
 
 Leaf <ASTElementBase>
     = Opening value:HandlebarsLeaf Closing { value }
-    / EscapedOpening value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }
+    / EscapedOpening value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }    
     / MarkupLiteral
 
 HandlebarsLeaf <ASTElementBase>
     = CommentIdentifier val:Comment { val }
     / PartialCallIdentifier val:PartialCall { val } 
     / YieldStatement
-    / HelperCall
+    / HelperCall    
 
 PartialCall <PartialCall>
     = templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
@@ -250,4 +250,4 @@ ThisKeyword = "this" / ("."!".")
 
 EOF 
   = !.
-  / c:. 
+  / c:. #STATE{ AddError(string.Format("Unexpected Character '{0}'", c), HandlebarsSyntaxErrorKind.UnexpectedCharacter, state); } { c }   
