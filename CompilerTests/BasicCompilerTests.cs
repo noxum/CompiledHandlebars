@@ -172,6 +172,17 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("CommentTest3", MarsModelFactory.CreateFullMarsModel(), "No Comment");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("StaticHandlebarsTemplateTest1", "StaticString")]
+    [RegisterHandlebarsTemplate("StaticHandlebarsTemplateTest2", "{{NoHandlebarsToken")]
+    [RegisterHandlebarsTemplate("StaticHandlebarsTemplateTest3", "\\{{NoHandlebarsToken}}")]
+    public void StaticHandlebarsTemplateTest()
+    {
+      ShouldRender("StaticHandlebarsTemplateTest1", "StaticString");
+      ShouldRender("StaticHandlebarsTemplateTest2", "{{NoHandlebarsToken");
+      ShouldRender("StaticHandlebarsTemplateTest3", "{{NoHandlebarsToken}}");
+    }
+
 
   }
 }

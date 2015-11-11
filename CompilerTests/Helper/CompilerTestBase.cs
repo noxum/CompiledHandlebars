@@ -100,6 +100,13 @@ namespace CompiledHandlebars.CompilerTests.Helper
       return string.Concat(code, "/*", string.Join(Environment.NewLine, errors.Select(x => x.Message)), "*/");
     }
 
+    protected void ShouldRender(string templateName, string expectedResult)
+    {
+      var template = assemblyWithCompiledTemplates.GetType($"{this.GetType().Namespace}.{templateName}");
+      var renderResult = template.GetMethod("Render").Invoke(null, new object[] { }) as string;
+      Assert.AreEqual(expectedResult, renderResult);
+
+    }
     protected void ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string expectedResult)
     {
       var template = assemblyWithCompiledTemplates.GetType($"{this.GetType().Namespace}.{templateName}");

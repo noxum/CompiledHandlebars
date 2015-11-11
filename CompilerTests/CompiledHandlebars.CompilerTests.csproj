@@ -137,6 +137,9 @@
     <Compile Include="TestTemplates\BasicCompilerTests\NestedIfTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest2.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\StaticHandlebarsTemplateTest1.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\StaticHandlebarsTemplateTest2.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\StaticHandlebarsTemplateTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\ThisTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\ThisTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\ThisTest3.cs" />
