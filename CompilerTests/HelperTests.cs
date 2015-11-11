@@ -75,6 +75,31 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("ImplicitThisParameterTest1", MarsModelFactory.CreateFullMarsModel(), "this is mars");
     }
 
+    [CompiledHandlebarsHelperMethod]
+    public static string ConcatStrings(IEnumerable<string> values) => string.Concat(values);
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("InterfaceAsParameterTest1", "{{ConcatStrings Rovers.Keys}}",_marsModel)]
+    public void InterfaceAsParameterTest()
+    {
+      ShouldRender("InterfaceAsParameterTest1", MarsModelFactory.CreateFullMarsModel(), "OpportunityCuriosity");
+    }
+
+    [CompiledHandlebarsHelperMethod]
+    public static string EmitPlanetName(PlanetModel planet) => planet.Name;
+
+    [CompiledHandlebarsHelperMethod]
+    public static string EmitCelestialBodyName(CelestialBodyModel celestialBody) => celestialBody.Name;
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("BaseAsParameterTest1", "{{EmitPlanetName this}}", _marsModel)]
+    [RegisterHandlebarsTemplate("BaseAsParameterTest2", "{{EmitCelestialBodyName this}}", _marsModel)]
+    public void BaseAsParameterTest()
+    {
+      ShouldRender("BaseAsParameterTest1", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("BaseAsParameterTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
+    }
+
     private class CompiledHandlebarsHelperMethodAttribute : Attribute
     {
     }

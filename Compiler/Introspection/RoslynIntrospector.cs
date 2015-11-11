@@ -111,10 +111,21 @@ namespace CompiledHandlebars.Compiler.Introspection
         return false;
       for (int i = 0; i < methodSymbol.Parameters.Count(); i++)
       {
-        if (!methodSymbol.Parameters[i].Type.Equals(parameters[i]))
+        if (!DoesParameterMatchType(methodSymbol.Parameters[i],parameters[i]))
           return false;
       }
       return true;
+    }
+
+    private static bool DoesParameterMatchType(IParameterSymbol param, ITypeSymbol type)
+    {
+      if (param.Type.Equals(type))
+        return true;
+      if (type.BaseType!=null && DoesParameterMatchType(param, type.BaseType))
+        return true;
+      if (param.Type.TypeKind == TypeKind.Interface)
+        return type.AllInterfaces.Any(x => x.Equals(param.Type));
+      return false;
     }
 
     public INamedTypeSymbol GetIntTypeSymbol()

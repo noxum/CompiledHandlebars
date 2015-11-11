@@ -17,6 +17,7 @@ namespace CompiledHandlebars.CompilerTests
         int index1 = 0;
         foreach (var loopItem0 in viewModel.Plains)
         {
+          sb.Append(HelperTests.IndexPlusOne(index1));
           sb.Append(":");
           sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
           index1++;
@@ -50,4 +51,4 @@ namespace CompiledHandlebars.CompilerTests
     {
     }
   }
-}/*Line: 1; Column 86: Could not find Helper Method 'IndexPlusOne'*/
+}/**/

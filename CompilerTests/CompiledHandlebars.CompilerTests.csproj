@@ -169,9 +169,12 @@
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Zeros1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Zeros2.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Zeros3.cs" />
+    <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\ImplicitThisParameterTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\InterfaceAsParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\MultipleParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
