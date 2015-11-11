@@ -28,13 +28,18 @@ namespace CompiledHandlebars.CompilerTests.Helper
       var workspace = MSBuildWorkspace.Create();
       var sol = workspace.OpenSolutionAsync(solutionFile).Result;
       var project = sol.Projects.First(x => x.Name.Equals("CompiledHandlebars.CompilerTests"));
+      var folderStructure = new List<string>();
+      folderStructure.Add("TestTemplates");
+      folderStructure.AddRange(testClassType.Namespace.Split('.').Skip(2));
+      folderStructure.Add(testClassType.Name);
       foreach (MethodInfo methodInfo in (testClassType).GetMethods())
       {
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
         foreach (var template in attrList)
         {//Get compiled templates
           //Dont include timestamp as then everytime the unittests are run, the resulting templates are checked out
-          var code = HbsCompiler.Compile(template._contents, "TestTemplates", template._name, project);
+          
+          var code = HbsCompiler.Compile(template._contents, testClassType.Namespace, template._name, project);
           compiledCode.Add(template._name, code);
           if (template._include)
           {
@@ -45,7 +50,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
               project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(AppendErrorsToCode(code.Item1, code.Item2))).GetRoot()).Project;
             } else
             {//Otherwise add a new document
-              project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(AppendErrorsToCode(code.Item1, code.Item2)), new string[] { "TestTemplates", testClassType.Name }).Project;
+              project = project.AddDocument(string.Concat(template._name, ".cs"), SourceText.From(AppendErrorsToCode(code.Item1, code.Item2)), folderStructure).Project;
             }
             //Then add the new version
             compiledTemplates.Add(CSharpSyntaxTree.ParseText(code.Item1));
@@ -97,7 +102,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
 
     protected void ShouldRender<TViewModel>(string templateName, TViewModel viewModel, string expectedResult)
     {
-      var template = assemblyWithCompiledTemplates.GetType($"TestTemplates.{templateName}");
+      var template = assemblyWithCompiledTemplates.GetType($"{this.GetType().Namespace}.{templateName}");
       var renderResult = template.GetMethod("Render").Invoke(null, new object[] { viewModel }) as string;
       Assert.AreEqual(expectedResult, renderResult);
     }

@@ -3,9 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
-using CompiledHandlebars.CompilerTests;
 
-namespace TestTemplates
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
   public static class SpecialParametersHelperTest2

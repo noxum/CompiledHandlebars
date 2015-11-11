@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace TestTemplates
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
   public static class ImpliedThisParameterTest1
