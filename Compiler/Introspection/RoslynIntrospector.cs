@@ -125,6 +125,8 @@ namespace CompiledHandlebars.Compiler.Introspection
         return true;
       if (param.Type.TypeKind == TypeKind.Interface)
         return type.AllInterfaces.Any(x => x.Equals(param.Type));
+      if (param.Type.SpecialType.Equals(type.SpecialType))
+        return true;
       return false;
     }
 
@@ -136,6 +138,11 @@ namespace CompiledHandlebars.Compiler.Introspection
     public INamedTypeSymbol GetBoolTypeSymbol()
     {
       return projectCompilations.First().Value.GetSpecialType(SpecialType.System_Boolean);
+    }
+
+    public INamedTypeSymbol GetStringTypeSymbol()
+    {
+      return projectCompilations.First().Value.GetSpecialType(SpecialType.System_String);
     }
   }
 }

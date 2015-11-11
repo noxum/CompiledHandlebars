@@ -26,7 +26,7 @@ namespace CompiledHandlebars.Compiler
     }
 
   }
-  public enum HandlebarsSyntaxErrorKind { MalformedPartialCallToken, MissingModelToken, MalformedModelToken, UnknownBlock, MalformedBlock, MissingMemberExpression, MalformedMemberExpression, UnexpectedCharacter, UnknownSpecialExpression }
+  public enum HandlebarsSyntaxErrorKind { MalformedPartialCallToken, MissingModelToken, MalformedModelToken, UnknownBlock, MalformedBlock, MissingMemberExpression, MalformedMemberExpression, UnexpectedCharacter, UnknownSpecialExpression, MalformedHandlebarsToken }
 
   public abstract class HandlebarsException : Exception
   {

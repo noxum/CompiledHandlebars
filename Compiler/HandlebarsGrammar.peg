@@ -65,7 +65,7 @@ YieldStatement <YieldStatement>
     = val:Expression &Closing {new YieldStatement(val,valStart.Line,valStart.Column)}
 
 HelperCall <HelperCall>
-    = name:FunctionIdentifier parameters:(Expression+) &Closing { new HelperCall(name, parameters, nameStart.Line, nameStart.Column) }
+    = name:FunctionIdentifier parameters:((Expression/LiteralExpression)+) &Closing { new HelperCall(name, parameters, nameStart.Line, nameStart.Column) }
 
 MarkupLiteral <MarkupLiteral> 
     = &{ state["trimStart"]==true}value:(LiteralContent+) &TrimOpening #STATE{ state["trimStart"]=false; } { new MarkupLiteral(string.Concat(value), true, true, valueStart.Line, valueStart.Column)}
@@ -148,6 +148,9 @@ ElseToken
 //-----------------------------------------------
 //    Expressions, Statements
 //-----------------------------------------------
+
+LiteralExpression <LiteralExpression>
+    = Whitespace LiteralDelimiter val:(!LiteralDelimiter .)* LiteralDelimiter { new LiteralExpression(string.Concat(val)) }
 
 Expression <Expression>
     = SpecialExpression
@@ -245,6 +248,7 @@ MultilineCommentClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=t
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
+LiteralDelimiter = "\""
 Whitespace = " "*
 ThisKeyword = "this" / ("."!".")
 
@@ -255,4 +259,5 @@ ThisKeyword = "this" / ("."!".")
 
 EOF 
   = !.
+  / hbsToken:HandlebarsToken #STATE{ AddError(string.Format("Unable to parse HandlebarsToken '{0}'", hbsToken), HandlebarsSyntaxErrorKind.MalformedHandlebarsToken, state); } {hbsToken}
   / c:. #STATE{ AddError(string.Format("Unexpected Character '{0}'", c), HandlebarsSyntaxErrorKind.UnexpectedCharacter, state); } { c }   
