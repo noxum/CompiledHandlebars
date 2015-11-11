@@ -33,12 +33,16 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       Introspector = introspector;
       Template = template; 
-      INamedTypeSymbol modelSymbol = Introspector.GetTypeSymbol(Template.Model.ToString());
-      if (modelSymbol == null)
-        Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
-      ContextStack.Push(new Context("viewModel", modelSymbol));
+      if (!(template is StaticHandlebarsTemplate))
+      {
+        INamedTypeSymbol modelSymbol = Introspector.GetTypeSymbol(Template.Model.ToString());
+        if (modelSymbol == null)
+          Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
+        ContextStack.Push(new Context("viewModel", modelSymbol));
+      }
       resultStack.Push(new List<StatementSyntax>());      
     }
+
 
     internal void AddTypeError(string message, HandlebarsTypeErrorKind kind)
     {
@@ -91,27 +95,44 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         usings.Add(nameSpace);
     }
 
+
+    internal CompilationUnitSyntax GetCompilationUnitStaticTemplate()
+    {
+      if (resultStack.Count == 1)
+      {
+        var additionalMemberSyntax = GetAdditionalMembers();
+        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());
+        var usingsSyntax = GetUsingDirectives();
+        return SyntaxFactory.CompilationUnit()
+        .AddUsings(
+          usingsSyntax.ToArray()
+        )
+        .AddMembers(
+          SyntaxHelper.HandlebarsNamespace(Template.Namespace)
+            .AddMembers(
+              SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.TEMPLATEATTRIBUTE)
+                .AddMembers(
+                  SyntaxHelper.RenderWithoutParameter()
+                    .AddBodyStatements(
+                      resultStack.Pop().ToArray()
+                    )
+                ).AddMembers(
+                  additionalMemberSyntax.ToArray()
+                )
+            )
+        );
+      }
+      return SyntaxFactory.CompilationUnit();
+    }
+
     internal CompilationUnitSyntax GetCompilationUnitHandlebarsLayout()
     {
       //Two Lists of StatementSyntax for the body of two render methods
       if (resultStack.Count == 2)
       {
-        var additionalMemberSyntax = new List<MemberDeclarationSyntax>();
-        var usingsSyntax = new List<UsingDirectiveSyntax>();
-        usingsSyntax.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
-        if (Introspector.RuntimeUtilsReferenced())
-        {
-          usingsSyntax.Add(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")));
-          usingsSyntax.Add(SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper"));
-        }
-        else
-        {
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodBool());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodString());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodObject());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
-          additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsLayoutAttributeClass());
-        }
+        var additionalMemberSyntax = GetAdditionalMembers();
+        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsLayoutAttributeClass());
+        var usingsSyntax = GetUsingDirectives();
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
           usingsSyntax.ToArray()
@@ -143,22 +164,10 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     {
       //One List of StatementSyntax for the body of one render method
       if (resultStack.Count == 1)
-      {        
-        var additionalMemberSyntax = new List<MemberDeclarationSyntax>();
-        var usingsSyntax = new List<UsingDirectiveSyntax>();
-        usingsSyntax.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
-        if (Introspector.RuntimeUtilsReferenced())
-        {
-          usingsSyntax.Add(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")));
-          usingsSyntax.Add(SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper"));
-        } else
-        {
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodBool());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodString());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodObject());
-          additionalMemberSyntax.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
-          additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());          
-        }
+      {
+        var additionalMemberSyntax = GetAdditionalMembers();
+        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());
+        var usingsSyntax = GetUsingDirectives();
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
           usingsSyntax.ToArray()
@@ -179,6 +188,31 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         );        
       }
       return SyntaxFactory.CompilationUnit();      
+    }
+
+    private List<MemberDeclarationSyntax> GetAdditionalMembers()
+    {
+      var result = new List<MemberDeclarationSyntax>();
+      if (!Introspector.RuntimeUtilsReferenced())
+      {
+        result.Add(SyntaxHelper.IsTruthyMethodBool());
+        result.Add(SyntaxHelper.IsTruthyMethodString());
+        result.Add(SyntaxHelper.IsTruthyMethodObject());
+        result.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
+      }
+      return result;
+    }
+
+    private List<UsingDirectiveSyntax> GetUsingDirectives()
+    {
+      var result = new List<UsingDirectiveSyntax>();
+      result.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
+      if (Introspector.RuntimeUtilsReferenced())
+      {
+        result.Add(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("CompiledHandlebars.RuntimeUtils")));
+        result.Add(SyntaxHelper.UsingStatic("CompiledHandlebars.RuntimeUtils.RenderHelper"));
+      }
+      return result;
     }
 
     internal void PromiseTruthyCheck(Context contextToCheck, IfType ifType = IfType.If)

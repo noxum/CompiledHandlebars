@@ -22,9 +22,10 @@
 }
 
 Template<HandlebarsTemplate> 
-    = model:ModelToken preItems:(Element*) RenderBodyToken postItems:(Element*) EOF { new HandlebarsLayout(preItems, postItems, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    = markup:MarkupLiteral EOF { new StaticHandlebarsTemplate(markup, state["errors"] as IList<HandlebarsSyntaxError>)}
+    / model:ModelToken preItems:(Element*) RenderBodyToken postItems:(Element*) EOF { new HandlebarsLayout(preItems, postItems, model, state["errors"] as IList<HandlebarsSyntaxError>)}
     / model:ModelToken layout:LayoutToken items:(Element*) EOF { new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
-    / model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    / model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}     
 
 ModelToken <MemberExpression>
     = Opening ModelKeyword value:MemberExpression Closing { value }
@@ -73,9 +74,13 @@ MarkupLiteral <MarkupLiteral>
     / value:(LiteralContent+) { new MarkupLiteral(string.Concat(value), valueStart.Line, valueStart.Column)}
 
 LiteralContent 
-    = "\\" val:"\\" &AnyOpening { val }
-    / "\\"val:AnyOpening  { val }
-    / (!AnyOpening .)
+    = "\\" val:"\\" &HandlebarsToken { val }
+    / "\\"val:HandlebarsToken  { val }
+    / (!HandlebarsToken .)
+
+HandlebarsToken
+    = Opening (!AnyOpening !Closing .)+ Closing
+    / EscapedOpening (!AnyOpening !EscapedClosing .)+ EscapedClosing
 
 Comment <ASTElementBase>
     = "--" val:(!MultilineCommentClosing .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}

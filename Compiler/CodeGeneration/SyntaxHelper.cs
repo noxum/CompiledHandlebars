@@ -116,6 +116,29 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
 
+    /// <summary>
+    /// Yields the Render Method:
+    /// public static string Render(){}
+    /// </summary>
+    internal static MethodDeclarationSyntax RenderWithoutParameter(string methodName = "Render")
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PublicKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.StringKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier(methodName),
+          default(TypeParameterListSyntax),
+          SF.ParameterList(),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(),
+          default(SyntaxToken)
+        );
+    }
+
     internal static ExpressionStatementSyntax AppendStringLiteral(string value)
     {
       return

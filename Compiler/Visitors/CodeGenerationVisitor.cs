@@ -29,6 +29,8 @@ namespace CompiledHandlebars.Compiler.Visitors
       state = new CompilationState(introspector, template);
       state.Introspector = introspector;
     }
+    
+
     public CompilationUnitSyntax GenerateCode()
     {
       try
@@ -274,5 +276,10 @@ namespace CompiledHandlebars.Compiler.Visitors
       resultingCompilationUnit = state.GetCompilationUnitHandlebarsLayout();
     }
 
+    public void VisitLeave(StaticHandlebarsTemplate staticTemplate)
+    {
+      state.PushStatement(SyntaxHelper.ReturnSBToString);
+      resultingCompilationUnit = state.GetCompilationUnitStaticTemplate();
+    }
   }
 }

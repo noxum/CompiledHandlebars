@@ -33,5 +33,7 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     void VisitRenderBody(HandlebarsLayout layout);
     void VisitLeave(HandlebarsLayout layout);
+
+    void VisitLeave(StaticHandlebarsTemplate staticTemplate);
   }
 }

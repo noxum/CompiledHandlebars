@@ -5,6 +5,21 @@ using System.Collections.Generic;
 namespace CompiledHandlebars.Compiler.AST
 {
 
+  internal class StaticHandlebarsTemplate : HandlebarsTemplate
+  {
+    private readonly MarkupLiteral _markupLiteral;
+    internal StaticHandlebarsTemplate(MarkupLiteral markupLiteral, IList<HandlebarsSyntaxError> parseErrors) : base(parseErrors)
+    {
+      _markupLiteral = markupLiteral;
+    }
+
+    internal override void Accept(IASTVisitor visitor)
+    {
+      visitor.VisitEnter(this);
+      visitor.Visit(_markupLiteral);
+      visitor.VisitLeave(this);
+    }
+  }
  
   internal class HandlebarsLayout : HandlebarsTemplate
   {
@@ -62,6 +77,11 @@ namespace CompiledHandlebars.Compiler.AST
       Model = model;
       ParseErrors = parseErrors;
       _items = items;
+    }
+
+    internal HandlebarsTemplate(IList<HandlebarsSyntaxError> parseErrors)
+    {
+      ParseErrors = parseErrors;
     }
 
     internal virtual void Accept(IASTVisitor visitor)
