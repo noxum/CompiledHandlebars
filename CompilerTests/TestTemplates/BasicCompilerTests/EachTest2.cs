@@ -4,15 +4,22 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class HtmlEncodeTest1
+  public static class EachTest2
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Description));
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Mountains))
+      {
+        foreach (var loopItem0 in viewModel.Mountains)
+        {
+          sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
+        }
+      }
+
       return sb.ToString();
     }
 

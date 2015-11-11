@@ -4,17 +4,29 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class ThisTest6
+  public static class NestedIfTest
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Phobos))
       {
-        sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+        sb.Append("Phobos:");
+        if (IsTruthy(viewModel.Phobos.Name))
+        {
+          sb.Append("HasName");
+        }
+        else
+        {
+          sb.Append("HasNoName");
+        }
+      }
+      else
+      {
+        sb.Append("NoPhobos");
       }
 
       return sb.ToString();

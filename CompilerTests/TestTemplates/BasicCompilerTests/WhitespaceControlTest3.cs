@@ -4,19 +4,15 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class ThisTest2
+  public static class WhitespaceControlTest3
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
-      {
-        sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      }
-
+      sb.Append(viewModel.Name);
       return sb.ToString();
     }
 

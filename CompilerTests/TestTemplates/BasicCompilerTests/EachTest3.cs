@@ -4,20 +4,19 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class EachTest5
+  public static class EachTest3
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.StarModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Planets))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Rovers))
       {
-        foreach (var loopItem0 in viewModel.Planets)
+        foreach (var loopItem0 in viewModel.Rovers)
         {
-          sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
-          sb.Append(";");
+          sb.Append(WebUtility.HtmlEncode(loopItem0.Key));
         }
       }
 

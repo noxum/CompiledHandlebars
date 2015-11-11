@@ -4,17 +4,21 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class UnlessTest
+  public static class EachTest5
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.StarModel viewModel)
     {
       var sb = new StringBuilder();
-      if (!IsTruthy(viewModel) || !IsTruthy(viewModel.Name))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Planets))
       {
-        sb.Append("HasNoName");
+        foreach (var loopItem0 in viewModel.Planets)
+        {
+          sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
+          sb.Append(";");
+        }
       }
 
       return sb.ToString();

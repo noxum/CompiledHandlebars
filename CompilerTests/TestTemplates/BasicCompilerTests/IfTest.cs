@@ -4,15 +4,19 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class BasicTest
+  public static class IfTest
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
+      {
+        sb.Append("HasName");
+      }
+
       return sb.ToString();
     }
 

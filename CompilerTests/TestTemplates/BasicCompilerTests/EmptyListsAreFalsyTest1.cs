@@ -4,15 +4,23 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class HtmlEncodeTest2
+  public static class EmptyListsAreFalsyTest1
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(viewModel.Description);
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Mountains))
+      {
+        sb.Append("Mountains");
+      }
+      else
+      {
+        sb.Append("no Mountains");
+      }
+
       return sb.ToString();
     }
 

@@ -4,17 +4,20 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class PathTest2
+  public static class WithTest
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      sb.Append(":");
-      sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Phobos))
+      {
+        sb.Append("Name:");
+        sb.Append(WebUtility.HtmlEncode(viewModel.Phobos.Name));
+      }
+
       return sb.ToString();
     }
 

@@ -4,23 +4,15 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class ThisTest4
+  public static class ThisTest5
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel))
-      {
-        sb.Append("Model");
-      }
-      else
-      {
-        sb.Append("NoModel");
-      }
-
+      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
       return sb.ToString();
     }
 

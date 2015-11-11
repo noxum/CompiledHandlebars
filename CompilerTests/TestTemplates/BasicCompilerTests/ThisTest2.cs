@@ -4,17 +4,19 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class CommentTest3
+  public static class ThisTest2
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append("No ");
-      ; /*Comment*/
-      sb.Append("Comment");
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
+      {
+        sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+      }
+
       return sb.ToString();
     }
 

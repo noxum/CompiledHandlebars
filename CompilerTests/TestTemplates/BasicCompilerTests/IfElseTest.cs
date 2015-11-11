@@ -4,15 +4,23 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class WhitespaceControlTest3
+  public static class IfElseTest
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(viewModel.Name);
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
+      {
+        sb.Append("HasName");
+      }
+      else
+      {
+        sb.Append("HasNoName");
+      }
+
       return sb.ToString();
     }
 

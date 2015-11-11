@@ -16,7 +16,7 @@ using System.IO;
 using System.Net;
 using CompiledHandlebars.CompilerTests.TestViewModels;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
 
   [TestClass()]

@@ -4,23 +4,15 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Compiler.Tests
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class IfElseTest
+  public static class HtmlEncodeTest2
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Name))
-      {
-        sb.Append("HasName");
-      }
-      else
-      {
-        sb.Append("HasNoName");
-      }
-
+      sb.Append(viewModel.Description);
       return sb.ToString();
     }
 
