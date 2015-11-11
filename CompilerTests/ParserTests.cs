@@ -78,10 +78,10 @@ namespace CompiledHandlebars.CompilerTests
     }    
 
     [TestMethod]
-    [RegisterHandlebarsTemplate("UnexpectedCharacterTest1", "{{$mars}}", _marsModel, false)]
+    [RegisterHandlebarsTemplate("UnexpectedCharacterTest1", "{{$mars}}", _marsModel, false)]    
     public void UnexpectedCharacterTest()
     {
-      ShouldRaiseError("UnexpectedCharacterTest1", HandlebarsSyntaxErrorKind.UnexpectedCharacter);
+      ShouldRaiseError("UnexpectedCharacterTest1", HandlebarsSyntaxErrorKind.MalformedHandlebarsToken);
     }
 
 

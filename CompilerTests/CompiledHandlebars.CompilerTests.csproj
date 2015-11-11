@@ -178,6 +178,9 @@
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\ImplicitThisParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\InterfaceAsParameterTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\LiteralParameterTest1.cs" />
+    <Compile Include="TestTemplates\HelperTests\LiteralParameterTest2.cs" />
+    <Compile Include="TestTemplates\HelperTests\LiteralParameterTest3.cs" />
     <Compile Include="TestTemplates\HelperTests\MultipleParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
