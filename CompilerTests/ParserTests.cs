@@ -81,6 +81,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRaiseError("UnknownSpecialExpressionTest1", HandlebarsSyntaxErrorKind.UnknownSpecialExpression);
     }    
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("UnexpectedCharacterTest1", "{{$mars}}", _marsModel, false)]
+    public void UnexpectedCharacterTest()
+    {
+      ShouldRaiseError("UnexpectedCharacterTest1", HandlebarsSyntaxErrorKind.UnexpectedCharacter);
+    }
+
 
   }
 
