@@ -23,13 +23,10 @@ namespace CompiledHandlebars.Compiler.Introspection
       if (solution == null)
       {
         solution = workspace.CurrentSolution;
-        foreach (var projectId in solution.ProjectIds.Where(x => !projectCompilations.ContainsKey(x)))
+        projectCompilations[project.Id] = GetCompilationForProject(project);
+        foreach (var projectId in solution.GetProjectDependencyGraph().GetProjectsThatThisProjectDirectlyDependsOn(project.Id))
         {
-          Compilation comp;
-          if (solution.GetProject(projectId).TryGetCompilation(out comp))
-            projectCompilations.Add(projectId, comp);
-          else
-            projectCompilations.Add(projectId, solution.GetProject(projectId).GetCompilationAsync().Result);
+          projectCompilations[projectId] = GetCompilationForProject(solution.GetProject(projectId));
         }
       } else
       {

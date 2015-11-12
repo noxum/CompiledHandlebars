@@ -53,6 +53,7 @@ Leaf <ASTElementBase>
 HandlebarsLeaf <ASTElementBase>
     = CommentIdentifier val:Comment { val }
     / PartialCallIdentifier val:PartialCall { val } 
+    / EscapedTokenIdentifier val:YieldStatement { {val.SetTokenType(TokenType.Escaped); return val;} }  
     / YieldStatement
     / HelperCall    
 
@@ -227,6 +228,7 @@ BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 TrimWhitespaceIdentifier = "~"
 CommentIdentifier = "!"
+EscapedTokenIdentifier = "&"
 WithKeyword = "with"
 EachKeyword = "each"
 IfKeyword = "if"
