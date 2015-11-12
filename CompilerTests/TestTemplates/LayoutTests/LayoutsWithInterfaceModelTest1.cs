@@ -45,6 +45,11 @@ namespace CompiledHandlebars.CompilerTests
       return ie != null && ie.Any();
     }
 
+    private static bool IsTruthy(int i)
+    {
+      return i != 0;
+    }
+
     private class CompiledHandlebarsLayoutAttribute : Attribute
     {
     }

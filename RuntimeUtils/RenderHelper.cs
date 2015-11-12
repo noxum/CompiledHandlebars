@@ -28,6 +28,11 @@ namespace CompiledHandlebars.RuntimeUtils
       return (ie != null && ie.Any());
     }
 
+    public static bool IsTruthy(int i)
+    {
+      return i != 0;
+    }
+
   }
 
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
