@@ -57,9 +57,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// Yields a NamespaceDeclaration:
     /// namespace CompiledHandlebars{}
     /// </summary>
-    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string nameSpace)
+    internal static NamespaceDeclarationSyntax HandlebarsNamespace(string @namespace)
     {
-      return SF.NamespaceDeclaration(SF.ParseName(nameSpace));
+      return SF.NamespaceDeclaration(SF.ParseName(@namespace));
     }
 
 

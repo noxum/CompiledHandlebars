@@ -10,13 +10,13 @@ namespace CompiledHandlebars.Compiler
 {
   public static class HbsCompiler
   {
-    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string nameSpace, string name, Project project)
+    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string @namespace, string name, Project project)
     {
       var parser = new HbsParser();
       try
       {          
         var template = parser.Parse(hbsTemplate);
-        template.Namespace = nameSpace;
+        template.Namespace = @namespace;
         template.Name = name;
         if(!(template.ParseErrors?.Any()?? false))
         {//No parser errors

@@ -89,10 +89,10 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       PushStatement(SyntaxHelper.IncrementVariable($"index{LoopLevel}"));
     }
 
-    internal void RegisterUsing(string nameSpace)
+    internal void RegisterUsing(string @namespace)
     {
-      if (!Template.Namespace.Equals(nameSpace) && !usings.Contains(nameSpace))
-        usings.Add(nameSpace);
+      if (!Template.Namespace.Equals(@namespace) && !usings.Contains(@namespace))
+        usings.Add(@namespace);
     }
 
 
