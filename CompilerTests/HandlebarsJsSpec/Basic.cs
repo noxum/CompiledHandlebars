@@ -17,7 +17,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
   {
     public string Foo { get; set; }
   }
-  
+
   //These JavaScript guys... are they all depressed?
   public class GoodbyeCruelWorldModel
   {
