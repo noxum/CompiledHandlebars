@@ -342,6 +342,37 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
     /// <summary>
+    ///   public static bool IsTruthy(int i)
+    /// </summary>
+    /// <returns></returns>
+    internal static MethodDeclarationSyntax IsTruthyMethodInt()
+    {
+      return
+        SF.MethodDeclaration(
+          new SyntaxList<AttributeListSyntax>(),
+          SF.TokenList(
+            SF.Token(SyntaxKind.PrivateKeyword),
+            SF.Token(SyntaxKind.StaticKeyword)),
+          SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+          default(ExplicitInterfaceSpecifierSyntax),
+          SF.Identifier("IsTruthy"),
+          default(TypeParameterListSyntax),
+          SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SyntaxFactory.Parameter(
+            default(SyntaxList<AttributeListSyntax>),
+            default(SyntaxTokenList),
+            SF.PredefinedType(SF.Token(SyntaxKind.IntKeyword)),
+            SF.Identifier("i"),
+            default(EqualsValueClauseSyntax)))
+          ),
+          default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+          SF.Block(
+            SF.ReturnStatement(SF.ParseExpression("i!=0"))
+          ),
+          default(SyntaxToken)
+      );
+    }
+
+    /// <summary>
     /// sb.Append(Template.Render(membername))
     /// </summary>
     /// <param name="templateTypeName"></param>

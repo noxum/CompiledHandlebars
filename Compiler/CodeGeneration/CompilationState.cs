@@ -199,6 +199,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         result.Add(SyntaxHelper.IsTruthyMethodString());
         result.Add(SyntaxHelper.IsTruthyMethodObject());
         result.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
+        result.Add(SyntaxHelper.IsTruthyMethodInt());
       }
       return result;
     }
