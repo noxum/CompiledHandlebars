@@ -177,6 +177,9 @@
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\If2.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\If3.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\If4.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\If5.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\With1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\WithWithElse1.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />
