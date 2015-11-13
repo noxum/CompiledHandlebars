@@ -5,32 +5,44 @@ using Microsoft.CodeAnalysis;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
-  internal class FirstExpression : Expression
+  
+  internal abstract class SpecialExpression : Expression
   {
-    internal override bool TryEvaluate(CompilationState state, out Context context)
+    protected bool InsideEachLoopCheck(CompilationState state)
     {
-      context = new Context($"first{state.LoopLevel}", state.Introspector.GetBoolTypeSymbol());
-      return true;
+      if (state.LoopLevel > 0)
+        return true;
+      state.AddTypeError("SpecialExpressions can only exist inside EachBlocks", HandlebarsTypeErrorKind.SpecialExpressionOutsideEachLoop);
+      return false;
     }
   }
 
-  internal class LastExpression : Expression
+  internal class FirstExpression : SpecialExpression
+  {
+    internal override bool TryEvaluate(CompilationState state, out Context context)
+    {     
+      context = new Context($"first{state.LoopLevel}", state.Introspector.GetBoolTypeSymbol());
+      return InsideEachLoopCheck(state);
+    }
+  }
+
+  internal class LastExpression : SpecialExpression
   {
 
     internal override bool TryEvaluate(CompilationState state, out Context context)
     {
       context = new Context($"last{state.LoopLevel}", state.Introspector.GetBoolTypeSymbol());
-      return true;
+      return InsideEachLoopCheck(state);      
     }
   }
 
-  internal class IndexExpression : Expression
+  internal class IndexExpression : SpecialExpression
   {   
 
     internal override bool TryEvaluate(CompilationState state, out Context context)
     {
       context = new Context($"index{state.LoopLevel}", state.Introspector.GetIntTypeSymbol());
-      return true;
+      return InsideEachLoopCheck(state);
     }
   }
 
