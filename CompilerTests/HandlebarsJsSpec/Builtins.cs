@@ -18,6 +18,16 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     public string World { get; set; }
   }  
 
+  public class TextListModel
+  {
+    public List<TextModel> Goodbyes { get; set; }
+    public string World { get; set; }
+  }
+  public class TextModel
+  {
+    public string Text { get; set; }
+  }
+
   public class PersonModel
   {
     public PersonNameModel Person { get; set; }
@@ -38,6 +48,8 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
   {
     private const string _personModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel}}";
     private const string _goodbyeModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.GoodbyeModel}}";
+    private const string _textListModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.TextListModel}}";
+
 
     static BuiltinsTest()
     {
@@ -70,41 +82,125 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     }
 
     [TestMethod]
-    [RegisterHandlebarsTemplate("WithWithElse1", "{{#with person}}Person is present{{else}}Person is not present{{/with}}", _personModel)]
+    [RegisterHandlebarsTemplate("WithWithElse1", "{{#with Person}}Person is present{{else}}Person is not present{{/with}}", _personModel)]
     public void WithWithElse()
     {
       ShouldRender("WithWithElse1", new PersonModel(), "Person is not present");
       ShouldRender("WithWithElse1", new PersonModel() { Person = new PersonNameModel() }, "Person is present");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("Each1", "{{#each Goodbyes}}{{Text}}! {{/each}}cruel {{World}}!", _textListModel)]
+    public void Each()
+    {
+      ShouldRender("Each1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "goodbye! Goodbye! GOODBYE! cruel world!");
+      ShouldRender("Each1", new TextListModel() { Goodbyes = new List<TextModel>(), World = "world" }, "cruel world!");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithIndex1", "{{#each Goodbyes}}{{@index}}. {{Text}}! {{/each}}cruel {{World}}!", _textListModel)]
+    public void EachWithIndex()
+    {
+      ShouldRender("EachWithIndex1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "0. goodbye! 1. Goodbye! 2. GOODBYE! cruel world!");
+    }
 
 
-      /*
-  describe('#with', function()
-  {
-    it('with', function() {
-      var string = '{{#with person}}{{first}} {{last}}{{/with}}';
-      shouldCompileTo(string, { person: { first: 'Alan', last: 'Johnson'} }, 'Alan Johnson');
-    });
-    it('with with function argument', function() {
-      var string = '{{#with person}}{{first}} {{last}}{{/with}}';
-      shouldCompileTo(string, { person: function() { return { first: 'Alan', last: 'Johnson'}; } }, 'Alan Johnson');
-    });
-    it('with with else', function() {
-      var string = '{{#with person}}Person is present{{else}}Person is not present{{/with}}';
-      shouldCompileTo(string, { }, 'Person is not present');
-    });
-    it('with provides block parameter', function() {
-      var string = '{{#with person as |foo|}}{{foo.first}} {{last}}{{/with}}';
-      shouldCompileTo(string, { person: { first: 'Alan', last: 'Johnson'} }, 'Alan Johnson');
-    });
-    it('works when data is disabled', function() {
-      var template = CompilerContext.compile('{{#with person as |foo|}}{{foo.first}} {{last}}{{/with}}', { data: false});
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithNestedIndex1", "{{#each Goodbyes}}{{@index}}. {{Text}}! {{#each ../Goodbyes}}{{@index}} {{/each}}After {{@index}} {{/each}}{{@index}}cruel {{World}}!", _textListModel)]
+    public void EachWithNestedIndex()
+    {
+      ShouldRender("EachWithNestedIndex1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "0. goodbye! 0 1 2 After 0 1. Goodbye! 0 1 2 After 1 2. GOODBYE! 0 1 2 After 2 cruel world!");
+    }
 
-      var result = template({ person: { first: 'Alan', last: 'Johnson'} });
-      equals(result, 'Alan Johnson');
+    /*
+
+   
+
+    it('each with nested @index', function() {
+      var string = '{{#each goodbyes}}{{@index}}. {{text}}! {{#each ../goodbyes}}{{@index}} {{/each}}After {{@index}} {{/each}}{{@index}}cruel {{world}}!';
+      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}, {text: 'GOODBYE'}], world: 'world'};
+
+      var template = CompilerContext.compile(string);
+      var result = template(hash);
+
+      equal(result, '0. goodbye! 0 1 2 After 0 1. Goodbye! 0 1 2 After 1 2. GOODBYE! 0 1 2 After 2 cruel world!', 'The @index variable is used');
     });
-  });*/
+
+    it('each without data', function() {
+      var string = '{{#each goodbyes}}{{text}}! {{/each}}cruel {{world}}!';
+      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}, {text: 'GOODBYE'}], world: 'world'};
+      shouldCompileTo(string, [hash,,,, false], 'goodbye! Goodbye! GOODBYE! cruel world!');
+
+      hash = {goodbyes: 'cruel', world: 'world'};
+      shouldCompileTo('{{#each .}}{{.}}{{/each}}', [hash,,,, false], 'cruelworld');
+    });
+
+    it('each without context', function() {
+      var string = '{{#each goodbyes}}{{text}}! {{/each}}cruel {{world}}!';
+      shouldCompileTo(string, [,,,, ], 'cruel !');
+    });
+
+    it('each with an object and @key', function() {
+      var string = '{{#each goodbyes}}{{@key}}. {{text}}! {{/each}}cruel {{world}}!';
+
+      function Clazz() {
+        this['<b>#1</b>'] = {text: 'goodbye'};
+        this[2] = {text: 'GOODBYE'};
+      }
+      Clazz.prototype.foo = 'fail';
+      var hash = {goodbyes: new Clazz(), world: 'world'};
+
+      // Object property iteration order is undefined according to ECMA spec,
+      // so we need to check both possible orders
+      // @see http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
+      var actual = compileWithPartials(string, hash);
+      var expected1 = '&lt;b&gt;#1&lt;/b&gt;. goodbye! 2. GOODBYE! cruel world!';
+      var expected2 = '2. GOODBYE! &lt;b&gt;#1&lt;/b&gt;. goodbye! cruel world!';
+
+      equals(actual === expected1 || actual === expected2, true, 'each with object argument iterates over the contents when not empty');
+      shouldCompileTo(string, {goodbyes: {}, world: 'world'}, 'cruel world!');
+    });
+
+
+
+    it('each with block params', function() {
+      var string = '{{#each goodbyes as |value index|}}{{index}}. {{value.text}}! {{#each ../goodbyes as |childValue childIndex|}} {{index}} {{childIndex}}{{/each}} After {{index}} {{/each}}{{index}}cruel {{world}}!';
+      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}], world: 'world'};
+
+      var template = CompilerContext.compile(string);
+      var result = template(hash);
+
+      equal(result, '0. goodbye!  0 0 0 1 After 0 1. Goodbye!  1 0 1 1 After 1 cruel world!');
+    });
+
+    */
 
   }
 }

@@ -7,20 +7,23 @@ using System.Collections.Generic;
 namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
 {
   [CompiledHandlebarsTemplate]
-  public static class WithWithElse1
+  public static class Each1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.TextListModel viewModel)
     {
       var sb = new StringBuilder();
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Person))
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.Goodbyes))
       {
-        sb.Append("Person is present");
-      }
-      else
-      {
-        sb.Append("Person is not present");
+        foreach (var loopItem0 in viewModel.Goodbyes)
+        {
+          sb.Append(WebUtility.HtmlEncode(loopItem0.Text));
+          sb.Append("! ");
+        }
       }
 
+      sb.Append("cruel ");
+      sb.Append(WebUtility.HtmlEncode(viewModel.World));
+      sb.Append("!");
       return sb.ToString();
     }
 
