@@ -30,7 +30,7 @@ namespace CompiledHandlebars.Compiler.AST
     }
 
     internal HelperCall TransformToHelperCall()
-    {
+    {      
       return new HelperCall(
           Expr.ToString(),
           new List<Expression>() { new MemberExpression(new ThisIdentifier(null)) },

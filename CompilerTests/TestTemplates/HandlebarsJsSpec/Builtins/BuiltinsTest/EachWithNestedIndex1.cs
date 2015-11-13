@@ -71,5 +71,4 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     {
     }
   }
-}/*Line: 1; Column 192: SpecialExpressions can only exist inside EachBlocks
-Line: 1; Column 192: Could not find Helper Method 'CompiledHandlebars.Compiler.AST.Expressions.IndexExpression'*/
+}/*Line: 1; Column 192: SpecialExpressions can only exist inside EachBlocks*/

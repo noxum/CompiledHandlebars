@@ -8,6 +8,7 @@ using CompiledHandlebars.Compiler.Introspection;
 using CompiledHandlebars.Compiler.CodeGeneration;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
+using CompiledHandlebars.Compiler.AST.Expressions;
 
 namespace CompiledHandlebars.Compiler.Visitors
 {
@@ -68,7 +69,9 @@ namespace CompiledHandlebars.Compiler.Visitors
           state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
       } else
       {
-        astLeaf.TransformToHelperCall().Accept(this);
+        //Unknown Member could also be a HelperCall with implied this as Parameter
+        if (astLeaf.Expr is MemberExpression)
+          astLeaf.TransformToHelperCall().Accept(this);
       }
     }
 
