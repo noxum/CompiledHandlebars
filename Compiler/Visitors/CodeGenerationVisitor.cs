@@ -90,7 +90,21 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       //Leave Context
       state.ContextStack.Pop();
-      state.DoTruthyCheck(state.PopBlock());
+      var latestBlock = state.PopBlock();
+      if (astNode.HasElseBlock)
+        state.DoTruthyCheck(state.PopBlock(), latestBlock, IfType.If);
+      else
+        state.DoTruthyCheck(latestBlock, ifType: IfType.If);
+    }
+
+    public void VisitElse(WithBlock astNode)
+    {
+      //Leave Context
+      state.ContextStack.Pop();
+      var truthyContext = state.TruthyStack.Pop();
+      truthyContext.Truthy = !truthyContext.Truthy;
+      state.TruthyStack.Push(truthyContext);
+      state.PushNewBlock();
     }
 
     public void VisitEnter(IfBlock astNode)

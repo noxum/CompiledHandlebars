@@ -102,7 +102,8 @@ BlockBody
 
 //#With
 WithBlock <WithBlock>
-    = member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
+    = member:WithOpeningToken body:BlockBody ElseToken elseBlock:BlockBody WithClosingToken { new WithBlock(member, body, elseBlock, memberStart.Line, memberStart.Column )}
+    / member:WithOpeningToken body:BlockBody WithClosingToken { new WithBlock(member, body, memberStart.Line, memberStart.Column )}
     / member:WithOpeningToken body:BlockBody #STATE{ AddError("Missing '{{/with}}' for {{#with}}", HandlebarsSyntaxErrorKind.MalformedBlock, state); } { new WithBlock(null, null, 0, 0)}   
 
 WithOpeningToken <MemberExpression>

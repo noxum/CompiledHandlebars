@@ -8,28 +8,22 @@ using CompiledHandlebars.Compiler.Visitors;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class IfBlock : ASTNode
-  {
-    private readonly IList<ASTElementBase> _elseBlock;
-
+  internal class IfBlock : BlockWithElse
+  {    
     internal readonly Expression Expr;
-    internal readonly IfType QueryType;
-    internal readonly bool HasElseBlock;
+    internal readonly IfType QueryType;   
 
     internal IfBlock(Expression member, IfType type, IList<ASTElementBase> children, int line, int column) 
                     : base(children, line, column)
     {
       QueryType = type;
-      HasElseBlock = false;
       Expr = member;
     }
 
     internal IfBlock(Expression expr, IfType type, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column) 
-                    : base(children, line, column)
+                    : base(children, elseBlock, line, column)
     {
-      QueryType = type;
-      _elseBlock = elseBlock;
-      HasElseBlock = true;
+      QueryType = type;      
       Expr = expr;
     }
 

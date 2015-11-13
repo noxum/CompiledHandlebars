@@ -8,7 +8,7 @@ using CompiledHandlebars.Compiler.AST.Expressions;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class WithBlock : ASTNode
+  internal class WithBlock : BlockWithElse
   {
 
     internal readonly Expression Expr;
@@ -18,11 +18,25 @@ namespace CompiledHandlebars.Compiler.AST
       Expr = expr;
     }
 
+    internal WithBlock(Expression expr, IList<ASTElementBase> children, IList<ASTElementBase> elseBlock, int line, int column)
+      : base(children, elseBlock, line, column)
+    {
+      Expr = expr;
+    }
+
     internal override void Accept(IASTVisitor visitor)
     {
       visitor.VisitEnter(this);
       foreach (var child in _children)
         child.Accept(visitor);
+      if (HasElseBlock)
+      {
+        visitor.VisitElse(this);
+        foreach (var ele in _elseBlock)
+        {
+          ele.Accept(visitor);
+        }
+      }
       visitor.VisitLeave(this);
     }
 
