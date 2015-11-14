@@ -10,29 +10,23 @@ namespace CompiledHandlebars.Compiler
 {
   public static class HbsCompiler
   {
-    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string hbsTemplate, string @namespace, string name, Project project)
+    public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string content, string @namespace, string name, Project containingProject)
     {
-      var parser = new HbsParser();
-      try
-      {          
-        var template = parser.Parse(hbsTemplate);
-        template.Namespace = @namespace;
-        template.Name = name;
-        if(!(template.ParseErrors?.Any()?? false))
-        {//No parser errors
-          var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(project), template);
-          if (!codeGenerator.ErrorList.Any())
-          {//No code generator initialization errors
-            return new Tuple<string, IEnumerable<HandlebarsException>>(
-              codeGenerator.GenerateCode().NormalizeWhitespace(indentation: "  ").ToFullString(), codeGenerator.ErrorList);
-          }
-          return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
-        }
-        return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, template.ParseErrors);
-      } catch(HandlebarsSyntaxError syntaxError)
-      {
-        return new Tuple<string, IEnumerable<HandlebarsException>>($"No result as SyntaxErrors occured: {syntaxError.Message}", new HandlebarsSyntaxError[] { syntaxError });
+      var parser = new HbsParser();         
+      var template = parser.Parse(content);
+      template.Namespace = @namespace;
+      template.Name = name;
+      if(!(template.ParseErrors?.Any()?? false))
+      {//No parser errors
+        var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(containingProject), template);
+        if (!codeGenerator.ErrorList.Any())
+        {//No code generator initialization errors
+          return new Tuple<string, IEnumerable<HandlebarsException>>(
+            codeGenerator.GenerateCode().NormalizeWhitespace(indentation: "  ").ToFullString(), codeGenerator.ErrorList);
+        }          
+        return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
       }
+      return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, template.ParseErrors);      
     }
   }
 }
