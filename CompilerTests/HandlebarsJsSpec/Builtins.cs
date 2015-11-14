@@ -39,6 +39,11 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     public string Last { get; set; }
   }
 
+  public class LetterListModel
+  {
+    public List<string> Letters { get; set; }
+  }
+
 
   /// <summary>
   /// https://github.com/wycats/handlebars.js/blob/master/spec/builtins.js
@@ -49,6 +54,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     private const string _personModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel}}";
     private const string _goodbyeModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.GoodbyeModel}}";
     private const string _textListModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.TextListModel}}";
+    private const string _letterListModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.LetterListModel}}";
 
 
     static BuiltinsTest()
@@ -137,35 +143,100 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
         },
         World = "world"
       }, "0. goodbye! 0 1 2 After 0 1. Goodbye! 0 1 2 After 1 2. GOODBYE! 0 1 2 After 2 cruel world!");
+      ShouldRaiseError("EachWithNestedIndex1", Compiler.HandlebarsTypeErrorKind.SpecialExpressionOutsideEachLoop);
     }
 
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithFirst1", "{{#each Goodbyes}}{{#if @first}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _textListModel)]
+    public void EachWithFirst()
+    {
+      ShouldRender("EachWithFirst1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "goodbye! cruel world!");
+    }
+
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithNestedFirst1", "{{#each Goodbyes}}({{#if @first}}{{Text}}! {{/if}}{{#each ../Goodbyes}}{{#if @first}}{{Text}}!{{/if}}{{/each}}{{#if @first}} {{Text}}!{{/if}}) {{/each}}cruel {{World}}!", _textListModel)]
+    public void EachWithNestedFirst()
+    {
+      ShouldRender("EachWithNestedFirst1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "(goodbye! goodbye! goodbye!) (goodbye!) (goodbye!) cruel world!");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithLast1", "{{#each Goodbyes}}{{#if @last}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _textListModel)]
+    public void EachWithLast()
+    {
+      ShouldRender("EachWithLast1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "GOODBYE! cruel world!");
+    }
+
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachWithNestedLast1", "{{#each Goodbyes}}({{#if @last}}{{Text}}! {{/if}}{{#each ../Goodbyes}}{{#if @last}}{{Text}}!{{/if}}{{/each}}{{#if @last}} {{Text}}!{{/if}}) {{/each}}cruel {{World}}!", _textListModel)]
+    public void EachWithNestedLast()
+    {
+      ShouldRender("EachWithNestedLast1", new TextListModel()
+      {
+        Goodbyes = new List<TextModel>()
+        {
+          new TextModel() { Text = "goodbye"},
+          new TextModel() { Text = "Goodbye"},
+          new TextModel() { Text = "GOODBYE"}
+        },
+        World = "world"
+      }, "(GOODBYE!) (GOODBYE!) (GOODBYE! GOODBYE! GOODBYE!) cruel world!");
+    }
+
+    [CompiledHandlebarsHelperMethod]
+    public static string DetectDataInsideEach(string date) => string.IsNullOrEmpty(date) ? string.Empty : "!";
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachDataPassedToHelpers1","{{#each Letters}}{{this}}{{DetectDataInsideEach}}{{/each}}", _letterListModel)]
+    public void EachDataPassedToHelpers()
+    {
+      ShouldRender("EachDataPassedToHelpers1", new LetterListModel() { Letters = new List<string>() { "a", "b", "c" } }, "a!b!c!");
+    }
+
+    private class CompiledHandlebarsHelperMethodAttribute : Attribute{ }
     /*
 
-   
-
-    it('each with nested @index', function() {
-      var string = '{{#each goodbyes}}{{@index}}. {{text}}! {{#each ../goodbyes}}{{@index}} {{/each}}After {{@index}} {{/each}}{{@index}}cruel {{world}}!';
-      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}, {text: 'GOODBYE'}], world: 'world'};
+       
+    it('each object with @last', function() {
+      var string = '{{#each goodbyes}}{{#if @last}}{{text}}! {{/if}}{{/each}}cruel {{world}}!';
+      var hash = {goodbyes: {'foo': {text: 'goodbye'}, bar: {text: 'Goodbye'}}, world: 'world'};
 
       var template = CompilerContext.compile(string);
       var result = template(hash);
 
-      equal(result, '0. goodbye! 0 1 2 After 0 1. Goodbye! 0 1 2 After 1 2. GOODBYE! 0 1 2 After 2 cruel world!', 'The @index variable is used');
+      equal(result, 'Goodbye! cruel world!', 'The @last variable is used');
     });
 
-    it('each without data', function() {
-      var string = '{{#each goodbyes}}{{text}}! {{/each}}cruel {{world}}!';
-      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}, {text: 'GOODBYE'}], world: 'world'};
-      shouldCompileTo(string, [hash,,,, false], 'goodbye! Goodbye! GOODBYE! cruel world!');
-
-      hash = {goodbyes: 'cruel', world: 'world'};
-      shouldCompileTo('{{#each .}}{{.}}{{/each}}', [hash,,,, false], 'cruelworld');
-    });
-
-    it('each without context', function() {
-      var string = '{{#each goodbyes}}{{text}}! {{/each}}cruel {{world}}!';
-      shouldCompileTo(string, [,,,, ], 'cruel !');
-    });
 
     it('each with an object and @key', function() {
       var string = '{{#each goodbyes}}{{@key}}. {{text}}! {{/each}}cruel {{world}}!';
