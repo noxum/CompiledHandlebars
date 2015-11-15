@@ -5,18 +5,12 @@ using System.Collections.Generic;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class YieldStatement : ASTElementBase
+  internal class YieldStatement : EncodableHandlebarsLeaf
   {
     internal readonly Expression Expr;
-    internal TokenType Type { get; set; } = TokenType.Encoded;
     internal YieldStatement(Expression expr, int line, int column) : base(line, column)
     {
       Expr = expr;
-    }
-
-    internal void SetTokenType(TokenType type)
-    {
-      Type = type;
     }
 
     internal override void Accept(IASTVisitor visitor)
@@ -31,11 +25,13 @@ namespace CompiledHandlebars.Compiler.AST
 
     internal HelperCall TransformToHelperCall()
     {      
-      return new HelperCall(
+      var helperCall = new HelperCall(
           Expr.ToString(),
           new List<Expression>() { new MemberExpression(new ThisIdentifier(null)) },
           Line,
           Column);
+      helperCall.SetTokenType(Type);
+      return helperCall;
     }
   }
 }

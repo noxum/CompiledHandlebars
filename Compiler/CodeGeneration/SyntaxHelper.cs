@@ -14,6 +14,61 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
   internal static class SyntaxHelper
   {
     /// <summary>
+    /// Yields "sb.Append(argument)"
+    /// </summary>
+    /// <param name="argument"></param>
+    /// <returns></returns>
+    private static ExpressionStatementSyntax SbAppend(ArgumentSyntax argument, bool encoded)
+    {
+      if (encoded)
+        argument = EncodeArgument(argument);
+      return 
+        SF.ExpressionStatement(
+          SF.InvocationExpression(
+            SF.ParseExpression("sb.Append")
+          )
+          .AddArgumentListArguments(
+            argument
+          )
+        );
+    }
+
+    /// <summary>
+    /// Yields "sb.Append(WebUtility.HtmlEncode(argument))"
+    /// </summary>
+    /// <param name="argument"></param>
+    /// <returns></returns>
+    private static ArgumentSyntax EncodeArgument(ArgumentSyntax argument)
+    {
+      return
+        SF.Argument(
+          SF.InvocationExpression(
+            SF.ParseExpression("WebUtility.HtmlEncode")
+          )
+          .AddArgumentListArguments(
+            argument
+          )
+        );
+    }
+
+    private static IdentifierNameSyntax ToStringIdentifierName = SF.IdentifierName("ToString()");
+
+    /// <summary>
+    /// Yields "expression.ToString()"
+    /// </summary>
+    /// <param name="expression"></param>
+    /// <returns></returns>
+    private static MemberAccessExpressionSyntax ExpressionToString(ExpressionSyntax expression)
+    {
+      return
+        SF.MemberAccessExpression(
+          SyntaxKind.SimpleMemberAccessExpression,
+          expression,
+          ToStringIdentifierName
+        );
+    }
+
+    /// <summary>
     /// Yields code that declares and creates a StringBuilder:
     /// var sb = new StringBuilder();
     /// </summary>
@@ -142,37 +197,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     internal static ExpressionStatementSyntax AppendStringLiteral(string value)
     {
       return
-        SF.ExpressionStatement(
-          SF.InvocationExpression(
-            SF.ParseExpression("sb.Append")
-          ).AddArgumentListArguments(
-            SF.Argument(SF.LiteralExpression(SyntaxKind.StringLiteralExpression, SF.Literal(value)))
-          )
-        );
-    }
-
-    /// <summary>
-    /// sb.Append(WebUtility.HtmlEncode(memberName))
-    /// </summary>
-    /// <param name="memberName"></param>
-    /// <returns></returns>
-    internal static ExpressionStatementSyntax AppendMemberEncoded(string memberName, bool isString)
-    {
-      return
-        SF.ExpressionStatement(
-          SF.InvocationExpression(
-            SF.ParseExpression("sb.Append")
-          )
-          .AddArgumentListArguments(
-            SF.Argument(
-              SF.InvocationExpression(
-                SF.ParseExpression("WebUtility.HtmlEncode")
-              )
-              .AddArgumentListArguments(
-                SF.Argument(SF.ParseExpression(isString ? memberName : $"{memberName}.ToString()"))
-              )
-            )
-          )
+        SbAppend(
+          SF.Argument(SF.LiteralExpression(SyntaxKind.StringLiteralExpression, SF.Literal(value))),
+          encoded: false
         );
     }
 
@@ -181,38 +208,54 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// </summary>
     /// <param name="memberName"></param>
     /// <returns></returns>
-    internal static ExpressionStatementSyntax AppendMember(string memberName, bool isString)
+    internal static ExpressionStatementSyntax AppendMember(string memberName, bool isString, bool encoded)
     {
       return
-        SF.ExpressionStatement(
-          SF.InvocationExpression(
-            SF.ParseExpression("sb.Append")
-          ).AddArgumentListArguments(
-            SF.Argument(SF.ParseExpression(isString?memberName:$"{memberName}.ToString()"))
-          )
-        );
+        SbAppend(
+            SF.Argument(SF.ParseExpression(isString ? memberName : $"{memberName}.ToString()")),
+            encoded: encoded
+          );
     }
 
-
-    internal static ExpressionStatementSyntax AppendFuntionCallResult(string functionName, IList<string> parameters)
-    {
-      return
-        SF.ExpressionStatement(
-          SF.InvocationExpression(
-            SF.ParseExpression("sb.Append")
-          )
-          .AddArgumentListArguments(
+    /// <summary>
+    /// Yields "sb.Append(functionName(parameter1, parameter2))" or 
+    /// "sb.Append(functionName(parameter1, parameter2).ToString())"
+    /// </summary>
+    /// <param name="functionName"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    internal static ExpressionStatementSyntax AppendFuntionCallResult(string functionName, IList<string> parameters, bool returnTypeIsString, bool encoded)
+    {    
+      if (returnTypeIsString)
+      {
+        return
+          SbAppend(
             SF.Argument(
-              SF.InvocationExpression(
-                SF.ParseExpression(functionName)
-              )
+              SF.InvocationExpression(SF.ParseExpression(functionName))
               .AddArgumentListArguments(
-                parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()           
+                parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()
               )
-            )
-          )
-        );
+            ), 
+            encoded: encoded           
+          );
+      }
+      else
+      {
+        return
+          SbAppend(
+            SF.Argument(
+              ExpressionToString(
+                SF.InvocationExpression(SF.ParseExpression(functionName))
+                .AddArgumentListArguments(
+                  parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()
+                )
+              )
+            ),
+            encoded: encoded
+          );
+      }             
     }
+
 
     /// <summary>
     /// private static bool IsTruthy(bool b)

@@ -23,5 +23,4 @@ namespace CompiledHandlebars.Compiler.AST
     internal abstract bool HasExpressionOnLoopLevel<T>();
   }
 
-  internal enum TokenType { Undefined, Encoded, Escaped }
 }

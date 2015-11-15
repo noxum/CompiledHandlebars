@@ -9,6 +9,7 @@ using CompiledHandlebars.Compiler.CodeGeneration;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using CompiledHandlebars.Compiler.AST.Expressions;
+using Microsoft.CodeAnalysis;
 
 namespace CompiledHandlebars.Compiler.Visitors
 {
@@ -63,10 +64,11 @@ namespace CompiledHandlebars.Compiler.Visitors
       Context yieldContext;
       if (astLeaf.Expr.TryEvaluate(state, out yieldContext))
       {
-        if (astLeaf.Type == TokenType.Encoded)
-          state.PushStatement(SyntaxHelper.AppendMemberEncoded(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
-        else
-          state.PushStatement(SyntaxHelper.AppendMember(yieldContext.FullPath, yieldContext.Symbol?.IsString()??false));
+        state.PushStatement(SyntaxHelper.AppendMember(
+          yieldContext.FullPath, 
+          yieldContext.Symbol.IsString(), 
+          astLeaf.Type == TokenType.Encoded)
+        );
       } else
       {
         //Unknown Member could also be a HelperCall with implied this as Parameter
@@ -255,8 +257,10 @@ namespace CompiledHandlebars.Compiler.Visitors
         state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
         state.PushStatement(
           SyntaxHelper.AppendFuntionCallResult(
-            string.Concat(helperMethod.ContainingType.Name,".",helperMethod.Name),
-            paramContextList.Select(x => x.FullPath).ToList()));
+            functionName: string.Concat(helperMethod.ContainingType.Name,".",helperMethod.Name),
+            parameters: paramContextList.Select(x => x.FullPath).ToList(),
+            returnTypeIsString: helperMethod.ReturnType.IsString(),
+            encoded: astLeaf.Type == TokenType.Encoded));       
       } 
       else
       {//HelperMethod not found

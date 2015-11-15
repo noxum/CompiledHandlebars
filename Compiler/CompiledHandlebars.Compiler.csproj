@@ -114,6 +114,7 @@
     <Compile Include="AST\BlockWithElse.cs" />
     <Compile Include="AST\CommentLiteral.cs" />
     <Compile Include="AST\EachBlock.cs" />
+    <Compile Include="AST\EscapableHandlebarsLeaf.cs" />
     <Compile Include="AST\Expressions\Expression.cs" />
     <Compile Include="AST\Expressions\Identifier.cs" />
     <Compile Include="AST\Expressions\LiteralExpression.cs" />

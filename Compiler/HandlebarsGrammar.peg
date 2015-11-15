@@ -47,15 +47,19 @@ Element
 
 Leaf <ASTElementBase>
     = Opening value:HandlebarsLeaf Closing { value }
-    / EscapedOpening value:YieldStatement EscapedClosing { {value.SetTokenType(TokenType.Escaped); return value;} }    
+    / EscapedOpening value:EncodableHandlebarsLeaf EscapedClosing { {value.SetTokenType(TokenType.Unencoded); return value;} }    
     / MarkupLiteral
 
 HandlebarsLeaf <ASTElementBase>
     = CommentIdentifier val:Comment { val }
     / PartialCallIdentifier val:PartialCall { val } 
-    / EscapedTokenIdentifier val:YieldStatement { {val.SetTokenType(TokenType.Escaped); return val;} }  
+    / UnencodedTokenIdentifier val:YieldStatement { {val.SetTokenType(TokenType.Unencoded); return val;} }  
     / YieldStatement
     / HelperCall    
+
+EncodableHandlebarsLeaf <EncodableHandlebarsLeaf>
+    = YieldStatement
+    / HelperCall
 
 PartialCall <PartialCall>
     = templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
@@ -230,7 +234,7 @@ BlockOpeningIdentifier = "#"
 BlockClosingIdentifier = "/"
 TrimWhitespaceIdentifier = "~"
 CommentIdentifier = "!"
-EscapedTokenIdentifier = "&"
+UnencodedTokenIdentifier = "&"
 WithKeyword = "with"
 EachKeyword = "each"
 IfKeyword = "if"

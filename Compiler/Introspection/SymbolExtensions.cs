@@ -47,13 +47,9 @@ namespace CompiledHandlebars.Compiler.Introspection
     /// <param name="symbol"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static bool IsString(this ISymbol symbol)
+    public static bool IsString(this ITypeSymbol symbol)
     {
-      if (symbol.Kind == SymbolKind.Property)
-        return (symbol as IPropertySymbol).Type.IsString();
-      if (symbol.Kind == SymbolKind.NamedType)
-        return (symbol as INamedTypeSymbol).SpecialType.HasFlag(SpecialType.System_String);
-      return false;
+      return (symbol as INamedTypeSymbol).SpecialType.HasFlag(SpecialType.System_String);
     }
 
     private static ITypeSymbol FindMemberRec(this ITypeSymbol symbol, string name)

@@ -8,7 +8,7 @@ using CompiledHandlebars.Compiler.Visitors;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class HelperCall : ASTElementBase
+  internal class HelperCall : EncodableHandlebarsLeaf
   {
     internal readonly IList<Expression> Parameters;
     internal readonly string FunctionName;
@@ -18,6 +18,8 @@ namespace CompiledHandlebars.Compiler.AST
       FunctionName = functionName;
       Parameters = parameters;
     }
+
+
 
     internal override void Accept(IASTVisitor visitor)
     {
