@@ -147,12 +147,7 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       //Check if we are already in a compiletime loop. 
-      if (astNode.Type==EachBlock.LoopType.CompileTime)
-      {
-        //VisitLeave popped the MemberContext
-        var ctLoopContext = state.ContextStack.Peek() as CompileTimeLoopContext;
-        state.ContextStack.Push(ctLoopContext.Members[ctLoopContext.CurrentMemberIndex]);
-      } else
+      if (astNode.Type!=EachBlock.LoopType.CompileTime)
       {//Not in compiletime loop. procede as usual
         Context loopedVariable;
         if (astNode.Member.TryEvaluate(state, out loopedVariable))
@@ -171,10 +166,10 @@ namespace CompiledHandlebars.Compiler.Visitors
           else
           {//The loopVariable is an object. Compiletimeloop over its Members
             astNode.Type = EachBlock.LoopType.CompileTime;
-            //Push the CompileTimeLoop
-            state.ContextStack.Push(new CompileTimeLoopContext(loopedVariable.FullPath, loopedVariable.Symbol));
-            //Push the first Member as Context
-            state.ContextStack.Push((state.ContextStack.Peek() as CompileTimeLoopContext).Members.First());          
+            //Push the CompileTimeLoopContext
+            var ctLoopContext = new CompileTimeLoopContext(loopedVariable.FullPath, loopedVariable.Symbol);
+            ctLoopContext.MoveNext();
+            state.ContextStack.Push(ctLoopContext);
           }
         }
       }
@@ -203,12 +198,9 @@ namespace CompiledHandlebars.Compiler.Visitors
         );
       } else if (astNode.Type==EachBlock.LoopType.CompileTime)
       {
-        //Pop the MemberContext
-        state.ContextStack.Pop();
         //Check if loop is completed
         var ctLoopContext = state.ContextStack.Peek() as CompileTimeLoopContext;
-        ctLoopContext.CurrentMemberIndex++;
-        if (ctLoopContext.CurrentMemberIndex<ctLoopContext.Members.Count)
+        if (ctLoopContext.MoveNext())
         {//Next Iteration
           astNode.Accept(this);
         }

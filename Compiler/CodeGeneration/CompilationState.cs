@@ -225,6 +225,20 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     internal void DoTruthyCheck(List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null, AST.IfType ifType = IfType.If)
     {
       var contextToCheck = TruthyStack.Pop();
+      if (contextToCheck.Symbol.SpecialType==SpecialType.System_Boolean)
+      {//Special treatment for boolean literals
+        if (contextToCheck.FullPath.Equals("true"))
+        {
+          resultStack.Peek().AddRange(ifBlock);
+          return;
+        }
+        if (contextToCheck.FullPath.Equals("false"))
+        {
+          if (elseBlock!=null)
+            resultStack.Peek().AddRange(elseBlock);
+          return;
+        }
+      }//No boolean literal to be checked. Procede as usual
       IfStatementSyntax ifStatement;
       if (TruthyStack.Any())
         ifStatement = SyntaxHelper.IfIsTruthy(GetQueryElements(TruthyStack.Peek(), contextToCheck), ifType);

@@ -165,6 +165,7 @@ SpecialExpressionInner <Expression>
         = FirstKeyword { new FirstExpression() }
         / LastKeyword { new LastExpression() }
         / IndexKeyword { new IndexExpression() }
+        / KeyKeyword {new KeyExpression() }
         / v:(!SpecialKeyword Identifier) #STATE{ AddError(string.Format("Unkown Special Expression '{0}'", v), HandlebarsSyntaxErrorKind.UnknownSpecialExpression, state); } { new MemberExpression(new ThisIdentifier(null)) }   
 
 MemberExpression <MemberExpression>
@@ -242,6 +243,7 @@ RootKeyword = "root"
 FirstKeyword = "first"
 LastKeyword = "last"
 IndexKeyword = "index"
+KeyKeyword = "key"
 AnyOpening = EscapedOpening / Opening
 Opening = "{{"TrimWhitespaceIdentifier?
 Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
