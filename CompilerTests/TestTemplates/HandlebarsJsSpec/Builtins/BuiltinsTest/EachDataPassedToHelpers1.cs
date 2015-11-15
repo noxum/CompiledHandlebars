@@ -17,7 +17,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
         foreach (var loopItem0 in viewModel.Letters)
         {
           sb.Append(WebUtility.HtmlEncode(loopItem0));
-          sb.Append(BuiltinsTest.DetectDataInsideEach(loopItem0));
+          sb.Append(WebUtility.HtmlEncode(BuiltinsTest.DetectDataInsideEach(loopItem0)));
         }
       }
 

@@ -17,7 +17,7 @@ namespace CompiledHandlebars.CompilerTests
         int index1 = 0;
         foreach (var loopItem0 in viewModel.Plains)
         {
-          sb.Append(HelperTests.IndexPlusOne(index1));
+          sb.Append(WebUtility.HtmlEncode(HelperTests.IndexPlusOne(index1)));
           sb.Append(":");
           sb.Append(WebUtility.HtmlEncode(loopItem0.Name));
           index1++;

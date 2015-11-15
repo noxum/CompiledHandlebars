@@ -21,9 +21,9 @@ namespace CompiledHandlebars.CompilerTests
         {
           last1 = index1 == (viewModel.Plains.Count() - 1);
           sb.Append("first:");
-          sb.Append(HelperTests.BoolToYesNo(first1));
+          sb.Append(WebUtility.HtmlEncode(HelperTests.BoolToYesNo(first1)));
           sb.Append(";last:");
-          sb.Append(HelperTests.BoolToYesNo(last1));
+          sb.Append(WebUtility.HtmlEncode(HelperTests.BoolToYesNo(last1)));
           index1++;
           first1 = false;
         }

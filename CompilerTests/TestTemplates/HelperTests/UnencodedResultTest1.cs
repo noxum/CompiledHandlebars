@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class LiteralParameterTest1
+  public static class UnencodedResultTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
+    public static string Render(System.String viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(HelperTests.ToLower("MARS")));
+      sb.Append(HelperTests.ToLower(viewModel));
       return sb.ToString();
     }
 
@@ -45,4 +45,4 @@ namespace CompiledHandlebars.CompilerTests
     {
     }
   }
-}/**/
+}/*Line: 1; Column 27: Could not find Member 'ToLower' in Type 'string'!*/

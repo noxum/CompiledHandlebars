@@ -114,7 +114,12 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("LiteralParameterTest3", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
-
+    [TestMethod]
+    [RegisterHandlebarsTemplate("UnencodedResultTest1", "{{model System.String}}{{{ToLower}}}")]
+    public void UnencodedResultTest()
+    {
+      ShouldRender("UnencodedResultTest1", "<a href='#'>Link</a>", "<a href='#'>link</a>");
+    }
 
     private class CompiledHandlebarsHelperMethodAttribute : Attribute
     {

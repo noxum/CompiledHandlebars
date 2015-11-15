@@ -12,7 +12,7 @@ namespace CompiledHandlebars.CompilerTests
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(HelperTests.ReturnShorter("Mars", "Saturn"));
+      sb.Append(WebUtility.HtmlEncode(HelperTests.ReturnShorter("Mars", "Saturn")));
       return sb.ToString();
     }
 
