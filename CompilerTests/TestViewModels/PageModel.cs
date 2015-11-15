@@ -15,4 +15,9 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
     public string Title { get; set; }
     public string Headline { get; set; }
   }
+
+  public class PageListModel
+  {
+    public List<PageModel> Items { get; set; }
+  }
 }

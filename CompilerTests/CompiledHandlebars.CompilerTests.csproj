@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="BasicCompilerTests.cs" />
     <Compile Include="BasicFailingCompilerTests.cs" />
+    <Compile Include="EachTests.cs" />
     <Compile Include="HandlebarsJsSpec\Basic.cs" />
     <Compile Include="HandlebarsJsSpec\Builtins.cs" />
     <Compile Include="HelperTests.cs" />
@@ -153,6 +154,17 @@
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest3.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
+    <Compile Include="TestTemplates\EachTests\EachOverObjectTest1.cs" />
+    <Compile Include="TestTemplates\EachTests\EachOverObjectTest2.cs" />
+    <Compile Include="TestTemplates\EachTests\EachOverObjectTest3.cs" />
+    <Compile Include="TestTemplates\EachTests\EachOverObjectTest4.cs" />
+    <Compile Include="TestTemplates\EachTests\EachOverObjectTest5.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest1.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest2.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest3.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest4.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest5.cs" />
+    <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest6.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments2.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments3.cs" />
