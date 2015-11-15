@@ -187,6 +187,9 @@
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Zeros3.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\Each1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachDataPassedToHelpers1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachObjectWithFirst1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachObjectWithIndex1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachObjectWithLast1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachWithFirst1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachWithIndex1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\EachWithLast1.cs" />

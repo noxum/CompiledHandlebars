@@ -27,6 +27,30 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
   {
     public string Text { get; set; }
   }
+  public class ABCModel
+  {
+    public TextModel A { get; set; }
+    public TextModel B { get; set; }
+    public TextModel C { get; set; }
+  }
+
+  public class FooBarModel
+  {
+    public TextModel Foo { get; set; }
+    public TextModel Bar { get; set; }
+  }
+
+  public class MultiTextModel1
+  {
+    public ABCModel Goodbyes { get; set; }
+    public string World { get; set; }
+  }
+
+  public class MultiTextModel2
+  {
+    public FooBarModel Goodbyes { get; set; }
+    public string World { get; set; }
+  }
 
   public class PersonModel
   {
@@ -55,6 +79,8 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     private const string _goodbyeModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.GoodbyeModel}}";
     private const string _textListModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.TextListModel}}";
     private const string _letterListModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.LetterListModel}}";
+    private const string _multiTextModel = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.MultiTextModel1}}";
+    private const string _multiTextModel2 = "{{model CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.MultiTextModel2}}";
 
 
     static BuiltinsTest()
@@ -146,6 +172,21 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
       ShouldRaiseError("EachWithNestedIndex1", Compiler.HandlebarsTypeErrorKind.SpecialExpressionOutsideEachLoop);
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachObjectWithIndex1", "{{#each Goodbyes}}{{@index}}. {{Text}}! {{/each}}cruel {{World}}!", _multiTextModel)]
+    public void EachObjectWithIndex()
+    {
+      ShouldRender("EachObjectWithIndex1", new MultiTextModel1()
+      {
+        Goodbyes = new ABCModel()
+        {
+          A = new TextModel() { Text = "goodbye" },
+          B = new TextModel() { Text = "Goodbye" },
+          C = new TextModel() { Text = "GOODBYE" }
+        },
+        World = "world"
+      }, "0. goodbye! 1. Goodbye! 2. GOODBYE! cruel world!");
+    }
 
     [TestMethod]
     [RegisterHandlebarsTemplate("EachWithFirst1", "{{#each Goodbyes}}{{#if @first}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _textListModel)]
@@ -181,6 +222,22 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
     }
 
     [TestMethod]
+    [RegisterHandlebarsTemplate("EachObjectWithFirst1", "{{#each Goodbyes}}{{#if @first}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _multiTextModel)]
+    public void EachObjectWithFirst()
+    {
+      ShouldRender("EachObjectWithFirst1", new MultiTextModel1()
+      {
+        Goodbyes = new ABCModel()
+        {
+          A = new TextModel() { Text = "goodbye" },
+          B = new TextModel() { Text = "Goodbye" },
+          C = new TextModel() { Text = "GOODBYE" }
+        },
+        World = "world"
+      }, "goodbye! cruel world!");
+    }
+
+    [TestMethod]
     [RegisterHandlebarsTemplate("EachWithLast1", "{{#each Goodbyes}}{{#if @last}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _textListModel)]
     public void EachWithLast()
     {
@@ -213,6 +270,21 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
       }, "(GOODBYE!) (GOODBYE!) (GOODBYE! GOODBYE! GOODBYE!) cruel world!");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("EachObjectWithLast1", "{{#each Goodbyes}}{{#if @last}}{{Text}}! {{/if}}{{/each}}cruel {{World}}!", _multiTextModel2)]
+    public void EachObjectWithLast()
+    {
+      ShouldRender("EachObjectWithLast1", new MultiTextModel2()
+      {
+        Goodbyes = new FooBarModel()
+        {
+          Foo = new TextModel() { Text = "goodbye" },
+          Bar = new TextModel() { Text = "Goodbye" },
+        },
+        World = "world"
+      }, "Goodbye! cruel world!");
+    }
+
     [CompiledHandlebarsHelperMethod]
     public static string DetectDataInsideEach(string date) => string.IsNullOrEmpty(date) ? string.Empty : "!";
 
@@ -223,55 +295,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
       ShouldRender("EachDataPassedToHelpers1", new LetterListModel() { Letters = new List<string>() { "a", "b", "c" } }, "a!b!c!");
     }
 
-    private class CompiledHandlebarsHelperMethodAttribute : Attribute{ }
-    /*
-
-       
-    it('each object with @last', function() {
-      var string = '{{#each goodbyes}}{{#if @last}}{{text}}! {{/if}}{{/each}}cruel {{world}}!';
-      var hash = {goodbyes: {'foo': {text: 'goodbye'}, bar: {text: 'Goodbye'}}, world: 'world'};
-
-      var template = CompilerContext.compile(string);
-      var result = template(hash);
-
-      equal(result, 'Goodbye! cruel world!', 'The @last variable is used');
-    });
-
-
-    it('each with an object and @key', function() {
-      var string = '{{#each goodbyes}}{{@key}}. {{text}}! {{/each}}cruel {{world}}!';
-
-      function Clazz() {
-        this['<b>#1</b>'] = {text: 'goodbye'};
-        this[2] = {text: 'GOODBYE'};
-      }
-      Clazz.prototype.foo = 'fail';
-      var hash = {goodbyes: new Clazz(), world: 'world'};
-
-      // Object property iteration order is undefined according to ECMA spec,
-      // so we need to check both possible orders
-      // @see http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
-      var actual = compileWithPartials(string, hash);
-      var expected1 = '&lt;b&gt;#1&lt;/b&gt;. goodbye! 2. GOODBYE! cruel world!';
-      var expected2 = '2. GOODBYE! &lt;b&gt;#1&lt;/b&gt;. goodbye! cruel world!';
-
-      equals(actual === expected1 || actual === expected2, true, 'each with object argument iterates over the contents when not empty');
-      shouldCompileTo(string, {goodbyes: {}, world: 'world'}, 'cruel world!');
-    });
-
-
-
-    it('each with block params', function() {
-      var string = '{{#each goodbyes as |value index|}}{{index}}. {{value.text}}! {{#each ../goodbyes as |childValue childIndex|}} {{index}} {{childIndex}}{{/each}} After {{index}} {{/each}}{{index}}cruel {{world}}!';
-      var hash = {goodbyes: [{text: 'goodbye'}, {text: 'Goodbye'}], world: 'world'};
-
-      var template = CompilerContext.compile(string);
-      var result = template(hash);
-
-      equal(result, '0. goodbye!  0 0 0 1 After 0 1. Goodbye!  1 0 1 1 After 1 cruel world!');
-    });
-
-    */
+    private class CompiledHandlebarsHelperMethodAttribute : Attribute{ } 
 
   }
 }
