@@ -29,9 +29,13 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
     /// <returns></returns>
     internal Context EvaluateLoop(CompilationState state)
     {
-      Context loopVariable; 
+      Context loopVariable;
       if (TryEvaluate(state, out loopVariable))
-        return state.BuildLoopContext(loopVariable.Symbol.GetElementSymbol());
+      {
+        var elementSymbol = loopVariable.Symbol.GetElementSymbol();
+        if (elementSymbol!=null)
+          return state.BuildLoopContext(loopVariable.Symbol.GetElementSymbol());        
+      }
       return null;
     }
 

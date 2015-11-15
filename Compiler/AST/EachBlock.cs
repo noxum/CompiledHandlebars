@@ -10,10 +10,19 @@ namespace CompiledHandlebars.Compiler.AST
 {
   internal class EachBlock : ASTNode
   {
+
+    internal enum LoopType { None, RunTime, CompileTime }
     internal enum ForLoopFlags { None = 0, First = 1, Last = 2, Index = 4 }
 
     internal readonly MemberExpression Member;
+
+    internal LoopType Type { get; set; }
+
     private ForLoopFlags? _flags = null;
+    /// <summary>
+    /// Flags are set if the current loopLevel requires information about first, last or index
+    /// i.e. if {{@index}} is in the loop body the flag Index is set
+    /// </summary>
     internal ForLoopFlags Flags
     {
       get

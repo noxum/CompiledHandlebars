@@ -146,36 +146,78 @@ namespace CompiledHandlebars.Compiler.Visitors
     public void VisitEnter(EachBlock astNode)
     {
       state.SetCursor(astNode);
-      Context loopedVariable;
-      if (astNode.Member.TryEvaluate(state, out loopedVariable))
+      //Check if we are already in a compiletime loop. 
+      if (astNode.Type==EachBlock.LoopType.CompileTime)
       {
-        state.PromiseTruthyCheck(loopedVariable);
-        state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
-        state.PushNewBlock();
-        state.LoopLevel++;
-        if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
-          state.SetLastVariable(loopedVariable.FullPath);
+        //VisitLeave popped the MemberContext
+        var ctLoopContext = state.ContextStack.Peek() as CompileTimeLoopContext;
+        state.ContextStack.Push(ctLoopContext.Members[ctLoopContext.CurrentMemberIndex]);
+      } else
+      {//Not in compiletime loop. procede as usual
+        Context loopedVariable;
+        if (astNode.Member.TryEvaluate(state, out loopedVariable))
+        { 
+          state.PromiseTruthyCheck(loopedVariable);
+          state.PushNewBlock();
+          Context loopContext = astNode.Member.EvaluateLoop(state);
+          if (loopContext!=null)
+          {//The loopVariable implements IEnumerable -> runtimeloop over its contents
+            astNode.Type = EachBlock.LoopType.RunTime;
+            state.ContextStack.Push(astNode.Member.EvaluateLoop(state));   
+            state.LoopLevel++;        
+            if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
+              state.SetLastVariable(loopedVariable.FullPath);
+          }
+          else
+          {//The loopVariable is an object. Compiletimeloop over its Members
+            astNode.Type = EachBlock.LoopType.CompileTime;
+            //Push the CompileTimeLoop
+            state.ContextStack.Push(new CompileTimeLoopContext(loopedVariable.FullPath, loopedVariable.Symbol));
+            //Push the first Member as Context
+            state.ContextStack.Push((state.ContextStack.Peek() as CompileTimeLoopContext).Members.First());          
+          }
+        }
       }
     }
 
     public void VisitLeave(EachBlock astNode)
-    {
-      //Leave loop context
-      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Index)|| astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
-        state.IncrementIndexVariable();
-      if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.First))
-        state.SetFirstVariable();
-      state.ContextStack.Pop();
-      state.LoopLevel--;
-      var prepareStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);
-      Context context;
-      if (astNode.Member.TryEvaluate(state, out context))
+    {      
+      state.SetCursor(astNode);
+      if (astNode.Type==EachBlock.LoopType.RunTime)
       {
-        prepareStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, context.FullPath, state.PopBlock()));
+        if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Index) || astNode.Flags.HasFlag(EachBlock.ForLoopFlags.Last))
+          state.IncrementIndexVariable();
+        if (astNode.Flags.HasFlag(EachBlock.ForLoopFlags.First))
+          state.SetFirstVariable();
+        //Leave loop context
+        state.ContextStack.Pop();
+        state.LoopLevel--;
+        var prepareLoopStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);
+        Context context;
+        if (astNode.Member.TryEvaluate(state, out context))
+        {
+          prepareLoopStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, context.FullPath, state.PopBlock()));
+        }
+        state.DoTruthyCheck(
+            prepareLoopStatements
+        );
+      } else if (astNode.Type==EachBlock.LoopType.CompileTime)
+      {
+        //Pop the MemberContext
+        state.ContextStack.Pop();
+        //Check if loop is completed
+        var ctLoopContext = state.ContextStack.Peek() as CompileTimeLoopContext;
+        ctLoopContext.CurrentMemberIndex++;
+        if (ctLoopContext.CurrentMemberIndex<ctLoopContext.Members.Count)
+        {//Next Iteration
+          astNode.Accept(this);
+        }
+        else
+        {//Pop ctLoopContext
+          state.ContextStack.Pop();         
+          state.DoTruthyCheck(state.PopBlock());
+        }
       }
-      state.DoTruthyCheck(
-          prepareStatements                        
-      );
     }
 
     public void Visit(PartialCall astLeaf)
