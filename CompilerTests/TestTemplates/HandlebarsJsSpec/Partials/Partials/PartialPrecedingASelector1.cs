@@ -4,15 +4,18 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared
+namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials
 {
   [CompiledHandlebarsTemplate]
-  public static class dude
+  public static class PartialPrecedingASelector1
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.AnotherDudeModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+      sb.Append("Dudes: ");
+      sb.Append(dude5.Render(viewModel));
+      sb.Append(" ");
+      sb.Append(WebUtility.HtmlEncode(viewModel.AnotherDude));
       return sb.ToString();
     }
 

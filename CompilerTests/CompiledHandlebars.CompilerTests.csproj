@@ -208,7 +208,17 @@
     <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude2.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude3.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude4.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude5.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialInAPartial1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialPrecedingASelector1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialsWithContext1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialsWithSlashAndPointPaths1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialsWithSlashPaths1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialWithStringContext1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\thing.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\url.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />

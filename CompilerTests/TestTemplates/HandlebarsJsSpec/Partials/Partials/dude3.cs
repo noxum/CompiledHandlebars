@@ -4,15 +4,15 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared
+namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials
 {
   [CompiledHandlebarsTemplate]
-  public static class dude
+  public static class dude3
   {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.AnotherDudeModel viewModel)
+    public static string Render(System.String viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+      sb.Append(WebUtility.HtmlEncode(viewModel));
       return sb.ToString();
     }
 

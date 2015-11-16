@@ -37,9 +37,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
         var attrList = methodInfo.GetCustomAttributes(typeof(RegisterHandlebarsTemplateAttribute), false) as RegisterHandlebarsTemplateAttribute[];
         foreach (var template in attrList)
         {//Get compiled templates
-          //Dont include timestamp as then everytime the unittests are run, the resulting templates are checked out
-          
-          var code = HbsCompiler.Compile(template._contents, testClassType.Namespace, template._name, project);
+          var code = HbsCompiler.Compile(template._contents, template._overridenNameSpace ?? testClassType.Namespace, template._name, project);
           compiledCode.Add(template._name, code);
           if (template._include)
           {
@@ -83,11 +81,7 @@ namespace CompiledHandlebars.CompilerTests.Helper
                           diagnostic.IsWarningAsError ||
                           diagnostic.Severity == DiagnosticSeverity.Error);
 
-          /*foreach (var fail in failures)
-          {
-            project.Documents.First(x => x.FilePath.Equals(fail.Location.SourceTree.FilePath));
-                       
-          }*/
+
           throw new Exception(failures.First().GetMessage());
         }
         ms.Seek(0, SeekOrigin.Begin);

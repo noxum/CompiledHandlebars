@@ -4,10 +4,10 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared
+namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared.Dude
 {
   [CompiledHandlebarsTemplate]
-  public static class dude
+  public static class thing
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.AnotherDudeModel viewModel)
     {

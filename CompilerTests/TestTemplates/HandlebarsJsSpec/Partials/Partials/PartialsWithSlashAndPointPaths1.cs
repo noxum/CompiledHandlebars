@@ -3,16 +3,18 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+using CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared.Dude;
 
-namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared
+namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials
 {
   [CompiledHandlebarsTemplate]
-  public static class dude
+  public static class PartialsWithSlashAndPointPaths1
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.AnotherDudeModel viewModel)
     {
       var sb = new StringBuilder();
-      sb.Append(WebUtility.HtmlEncode(viewModel.Name));
+      sb.Append("Dudes: ");
+      sb.Append(thing.Render(viewModel));
       return sb.ToString();
     }
 
