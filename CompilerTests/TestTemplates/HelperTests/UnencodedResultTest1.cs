@@ -44,5 +44,9 @@ namespace CompiledHandlebars.CompilerTests
     private class CompiledHandlebarsTemplateAttribute : Attribute
     {
     }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
+    {
+    }
   }
 }/*Line: 1; Column 27: Could not find Member 'ToLower' in Type 'string'!*/

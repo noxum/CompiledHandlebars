@@ -46,5 +46,9 @@ namespace CompiledHandlebars.CompilerTests
     private class CompiledHandlebarsTemplateAttribute : Attribute
     {
     }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
+    {
+    }
   }
 }/**/

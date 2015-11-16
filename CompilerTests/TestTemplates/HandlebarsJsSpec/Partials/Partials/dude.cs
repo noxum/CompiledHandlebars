@@ -44,5 +44,9 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.Shared
     private class CompiledHandlebarsTemplateAttribute : Attribute
     {
     }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
+    {
+    }
   }
 }/**/

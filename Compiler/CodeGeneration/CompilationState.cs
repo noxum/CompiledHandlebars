@@ -101,7 +101,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (resultStack.Count == 1)
       {
         var additionalMemberSyntax = GetAdditionalMembers();
-        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());
         var usingsSyntax = GetUsingDirectives();
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
@@ -131,7 +130,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (resultStack.Count == 2)
       {
         var additionalMemberSyntax = GetAdditionalMembers();
-        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsLayoutAttributeClass());
         var usingsSyntax = GetUsingDirectives();
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
@@ -166,7 +164,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (resultStack.Count == 1)
       {
         var additionalMemberSyntax = GetAdditionalMembers();
-        additionalMemberSyntax.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());
         var usingsSyntax = GetUsingDirectives();
         return SyntaxFactory.CompilationUnit()
         .AddUsings(
@@ -200,6 +197,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         result.Add(SyntaxHelper.IsTruthyMethodObject());
         result.Add(SyntaxHelper.IsTruthyMethodIEnumerableT());
         result.Add(SyntaxHelper.IsTruthyMethodInt());
+        result.Add(SyntaxHelper.CompiledHandlebarsTemplateAttributeClass());
+        result.Add(SyntaxHelper.CompiledHandlebarsLayoutAttributeClass());
       }
       return result;
     }

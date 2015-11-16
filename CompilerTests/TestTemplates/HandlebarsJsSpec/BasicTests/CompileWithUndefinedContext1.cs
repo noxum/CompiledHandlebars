@@ -46,6 +46,10 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
     private class CompiledHandlebarsTemplateAttribute : Attribute
     {
     }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
+    {
+    }
   }
 }/*Line: 2; Column 3: Could not find Member 'cruel' in Type 'CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel'!
 Line: 2; Column 3: Could not find Helper Method 'cruel'

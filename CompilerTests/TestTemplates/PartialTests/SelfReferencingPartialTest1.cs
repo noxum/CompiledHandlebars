@@ -19,7 +19,7 @@ namespace CompiledHandlebars.CompilerTests
 
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Child))
       {
-        sb.Append(SelfReferencingPartialTest1.Render(viewModel.Child));
+        sb.Append(Render(viewModel.Child));
       }
 
       return sb.ToString();
@@ -51,6 +51,10 @@ namespace CompiledHandlebars.CompilerTests
     }
 
     private class CompiledHandlebarsTemplateAttribute : Attribute
+    {
+    }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
     {
     }
   }

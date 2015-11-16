@@ -50,6 +50,10 @@ namespace CompiledHandlebars.CompilerTests
       return i != 0;
     }
 
+    private class CompiledHandlebarsTemplateAttribute : Attribute
+    {
+    }
+
     private class CompiledHandlebarsLayoutAttribute : Attribute
     {
     }
