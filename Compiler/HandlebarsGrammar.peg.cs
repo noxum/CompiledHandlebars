@@ -58,6 +58,7 @@ namespace
         state["errors"] = newList.AsReadOnly();
     }
         #line default
+        private Dictionary<CacheKey, object> storage;
 
         /// <summary>
         ///  Parses a string according to the rules of the <see cref="HbsParser" /> grammar.
@@ -70,13 +71,21 @@ namespace
         /// </exception>
         public HandlebarsTemplate Parse(string subject, string fileName = null)
         {
-            var cursor = new Cursor(subject, 0, fileName);
-            var result = this.Template(ref cursor);
-            if (result == null)
+            try
             {
-                throw ExceptionHelper(cursor, state => "Failed to parse 'Template'.");
+                this.storage = new Dictionary<CacheKey, object>();
+                var cursor = new Cursor(subject, 0, fileName);
+                var result = this.Template(ref cursor);
+                if (result == null)
+                {
+                    throw ExceptionHelper(cursor, state => "Failed to parse 'Template'.");
+                }
+                return result.Value;
             }
-            return result.Value;
+            finally
+            {
+                this.storage = null;
+            }
         }
 
         private IParseResult<
@@ -119,7 +128,7 @@ namespace
             if (r0 == null)
             {
                 var startCursor1 = cursor;
-                IParseResult<MemberExpression> r3 = null;
+                IParseResult<NamespaceOrTypeName> r3 = null;
                 var modelStart = cursor;
                 r3 = this.ModelToken(ref cursor);
                 var modelEnd = cursor;
@@ -212,7 +221,7 @@ namespace
             if (r0 == null)
             {
                 var startCursor4 = cursor;
-                IParseResult<MemberExpression> r10 = null;
+                IParseResult<NamespaceOrTypeName> r10 = null;
                 var modelStart = cursor;
                 r10 = this.ModelToken(ref cursor);
                 var modelEnd = cursor;
@@ -281,7 +290,7 @@ namespace
             if (r0 == null)
             {
                 var startCursor6 = cursor;
-                IParseResult<MemberExpression> r15 = null;
+                IParseResult<NamespaceOrTypeName> r15 = null;
                 var modelStart = cursor;
                 r15 = this.ModelToken(ref cursor);
                 var modelEnd = cursor;
@@ -340,11 +349,11 @@ namespace
 
         private IParseResult<
             #line 30 "HandlebarsGrammar.peg"
-            MemberExpression
+            NamespaceOrTypeName
             #line default
             > ModelToken(ref Cursor cursor)
         {
-            IParseResult<MemberExpression> r0 = null;
+            IParseResult<NamespaceOrTypeName> r0 = null;
             if (r0 == null)
             {
                 var startCursor0 = cursor;
@@ -356,22 +365,31 @@ namespace
                     r2 = this.ModelKeyword(ref cursor);
                     if (r2 != null)
                     {
-                        IParseResult<MemberExpression> r3 = null;
-                        var valueStart = cursor;
-                        r3 = this.MemberExpression(ref cursor);
-                        var valueEnd = cursor;
-                        var value = ValueOrDefault(r3);
+                        IParseResult<IList<string>> r3 = null;
+                        r3 = this.Whitespace(ref cursor);
                         if (r3 != null)
                         {
-                            IParseResult<string> r4 = null;
-                            r4 = this.Closing(ref cursor);
+                            IParseResult<NamespaceOrTypeName> r4 = null;
+                            var valueStart = cursor;
+                            r4 = this.NamespaceOrTypeName(ref cursor);
+                            var valueEnd = cursor;
+                            var value = ValueOrDefault(r4);
                             if (r4 != null)
                             {
-                                r0 = this.ReturnHelper<MemberExpression>(startCursor0, ref cursor, state =>
-                                    #line 31 "HandlebarsGrammar.peg"
-                                                            value
-                                    #line default
-                                    );
+                                IParseResult<string> r5 = null;
+                                r5 = this.Closing(ref cursor);
+                                if (r5 != null)
+                                {
+                                    r0 = this.ReturnHelper<NamespaceOrTypeName>(startCursor0, ref cursor, state =>
+                                        #line 31 "HandlebarsGrammar.peg"
+                                                                          value
+                                        #line default
+                                        );
+                                }
+                                else
+                                {
+                                    cursor = startCursor0;
+                                }
                             }
                             else
                             {
@@ -396,45 +414,45 @@ namespace
             if (r0 == null)
             {
                 var startCursor1 = cursor;
-                IParseResult<string> r5 = null;
+                IParseResult<string> r6 = null;
                 var vStart = cursor;
-                r5 = this.Opening(ref cursor);
+                r6 = this.Opening(ref cursor);
                 var vEnd = cursor;
-                var v = ValueOrDefault(r5);
-                if (r5 != null)
+                var v = ValueOrDefault(r6);
+                if (r6 != null)
                 {
-                    IParseResult<string> r6 = null;
-                    r6 = this.ModelKeyword(ref cursor);
-                    if (r6 != null)
+                    IParseResult<string> r7 = null;
+                    r7 = this.ModelKeyword(ref cursor);
+                    if (r7 != null)
                     {
-                        IParseResult<IList<string>> r7 = null;
+                        IParseResult<IList<string>> r8 = null;
                         var startCursor2 = cursor;
                         var l0 = new List<string>();
                         while (true)
                         {
-                            IParseResult<string> r8 = null;
-                            var startCursor3 = cursor;
                             IParseResult<string> r9 = null;
-                            var startCursor4 = cursor;
+                            var startCursor3 = cursor;
                             IParseResult<string> r10 = null;
-                            r10 = this.Closing(ref cursor);
-                            if (r10 == null)
+                            var startCursor4 = cursor;
+                            IParseResult<string> r11 = null;
+                            r11 = this.Closing(ref cursor);
+                            if (r11 == null)
                             {
-                                r9 = this.ReturnHelper<string>(cursor, ref cursor, state => string.Empty);
+                                r10 = this.ReturnHelper<string>(cursor, ref cursor, state => string.Empty);
                             }
                             else
                             {
                                 cursor = startCursor4;
                             }
-                            if (r9 != null)
+                            if (r10 != null)
                             {
-                                IParseResult<string> r11 = null;
-                                r11 = this.ParseAny(ref cursor);
-                                if (r11 != null)
+                                IParseResult<string> r12 = null;
+                                r12 = this.ParseAny(ref cursor);
+                                if (r12 != null)
                                 {
                                     {
                                         var len = cursor.Location - startCursor3.Location;
-                                        r8 = this.ReturnHelper<string>(startCursor3, ref cursor, state =>
+                                        r9 = this.ReturnHelper<string>(startCursor3, ref cursor, state =>
                                             state.Subject.Substring(startCursor3.Location, len)
                                             );
                                     }
@@ -448,23 +466,23 @@ namespace
                             {
                                 cursor = startCursor3;
                             }
-                            if (r8 != null)
+                            if (r9 != null)
                             {
-                                l0.Add(r8.Value);
+                                l0.Add(r9.Value);
                             }
                             else
                             {
                                 break;
                             }
                         }
-                        r7 = this.ReturnHelper<IList<string>>(startCursor2, ref cursor, state => l0.AsReadOnly());
-                        if (r7 != null)
+                        r8 = this.ReturnHelper<IList<string>>(startCursor2, ref cursor, state => l0.AsReadOnly());
+                        if (r8 != null)
                         {
-                            IParseResult<string> r12 = null;
-                            r12 = this.Closing(ref cursor);
-                            if (r12 != null)
+                            IParseResult<string> r13 = null;
+                            r13 = this.Closing(ref cursor);
+                            if (r13 != null)
                             {
-                                IParseResult<string> r13 = null;
+                                IParseResult<string> r14 = null;
                                 var startCursor5 = cursor;
                                 {
                                     var state = cursor.WithMutability(mutable: true);
@@ -473,12 +491,12 @@ namespace
                                     #line default
                                     cursor = state.WithMutability(mutable: false);
                                 }
-                                r13 = this.ReturnHelper<string>(startCursor5, ref cursor, state => null);
-                                if (r13 != null)
+                                r14 = this.ReturnHelper<string>(startCursor5, ref cursor, state => null);
+                                if (r14 != null)
                                 {
-                                    r0 = this.ReturnHelper<MemberExpression>(startCursor1, ref cursor, state =>
+                                    r0 = this.ReturnHelper<NamespaceOrTypeName>(startCursor1, ref cursor, state =>
                                         #line 32 "HandlebarsGrammar.peg"
-                                                                                                                                                                                              default(MemberExpression)
+                                                                                                                                                                                              default(NamespaceOrTypeName)
                                         #line default
                                         );
                                 }
@@ -510,29 +528,29 @@ namespace
             if (r0 == null)
             {
                 var startCursor6 = cursor;
-                IParseResult<IList<string>> r14 = null;
+                IParseResult<IList<string>> r15 = null;
                 var vStart = cursor;
                 var startCursor7 = cursor;
                 var l1 = new List<string>();
                 while (true)
                 {
-                    IParseResult<string> r15 = null;
-                    r15 = this.ParseAny(ref cursor);
-                    if (r15 != null)
+                    IParseResult<string> r16 = null;
+                    r16 = this.ParseAny(ref cursor);
+                    if (r16 != null)
                     {
-                        l1.Add(r15.Value);
+                        l1.Add(r16.Value);
                     }
                     else
                     {
                         break;
                     }
                 }
-                r14 = this.ReturnHelper<IList<string>>(startCursor7, ref cursor, state => l1.AsReadOnly());
+                r15 = this.ReturnHelper<IList<string>>(startCursor7, ref cursor, state => l1.AsReadOnly());
                 var vEnd = cursor;
-                var v = ValueOrDefault(r14);
-                if (r14 != null)
+                var v = ValueOrDefault(r15);
+                if (r15 != null)
                 {
-                    IParseResult<string> r16 = null;
+                    IParseResult<string> r17 = null;
                     var startCursor8 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
@@ -541,12 +559,12 @@ namespace
                         #line default
                         cursor = state.WithMutability(mutable: false);
                     }
-                    r16 = this.ReturnHelper<string>(startCursor8, ref cursor, state => null);
-                    if (r16 != null)
+                    r17 = this.ReturnHelper<string>(startCursor8, ref cursor, state => null);
+                    if (r17 != null)
                     {
-                        r0 = this.ReturnHelper<MemberExpression>(startCursor6, ref cursor, state =>
+                        r0 = this.ReturnHelper<NamespaceOrTypeName>(startCursor6, ref cursor, state =>
                             #line 33 "HandlebarsGrammar.peg"
-                                                                                                                                                       default(MemberExpression)
+                                                                                                                                                       default(NamespaceOrTypeName)
                             #line default
                             );
                     }
@@ -4096,39 +4114,215 @@ namespace
         }
 
         private IParseResult<
-            #line 217 "HandlebarsGrammar.peg"
-                string
+            #line 220 "HandlebarsGrammar.peg"
+                     NamespaceOrTypeName
             #line default
-            > TypeIdentifier(ref Cursor cursor)
+            > NamespaceOrTypeName(ref Cursor cursor)
+        {
+            IParseResult<NamespaceOrTypeName> r0 = null;
+            if (r0 == null)
+            {
+                var startCursor0 = cursor;
+                IParseResult<IList<string>> r1 = null;
+                r1 = this.Whitespace(ref cursor);
+                if (r1 != null)
+                {
+                    IParseResult<string> r2 = null;
+                    var valStart = cursor;
+                    r2 = this.TypeNameSegment(ref cursor);
+                    var valEnd = cursor;
+                    var val = ValueOrDefault(r2);
+                    if (r2 != null)
+                    {
+                        IParseResult<IList<NamespaceOrTypeName>> r3 = null;
+                        var argsStart = cursor;
+                        r3 = this.TypeArgumentList(ref cursor);
+                        var argsEnd = cursor;
+                        var args = ValueOrDefault(r3);
+                        if (r3 != null)
+                        {
+                            r0 = this.ReturnHelper<NamespaceOrTypeName>(startCursor0, ref cursor, state =>
+                                #line 221 "HandlebarsGrammar.peg"
+                                                             new GenericTypeName(string.Concat(val), args)
+                                #line default
+                                );
+                        }
+                        else
+                        {
+                            cursor = startCursor0;
+                        }
+                    }
+                    else
+                    {
+                        cursor = startCursor0;
+                    }
+                }
+                else
+                {
+                    cursor = startCursor0;
+                }
+            }
+            if (r0 == null)
+            {
+                var startCursor1 = cursor;
+                IParseResult<IList<string>> r4 = null;
+                r4 = this.Whitespace(ref cursor);
+                if (r4 != null)
+                {
+                    IParseResult<string> r5 = null;
+                    var valStart = cursor;
+                    r5 = this.TypeNameSegment(ref cursor);
+                    var valEnd = cursor;
+                    var val = ValueOrDefault(r5);
+                    if (r5 != null)
+                    {
+                        r0 = this.ReturnHelper<NamespaceOrTypeName>(startCursor1, ref cursor, state =>
+                            #line 222 "HandlebarsGrammar.peg"
+                                       new NamespaceOrTypeName(string.Concat(val))
+                            #line default
+                            );
+                    }
+                    else
+                    {
+                        cursor = startCursor1;
+                    }
+                }
+                else
+                {
+                    cursor = startCursor1;
+                }
+            }
+            return r0;
+        }
+
+        private IParseResult<
+            #line 224 "HandlebarsGrammar.peg"
+                 string
+            #line default
+            > TypeNameSegment(ref Cursor cursor)
         {
             IParseResult<string> r0 = null;
+            var storageKey = new CacheKey("TypeNameSegment", cursor.StateKey, cursor.Location);
+            if (this.storage.ContainsKey(storageKey))
+            {
+                r0 = (IParseResult<string>)this.storage[storageKey];
+                if (r0 != null)
+                {
+                    cursor = r0.EndCursor;
+                }
+                return r0;
+            }
+            this.storage[storageKey] = null;
+            var startCursor0 = cursor;
+            while (true)
+            {
+                IParseResult<string> r1 = null;
+                if (r1 == null)
+                {
+                    var startCursor1 = cursor;
+                    IParseResult<string> r2 = null;
+                    r2 = this.TypeNameSegment(ref cursor);
+                    if (r2 != null)
+                    {
+                        IParseResult<string> r3 = null;
+                        r3 = this.ParseLiteral(ref cursor, ".");
+                        if (r3 != null)
+                        {
+                            IParseResult<IList<string>> r4 = null;
+                            r4 = this.Identifier(ref cursor);
+                            if (r4 != null)
+                            {
+                                {
+                                    var len = cursor.Location - startCursor1.Location;
+                                    r1 = this.ReturnHelper<string>(startCursor1, ref cursor, state =>
+                                        state.Subject.Substring(startCursor1.Location, len)
+                                        );
+                                }
+                            }
+                            else
+                            {
+                                cursor = startCursor1;
+                            }
+                        }
+                        else
+                        {
+                            cursor = startCursor1;
+                        }
+                    }
+                    else
+                    {
+                        cursor = startCursor1;
+                    }
+                }
+                if (r1 == null)
+                {
+                    var startCursor2 = cursor;
+                    IParseResult<IList<string>> r5 = null;
+                    var vStart = cursor;
+                    r5 = this.Identifier(ref cursor);
+                    var vEnd = cursor;
+                    var v = ValueOrDefault(r5);
+                    if (r5 != null)
+                    {
+                        r1 = this.ReturnHelper<string>(startCursor2, ref cursor, state =>
+                            #line 226 "HandlebarsGrammar.peg"
+                     string.Concat(v)
+                            #line default
+                            );
+                    }
+                    else
+                    {
+                        cursor = startCursor2;
+                    }
+                }
+                if (r1 == null || (r0 != null && r0.EndCursor.Location >= r1.EndCursor.Location))
+                {
+                    break;
+                }
+                startCursor0 = startCursor0.Touch();
+                this.storage[new CacheKey("TypeNameSegment", startCursor0.StateKey, startCursor0.Location)] = this.storage[storageKey] = r0 = r1;
+                cursor = startCursor0;
+            }
+            if (r0 != null)
+            {
+                cursor = r0.EndCursor;
+            }
+            return r0;
+        }
+
+        private IParseResult<
+            #line 228 "HandlebarsGrammar.peg"
+                  IList<NamespaceOrTypeName>
+            #line default
+            > TypeArgumentList(ref Cursor cursor)
+        {
+            IParseResult<IList<NamespaceOrTypeName>> r0 = null;
             var startCursor0 = cursor;
             IParseResult<string> r1 = null;
-            var startCursor1 = cursor;
-            IParseResult<string> r2 = null;
-            r2 = this.ReservedKeywords(ref cursor);
-            if (r2 == null)
-            {
-                r1 = this.ReturnHelper<string>(cursor, ref cursor, state => string.Empty);
-            }
-            else
-            {
-                cursor = startCursor1;
-            }
+            r1 = this.ParseLiteral(ref cursor, "<");
             if (r1 != null)
             {
-                IParseResult<IList<string>> r3 = null;
-                var valStart = cursor;
-                r3 = this.Identifier(ref cursor);
-                var valEnd = cursor;
-                var val = ValueOrDefault(r3);
-                if (r3 != null)
+                IParseResult<IList<NamespaceOrTypeName>> r2 = null;
+                var argsStart = cursor;
+                r2 = this.TypeArguments(ref cursor);
+                var argsEnd = cursor;
+                var args = ValueOrDefault(r2);
+                if (r2 != null)
                 {
-                    r0 = this.ReturnHelper<string>(startCursor0, ref cursor, state =>
-                        #line 218 "HandlebarsGrammar.peg"
-                                          string.Concat(val)
-                        #line default
-                        );
+                    IParseResult<string> r3 = null;
+                    r3 = this.ParseLiteral(ref cursor, ">");
+                    if (r3 != null)
+                    {
+                        r0 = this.ReturnHelper<IList<NamespaceOrTypeName>>(startCursor0, ref cursor, state =>
+                            #line 229 "HandlebarsGrammar.peg"
+                                   args
+                            #line default
+                            );
+                    }
+                    else
+                    {
+                        cursor = startCursor0;
+                    }
                 }
                 else
                 {
@@ -4138,6 +4332,113 @@ namespace
             else
             {
                 cursor = startCursor0;
+            }
+            return r0;
+        }
+
+        private IParseResult<NamespaceOrTypeName> TypeArgument(ref Cursor cursor)
+        {
+            IParseResult<NamespaceOrTypeName> r0 = null;
+            r0 = this.NamespaceOrTypeName(ref cursor);
+            return r0;
+        }
+
+        private IParseResult<
+            #line 234 "HandlebarsGrammar.peg"
+               IList<NamespaceOrTypeName>
+            #line default
+            > TypeArguments(ref Cursor cursor)
+        {
+            IParseResult<IList<NamespaceOrTypeName>> r0 = null;
+            var storageKey = new CacheKey("TypeArguments", cursor.StateKey, cursor.Location);
+            if (this.storage.ContainsKey(storageKey))
+            {
+                r0 = (IParseResult<IList<NamespaceOrTypeName>>)this.storage[storageKey];
+                if (r0 != null)
+                {
+                    cursor = r0.EndCursor;
+                }
+                return r0;
+            }
+            this.storage[storageKey] = null;
+            var startCursor0 = cursor;
+            while (true)
+            {
+                IParseResult<IList<NamespaceOrTypeName>> r1 = null;
+                if (r1 == null)
+                {
+                    var startCursor1 = cursor;
+                    IParseResult<IList<NamespaceOrTypeName>> r2 = null;
+                    var argsStart = cursor;
+                    r2 = this.TypeArguments(ref cursor);
+                    var argsEnd = cursor;
+                    var args = ValueOrDefault(r2);
+                    if (r2 != null)
+                    {
+                        IParseResult<string> r3 = null;
+                        r3 = this.ParseLiteral(ref cursor, ",");
+                        if (r3 != null)
+                        {
+                            IParseResult<NamespaceOrTypeName> r4 = null;
+                            var valStart = cursor;
+                            r4 = this.TypeArgument(ref cursor);
+                            var valEnd = cursor;
+                            var val = ValueOrDefault(r4);
+                            if (r4 != null)
+                            {
+                                r1 = this.ReturnHelper<IList<NamespaceOrTypeName>>(startCursor1, ref cursor, state =>
+                                    #line 235 "HandlebarsGrammar.peg"
+                                                { args.Add(val); return args; }
+                                    #line default
+                                    );
+                            }
+                            else
+                            {
+                                cursor = startCursor1;
+                            }
+                        }
+                        else
+                        {
+                            cursor = startCursor1;
+                        }
+                    }
+                    else
+                    {
+                        cursor = startCursor1;
+                    }
+                }
+                if (r1 == null)
+                {
+                    var startCursor2 = cursor;
+                    IParseResult<NamespaceOrTypeName> r5 = null;
+                    var valStart = cursor;
+                    r5 = this.TypeArgument(ref cursor);
+                    var valEnd = cursor;
+                    var val = ValueOrDefault(r5);
+                    if (r5 != null)
+                    {
+                        r1 = this.ReturnHelper<IList<NamespaceOrTypeName>>(startCursor2, ref cursor, state =>
+                            #line 236 "HandlebarsGrammar.peg"
+                         new List<NamespaceOrTypeName>() { val }
+                            #line default
+                            );
+                    }
+                    else
+                    {
+                        cursor = startCursor2;
+                    }
+                }
+                if (r1 == null || (r0 != null && r0.EndCursor.Location >= r1.EndCursor.Location))
+                {
+                    break;
+                }
+                startCursor0 = startCursor0.Touch();
+                this.storage[new CacheKey("TypeArguments", startCursor0.StateKey, startCursor0.Location)] = this.storage[storageKey] = r0 = r1;
+                cursor = startCursor0;
+            }
+            if (r0 != null)
+            {
+                cursor = r0.EndCursor;
             }
             return r0;
         }
@@ -4437,7 +4738,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 253 "HandlebarsGrammar.peg"
+                        #line 271 "HandlebarsGrammar.peg"
                                             state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -4561,7 +4862,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 255 "HandlebarsGrammar.peg"
+                        #line 273 "HandlebarsGrammar.peg"
                                                    state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -4639,7 +4940,7 @@ namespace
                     var startCursor3 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 256 "HandlebarsGrammar.peg"
+                        #line 274 "HandlebarsGrammar.peg"
                                                             state["trimStart"]=true;
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -4869,7 +5170,7 @@ namespace
                     var startCursor2 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 271 "HandlebarsGrammar.peg"
+                        #line 289 "HandlebarsGrammar.peg"
                                      AddError(string.Format("Unable to parse HandlebarsToken '{0}'", hbsToken), HandlebarsSyntaxErrorKind.MalformedHandlebarsToken, state);
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -4878,7 +5179,7 @@ namespace
                     if (r3 != null)
                     {
                         r0 = this.ReturnHelper<string>(startCursor1, ref cursor, state =>
-                            #line 271 "HandlebarsGrammar.peg"
+                            #line 289 "HandlebarsGrammar.peg"
                                                                                                                                                                                hbsToken
                             #line default
                             );
@@ -4907,7 +5208,7 @@ namespace
                     var startCursor4 = cursor;
                     {
                         var state = cursor.WithMutability(mutable: true);
-                        #line 272 "HandlebarsGrammar.peg"
+                        #line 290 "HandlebarsGrammar.peg"
                 AddError(string.Format("Unexpected Character '{0}'", c), HandlebarsSyntaxErrorKind.UnexpectedCharacter, state);
                         #line default
                         cursor = state.WithMutability(mutable: false);
@@ -4916,7 +5217,7 @@ namespace
                     if (r5 != null)
                     {
                         r0 = this.ReturnHelper<string>(startCursor3, ref cursor, state =>
-                            #line 272 "HandlebarsGrammar.peg"
+                            #line 290 "HandlebarsGrammar.peg"
                                                                                                                                     c
                             #line default
                             );

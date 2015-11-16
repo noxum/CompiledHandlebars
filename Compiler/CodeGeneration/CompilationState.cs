@@ -35,9 +35,9 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       Template = template; 
       if (!(template is StaticHandlebarsTemplate))
       {
-        INamedTypeSymbol modelSymbol = Introspector.GetTypeSymbol(Template.Model.ToString());
+        INamedTypeSymbol modelSymbol = Template.ModelFullyQualifiedName.Evaluate(Introspector);
         if (modelSymbol == null)
-          Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.Model.ToString()}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
+          Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.ModelFullyQualifiedName}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
         ContextStack.Push(new Context("viewModel", modelSymbol));
       }
       resultStack.Push(new List<StatementSyntax>());      
@@ -142,11 +142,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             .AddMembers(
               SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.LAYOUTATTRIBUTE)
                 .AddMembers(
-                  SyntaxHelper.RenderWithParameter(Template.Model.ToString(), "PostRender")
+                  SyntaxHelper.RenderWithParameter(Template.ModelFullyQualifiedName.ToString(), "PostRender")
                     .AddBodyStatements(
                       resultStack.Pop().ToArray()
                     ),
-                  SyntaxHelper.RenderWithParameter(Template.Model.ToString(), "PreRender")
+                  SyntaxHelper.RenderWithParameter(Template.ModelFullyQualifiedName.ToString(), "PreRender")
                     .AddBodyStatements(
                       resultStack.Pop().ToArray()
                     )
@@ -177,7 +177,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             .AddMembers(
               SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.TEMPLATEATTRIBUTE)
                 .AddMembers(
-                  SyntaxHelper.RenderWithParameter(Template.Model.ToString())
+                  SyntaxHelper.RenderWithParameter(Template.ModelFullyQualifiedName.ToString())
                     .AddBodyStatements(
                       resultStack.Pop().ToArray()
                     )

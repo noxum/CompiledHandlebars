@@ -26,8 +26,8 @@ namespace CompiledHandlebars.Compiler.AST
     private IList<ASTElementBase> _preItems;
     private IList<ASTElementBase> _postItems;
 
-    internal HandlebarsLayout(IList<ASTElementBase> preItems, IList<ASTElementBase> postItems, MemberExpression model, IList<HandlebarsSyntaxError> parseErrors)
-      :base(null, model, parseErrors)
+    internal HandlebarsLayout(IList<ASTElementBase> preItems, IList<ASTElementBase> postItems, NamespaceOrTypeName modelFullyQualifiedName, IList<HandlebarsSyntaxError> parseErrors)
+      :base(null, modelFullyQualifiedName, parseErrors)
     {
       _preItems = preItems;
       _postItems = postItems;
@@ -49,8 +49,8 @@ namespace CompiledHandlebars.Compiler.AST
   {
     internal readonly string LayoutName;
 
-    internal LayoutedHandlebarsTemplate(string layout, IList<ASTElementBase> items, MemberExpression/*Not clean. This is no memberExpression but a typename. TODO:FIX*/ model, IList<HandlebarsSyntaxError> parseErrors)
-      :base(items, model, parseErrors)
+    internal LayoutedHandlebarsTemplate(string layout, IList<ASTElementBase> items, NamespaceOrTypeName modelFullyQualifiedName, IList<HandlebarsSyntaxError> parseErrors)
+      :base(items, modelFullyQualifiedName, parseErrors)
     {
       LayoutName = layout;
     }
@@ -67,14 +67,14 @@ namespace CompiledHandlebars.Compiler.AST
   internal class HandlebarsTemplate
   {
     internal readonly IList<HandlebarsSyntaxError> ParseErrors;
-    internal MemberExpression Model { get; set; }
+    internal NamespaceOrTypeName ModelFullyQualifiedName { get; set; }
     internal string Name { get; set; }
     internal string Namespace { get; set; }
     protected IList<ASTElementBase> _items { get; set; }
 
-    internal HandlebarsTemplate(IList<ASTElementBase> items, MemberExpression model, IList<HandlebarsSyntaxError> parseErrors)
+    internal HandlebarsTemplate(IList<ASTElementBase> items, NamespaceOrTypeName modelFullyQualifiedName, IList<HandlebarsSyntaxError> parseErrors)
     {
-      Model = model;
+      ModelFullyQualifiedName = modelFullyQualifiedName;
       ParseErrors = parseErrors;
       _items = items;
     }

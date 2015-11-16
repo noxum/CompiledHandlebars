@@ -116,6 +116,7 @@
     <Compile Include="AST\EachBlock.cs" />
     <Compile Include="AST\EscapableHandlebarsLeaf.cs" />
     <Compile Include="AST\Expressions\Expression.cs" />
+    <Compile Include="AST\Expressions\TypeName.cs" />
     <Compile Include="AST\Expressions\Identifier.cs" />
     <Compile Include="AST\Expressions\LiteralExpression.cs" />
     <Compile Include="AST\Expressions\MemberExpression.cs" />

@@ -27,10 +27,10 @@ Template<HandlebarsTemplate>
     / model:ModelToken layout:LayoutToken items:(Element*) EOF { new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
     / model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}     
 
-ModelToken <MemberExpression>
-    = Opening ModelKeyword value:MemberExpression Closing { value }
-    / v:Opening ModelKeyword (!Closing .)* Closing #STATE{ AddError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, state); } { default(MemberExpression)}
-    / v:.* #STATE{ AddError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, state); } { default(MemberExpression) }
+ModelToken <NamespaceOrTypeName>
+    = Opening ModelKeyword Whitespace value:NamespaceOrTypeName Closing { value }
+    / v:Opening ModelKeyword (!Closing .)* Closing #STATE{ AddError("Malformed ModelToken. Syntax is: {{model MemberExpression}}", HandlebarsSyntaxErrorKind.MalformedModelToken, state); } { default(NamespaceOrTypeName) }
+    / v:.* #STATE{ AddError("ModelToken is expected as first Token of a Handlebars-Template", HandlebarsSyntaxErrorKind.MissingModelToken, state); } { default(NamespaceOrTypeName)  }
 
 LayoutToken
     = Opening LayoutKeyword value:MemberExpression Closing { value.ToString() }
@@ -214,8 +214,26 @@ NameIdentifier <string>
 //TODO: FIX there can be delimiters in these identifiers
 FunctionIdentifier <string>
     = (!ReservedKeywords) val:Identifier {string.Concat(val)}
-TypeIdentifier <string>
-    = (!ReservedKeywords) val:Identifier {string.Concat(val)}
+
+
+//Ideas from https://slps.github.io/zoo/cs/csharp-msft-ls-4.0.html    
+NamespaceOrTypeName <NamespaceOrTypeName>
+    = Whitespace val:TypeNameSegment args:TypeArgumentList { new GenericTypeName(string.Concat(val), args)}
+    / Whitespace val:TypeNameSegment { new NamespaceOrTypeName(string.Concat(val)) }
+
+TypeNameSegment <string> -memoize
+    = TypeNameSegment "." Identifier   
+    / v:Identifier { string.Concat(v) }    
+
+TypeArgumentList <IList<NamespaceOrTypeName>>
+    = "<" args:TypeArguments ">" { args }
+
+TypeArgument 
+    = NamespaceOrTypeName
+
+TypeArguments <IList<NamespaceOrTypeName>> -memoize
+    = args:TypeArguments "," val:TypeArgument { { args.Add(val); return args; } }
+    / val:TypeArgument { new List<NamespaceOrTypeName>() { val } }
 
 Identifier
     = ([a-z]i / [0-9] / "_" )+
