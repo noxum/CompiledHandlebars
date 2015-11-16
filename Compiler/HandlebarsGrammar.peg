@@ -62,7 +62,7 @@ EncodableHandlebarsLeaf <EncodableHandlebarsLeaf>
     / HelperCall
 
 PartialCall <PartialCall>
-    = templateName:MemberExpression member:MemberExpression { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
+    = templateName:MemberExpression member:(Expression/LiteralExpression) { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
     / templateName:MemberExpression { new PartialCall(templateName.ToString(), new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column) }
     / v:(!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, null, vStart.Line, vStart.Column) }
 

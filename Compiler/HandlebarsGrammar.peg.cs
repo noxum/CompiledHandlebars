@@ -921,16 +921,23 @@ namespace
                 var templateName = ValueOrDefault(r1);
                 if (r1 != null)
                 {
-                    IParseResult<MemberExpression> r2 = null;
+                    IParseResult<Expression> r2 = null;
                     var memberStart = cursor;
-                    r2 = this.MemberExpression(ref cursor);
+                    if (r2 == null)
+                    {
+                        r2 = this.Expression(ref cursor);
+                    }
+                    if (r2 == null)
+                    {
+                        r2 = this.LiteralExpression(ref cursor);
+                    }
                     var memberEnd = cursor;
                     var member = ValueOrDefault(r2);
                     if (r2 != null)
                     {
                         r0 = this.ReturnHelper<PartialCall>(startCursor0, ref cursor, state =>
                             #line 65 "HandlebarsGrammar.peg"
-                                                              new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)
+                                                                            new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)
                             #line default
                             );
                     }
