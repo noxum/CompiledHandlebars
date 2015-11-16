@@ -11,11 +11,11 @@ namespace CompiledHandlebars.Compiler.AST
   internal class PartialCall : ASTElementBase
   {
     internal readonly Expression Expr;
-    internal readonly string TemplateName;    
+    internal readonly NamespaceOrTypeName TemplateName;    
 
-    public PartialCall(string templateName, Expression member, int line, int column) : base(line, column)
+    public PartialCall(NamespaceOrTypeName templateName, Expression expr, int line, int column) : base(line, column)
     {     
-      Expr = member;
+      Expr = expr;
       TemplateName = templateName;
     }
 

@@ -72,13 +72,14 @@ namespace CompiledHandlebars.Compiler.Introspection
       return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL);
     }
 
-    private INamedTypeSymbol FindClassesWithNameAndAttribute(string name, string attribute, bool ignoreCase = true)
+    private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attribute, bool ignoreCase = true)
     {
-      //TODO: Search projects in correct order (e.g. first containing project then referenced)
+      var name = fullName.Split('.').Last();
       foreach (var comp in projectCompilations.Values)
       {
         INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(name, ignoreCase?System.StringComparison.OrdinalIgnoreCase:System.StringComparison.Ordinal))
                                         .OfType<INamedTypeSymbol>()
+                                        .Where(x => x.ToDisplayString().EndsWith(fullName))                                                                                
                                         .FirstOrDefault(x => x.GetAttributes()
                                                               .Any(y => y.AttributeClass.Name.Equals(attribute)));
         if (template != null)

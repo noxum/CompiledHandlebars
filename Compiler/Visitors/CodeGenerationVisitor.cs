@@ -226,7 +226,7 @@ namespace CompiledHandlebars.Compiler.Visitors
         }
         else
         {
-          var partial = state.Introspector.GetPartialHbsTemplate(astLeaf.TemplateName);
+          var partial = state.Introspector.GetPartialHbsTemplate(astLeaf.TemplateName.ToString());
           if (partial == null)
           {        
             state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);

@@ -914,9 +914,9 @@ namespace
             if (r0 == null)
             {
                 var startCursor0 = cursor;
-                IParseResult<MemberExpression> r1 = null;
+                IParseResult<NamespaceOrTypeName> r1 = null;
                 var templateNameStart = cursor;
-                r1 = this.MemberExpression(ref cursor);
+                r1 = this.NamespaceOrTypeName(ref cursor);
                 var templateNameEnd = cursor;
                 var templateName = ValueOrDefault(r1);
                 if (r1 != null)
@@ -937,7 +937,7 @@ namespace
                     {
                         r0 = this.ReturnHelper<PartialCall>(startCursor0, ref cursor, state =>
                             #line 65 "HandlebarsGrammar.peg"
-                                                                            new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)
+                                                                               new PartialCall(templateName, member, templateNameStart.Line, templateNameStart.Column)
                             #line default
                             );
                     }
@@ -954,16 +954,16 @@ namespace
             if (r0 == null)
             {
                 var startCursor1 = cursor;
-                IParseResult<MemberExpression> r3 = null;
+                IParseResult<NamespaceOrTypeName> r3 = null;
                 var templateNameStart = cursor;
-                r3 = this.MemberExpression(ref cursor);
+                r3 = this.NamespaceOrTypeName(ref cursor);
                 var templateNameEnd = cursor;
                 var templateName = ValueOrDefault(r3);
                 if (r3 != null)
                 {
                     r0 = this.ReturnHelper<PartialCall>(startCursor1, ref cursor, state =>
                         #line 66 "HandlebarsGrammar.peg"
-                                      new PartialCall(templateName.ToString(), new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column)
+                                         new PartialCall(templateName, new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column)
                         #line default
                         );
                 }
@@ -4228,23 +4228,28 @@ namespace
                 {
                     var startCursor1 = cursor;
                     IParseResult<string> r2 = null;
+                    var aStart = cursor;
                     r2 = this.TypeNameSegment(ref cursor);
+                    var aEnd = cursor;
+                    var a = ValueOrDefault(r2);
                     if (r2 != null)
                     {
                         IParseResult<string> r3 = null;
-                        r3 = this.ParseLiteral(ref cursor, ".");
+                        r3 = this.NameDelimiter(ref cursor);
                         if (r3 != null)
                         {
                             IParseResult<IList<string>> r4 = null;
+                            var bStart = cursor;
                             r4 = this.Identifier(ref cursor);
+                            var bEnd = cursor;
+                            var b = ValueOrDefault(r4);
                             if (r4 != null)
                             {
-                                {
-                                    var len = cursor.Location - startCursor1.Location;
-                                    r1 = this.ReturnHelper<string>(startCursor1, ref cursor, state =>
-                                        state.Subject.Substring(startCursor1.Location, len)
-                                        );
-                                }
+                                r1 = this.ReturnHelper<string>(startCursor1, ref cursor, state =>
+                                    #line 225 "HandlebarsGrammar.peg"
+                                                    string.Join(".",a,string.Concat(b))
+                                    #line default
+                                    );
                             }
                             else
                             {

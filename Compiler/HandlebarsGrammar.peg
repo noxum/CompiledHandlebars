@@ -62,8 +62,8 @@ EncodableHandlebarsLeaf <EncodableHandlebarsLeaf>
     / HelperCall
 
 PartialCall <PartialCall>
-    = templateName:MemberExpression member:(Expression/LiteralExpression) { new PartialCall(templateName.ToString(), member, templateNameStart.Line, templateNameStart.Column)}
-    / templateName:MemberExpression { new PartialCall(templateName.ToString(), new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column) }
+    = templateName:NamespaceOrTypeName member:(Expression/LiteralExpression) { new PartialCall(templateName, member, templateNameStart.Line, templateNameStart.Column)}
+    / templateName:NamespaceOrTypeName { new PartialCall(templateName, new MemberExpression(new ThisIdentifier(null)), templateNameStart.Line, templateNameStart.Column) }
     / v:(!Closing .)* #STATE{ AddError("Malformed PartialCall Token. Syntax is: {{> TemplateName}} or {{> TemplateName MemberName}}", HandlebarsSyntaxErrorKind.MalformedPartialCallToken, state); } { new PartialCall(null, null, vStart.Line, vStart.Column) }
 
 YieldStatement <YieldStatement>
@@ -222,7 +222,7 @@ NamespaceOrTypeName <NamespaceOrTypeName>
     / Whitespace val:TypeNameSegment { new NamespaceOrTypeName(string.Concat(val)) }
 
 TypeNameSegment <string> -memoize
-    = TypeNameSegment "." Identifier   
+    = a:TypeNameSegment NameDelimiter b:Identifier {string.Join(".",a,string.Concat(b))}
     / v:Identifier { string.Concat(v) }    
 
 TypeArgumentList <IList<NamespaceOrTypeName>>
