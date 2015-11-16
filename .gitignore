@@ -3,7 +3,7 @@
 
 # User-specific files
 *.suo
-*!CompiledHandlebars.CustomTool.csproj!.user
+*.user
 *.userosscache
 *.sln.docstates
 
