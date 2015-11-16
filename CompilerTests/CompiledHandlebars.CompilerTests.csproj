@@ -114,6 +114,7 @@
     <Compile Include="EachTests.cs" />
     <Compile Include="HandlebarsJsSpec\Basic.cs" />
     <Compile Include="HandlebarsJsSpec\Builtins.cs" />
+    <Compile Include="HandlebarsJsSpec\Partials.cs" />
     <Compile Include="HelperTests.cs" />
     <Compile Include="Helper\CompilerTestBase.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
@@ -203,6 +204,11 @@
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\If5.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\With1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\Builtins\BuiltinsTest\WithWithElse1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\BasicPartials1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude1.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\dude2.cs" />
+    <Compile Include="TestTemplates\HandlebarsJsSpec\Partials\Partials\PartialsWithContext1.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\BaseAsParameterTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\BasicHelperTest1.cs" />

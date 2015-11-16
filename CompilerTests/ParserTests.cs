@@ -27,14 +27,11 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("MalformedModelTest1", "{{model}}", false)]
     [RegisterHandlebarsTemplate("MalformedModelTest3", "{{Mars}}", false)]
     [RegisterHandlebarsTemplate("MalformedModelTest5", "{{model }}", false)]
-    [RegisterHandlebarsTemplate("MalformedModelTest6", "{{model Mars..Utopia}}", false)]
     public void MalformedModelTest()
-
     {
       ShouldRaiseError("MalformedModelTest1", HandlebarsSyntaxErrorKind.MalformedModelToken);
       ShouldRaiseError("MalformedModelTest3", HandlebarsSyntaxErrorKind.MissingModelToken);
       ShouldRaiseError("MalformedModelTest5", HandlebarsSyntaxErrorKind.MalformedModelToken);
-      ShouldRaiseError("MalformedModelTest6", HandlebarsSyntaxErrorKind.MalformedMemberExpression);
     }
 
     [TestMethod]
