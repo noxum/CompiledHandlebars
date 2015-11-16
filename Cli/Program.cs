@@ -21,7 +21,7 @@ namespace CompiledHandlebars.Cli
       var solutionFile = args[0];
       if (!File.Exists(solutionFile))
       {
-        FileDoesNotExists(solutionFile);
+        FileDoesNotExist(solutionFile);
         return;
       }
       CompileAllHandlebarsTemplates(solutionFile);
@@ -48,9 +48,9 @@ namespace CompiledHandlebars.Cli
       Console.WriteLine("Usage: HandlebarsCompiler.exe SolutionFile");
     }
 
-    private static void FileDoesNotExists(string solutionFile)
+    private static void FileDoesNotExist(string solutionFile)
     {
-      Console.WriteLine($"File '{solutionFile}' does not exists!");
+      Console.WriteLine($"File '{solutionFile}' does not exist!");
     }
   }
 }
