@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,11 +45,71 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmarker.cs" />
+    <Compile Include="MeasurementModels\Benchmark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Templates\ArrayEach.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ArrayEach.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Complex.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Complex.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Data.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Data.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Depth1.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Depth1.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Depth2.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Depth2.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\String.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>String.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ArrayEach.cs" />
+    <Compile Include="ViewModels\Complex.cs" />
+    <Compile Include="ViewModels\Depth1.cs" />
+    <Compile Include="ViewModels\Depth2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Templates\ArrayEach.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>ArrayEach.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Complex.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Complex.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Data.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Data.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Depth1.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Depth1.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Depth2.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Depth2.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\String.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>String.hbs.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
