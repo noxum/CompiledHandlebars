@@ -254,6 +254,7 @@
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest1.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest2.cs" />
     <Compile Include="TestTemplates\SpecialKeywordsTest\RootTest3.cs" />
+    <Compile Include="TestTemplates\TruthynessTests\CaretIsElseTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\IterateOverNullTest2.cs" />
     <Compile Include="TestTemplates\TruthynessTests\NamingConflictsInTruthynessQueriesTest1.cs" />

@@ -4611,7 +4611,14 @@ namespace
         private IParseResult<string> ElseKeyword(ref Cursor cursor)
         {
             IParseResult<string> r0 = null;
-            r0 = this.ParseLiteral(ref cursor, "else");
+            if (r0 == null)
+            {
+                r0 = this.ParseLiteral(ref cursor, "else");
+            }
+            if (r0 == null)
+            {
+                r0 = this.ParseLiteral(ref cursor, "^");
+            }
             return r0;
         }
 
