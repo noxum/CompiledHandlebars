@@ -1,7 +1,6 @@
 ﻿using CompiledHandlebars.Benchmark.MeasurementModels;
 using CompiledHandlebars.Benchmark.Templates;
 using CompiledHandlebars.Benchmark.ViewModels;
-using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

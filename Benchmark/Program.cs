@@ -11,7 +11,7 @@ namespace CompiledHandlebars.Benchmark
     static void Main(string[] args)
     {
       var benchCase = Benchmarker.CreateFullBenchmark();
-      if (args[0].Equals("-s") && args.Length == 3)
+      if (args.Length == 3 && args[0].Equals("-s"))
       {//if save-flag is set -> write benchmark result to blobstorage as json
         var commitHash = args[1];
         var cloudStorageConnectionString = args[2];
