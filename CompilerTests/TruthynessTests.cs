@@ -64,5 +64,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("NamingConflictsInTruthynessQueriesTest1", new NamingConflictsModel() { Items = new List<string>() { "Item1" }, ItemsTitle = "Title" }, "<h1>Title</h1>");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("CaretIsElseTest1", "{{#if Name}}Name{{^}}NoName{{/if}}", _marsModel)]
+    public void CaretIsElseTest()
+    {
+      ShouldRender("CaretIsElseTest1", default(MarsModel), "NoName");
+      ShouldRender("CaretIsElseTest1", MarsModelFactory.CreateFullMarsModel(), "Name");
+    }
+
   }
 }
