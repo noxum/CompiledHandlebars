@@ -220,7 +220,7 @@ namespace CompiledHandlebars.Compiler.Visitors
       Context argumentContext;
       if (astLeaf.Expr.TryEvaluate(state, out argumentContext))
       {
-        if (astLeaf.TemplateName.ToString().Equals(state.Template.Name))
+        if (astLeaf.TemplateName.ToString().Equals(state.Template.Name, StringComparison.OrdinalIgnoreCase))
         {//Self referencing Template
           state.PushStatement(SyntaxHelper.SelfReferencingPartialCall(argumentContext.FullPath));
         }
