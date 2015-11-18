@@ -11,14 +11,14 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string PostRender(CompiledHandlebars.CompilerTests.TestViewModels.IPageModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("</body>");
       return sb.ToString();
     }
 
     public static string PreRender(CompiledHandlebars.CompilerTests.TestViewModels.IPageModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("<head><title>");
       sb.Append(WebUtility.HtmlEncode(viewModel.Title));
       sb.Append("</title></head><body>");

@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.NamingConflictsModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Items))
       {
         if (IsTruthy(viewModel.ItemsTitle))

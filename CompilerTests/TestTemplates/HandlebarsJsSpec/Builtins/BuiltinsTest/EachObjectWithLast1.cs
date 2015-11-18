@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.MultiTextModel2 viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Goodbyes))
       {
         sb.Append(WebUtility.HtmlEncode(viewModel.Goodbyes.Bar.Text));

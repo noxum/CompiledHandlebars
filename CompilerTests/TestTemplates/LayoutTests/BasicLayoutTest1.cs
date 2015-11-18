@@ -11,14 +11,14 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string PostRender(System.String viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("</h1>");
       return sb.ToString();
     }
 
     public static string PreRender(System.String viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("<h1>");
       return sb.ToString();
     }

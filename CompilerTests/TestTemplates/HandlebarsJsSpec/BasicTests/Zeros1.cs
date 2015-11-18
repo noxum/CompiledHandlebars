@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.NumModel1 viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("num1: ");
       sb.Append(WebUtility.HtmlEncode(viewModel.Num1.ToString()));
       sb.Append(", num2: ");

@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render(System.String viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append(BasicPartialTest1.Render(viewModel));
       return sb.ToString();
     }

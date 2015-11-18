@@ -33,9 +33,9 @@ namespace CompiledHandlebars.Benchmark
 
     static void PrintSummary(List<BenchmarkSummary.BenchmarkSummaryItem> items)
     {
-      Console.WriteLine($"{"Name",15}{"Average Throughput", 22}{"Standard Deviation",22}{"Sample Size",15}");
+      Console.WriteLine($"{"Name",20}{"Average Throughput", 22}{"Standard Deviation",22}{"Sample Size",15}");
       foreach (var item in items)
-        Console.WriteLine($"{item.Name,15}{item.AverageThroughput,22}{item.StandardDeviation,22}{item.SampleSize,15}");
+        Console.WriteLine($"{item.Name,20}{item.AverageThroughput,22}{item.StandardDeviation,22}{item.SampleSize,15}");
     }
 
    

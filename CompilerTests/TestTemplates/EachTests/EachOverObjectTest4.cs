@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.PageModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel))
       {
         sb.Append(WebUtility.HtmlEncode(viewModel.Headline));

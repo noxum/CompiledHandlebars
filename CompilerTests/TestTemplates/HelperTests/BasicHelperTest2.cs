@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append(WebUtility.HtmlEncode(HelperTests.ToUpper(viewModel.Name)));
       sb.Append(WebUtility.HtmlEncode(HelperTests.ToLower(viewModel.Name)));
       return sb.ToString();

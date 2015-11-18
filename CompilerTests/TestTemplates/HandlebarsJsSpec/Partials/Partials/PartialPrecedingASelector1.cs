@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.AnotherDudeModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("Dudes: ");
       sb.Append(dude5.Render(viewModel));
       sb.Append(" ");

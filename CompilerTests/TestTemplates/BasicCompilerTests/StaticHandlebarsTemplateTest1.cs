@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render()
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("StaticString");
       return sb.ToString();
     }

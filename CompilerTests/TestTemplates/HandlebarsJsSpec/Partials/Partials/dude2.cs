@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials
   {
     public static string Render(System.Collections.Generic.IEnumerable<CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Partials.DudeModel> viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel))
       {
         foreach (var loopItem0 in viewModel)

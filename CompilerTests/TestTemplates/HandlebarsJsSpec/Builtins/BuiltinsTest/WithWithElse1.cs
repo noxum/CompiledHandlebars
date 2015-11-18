@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Person))
       {
         sb.Append("Person is present");

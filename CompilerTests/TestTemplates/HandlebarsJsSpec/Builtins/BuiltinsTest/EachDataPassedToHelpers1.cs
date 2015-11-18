@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
   {
     public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.LetterListModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Letters))
       {
         foreach (var loopItem0 in viewModel.Letters)

@@ -81,7 +81,10 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
               SF.EqualsValueClause(
                 SF.ObjectCreationExpression(
                   SF.ParseTypeName("StringBuilder"),
-                  SF.ArgumentList(),
+                  SF.ArgumentList(
+                    new SeparatedSyntaxList<ArgumentSyntax>().Add(
+                      SF.Argument(SF.ParseExpression("64")))
+                    ),
                   default(InitializerExpressionSyntax)
                 )
               )

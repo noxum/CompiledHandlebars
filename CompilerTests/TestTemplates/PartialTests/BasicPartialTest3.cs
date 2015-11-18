@@ -11,7 +11,7 @@ namespace CompiledHandlebars.CompilerTests
   {
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.StarModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Planets))
       {
         foreach (var loopItem0 in viewModel.Planets)
