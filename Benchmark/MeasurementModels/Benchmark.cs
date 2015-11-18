@@ -8,6 +8,7 @@ namespace CompiledHandlebars.Benchmark.MeasurementModels
 {
   public class BenchmarkModel
   {
+    public string CommitHash { get; set; }
     public DateTime ExecutionDateStart { get; set; }
     public DateTime ExecutionDateStop { get; set; }
     public VMInformation VM { get;set;}
