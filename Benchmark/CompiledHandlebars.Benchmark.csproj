@@ -102,7 +102,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Depth2.hbs</DependentUpon>
     </Compile>
-    <Compile Include="Templates\Microsoft.CodeAnalysis.TextDocument.cs" />
     <Compile Include="Templates\String.hbs.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
