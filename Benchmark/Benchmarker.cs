@@ -29,6 +29,13 @@ namespace CompiledHandlebars.Benchmark
       result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth1"));
       result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth2"));
       result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
+      Thread.Sleep(TimeSpan.FromSeconds(30));//Sleep thirty seconds then rerun
+      result.Cases.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex"));
+      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach"));
+      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "data"));
+      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth1"));
+      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth2"));
+      result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
       result.ExecutionDateStop = DateTime.UtcNow;
       return result;
     }
@@ -37,6 +44,8 @@ namespace CompiledHandlebars.Benchmark
     {
       var result = new BenchmarkCaseModel();
       result.Name = name;
+      //One dryrun
+      Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name);
       result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
       result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
       result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
@@ -49,6 +58,8 @@ namespace CompiledHandlebars.Benchmark
     {
       var result = new BenchmarkCaseModel();
       result.Name = name;
+      //One dryrun
+      Measure(render, TimeSpan.FromSeconds(1), name);    
       result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
       result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
       result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
