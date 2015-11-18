@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Benchmarker.cs" />
     <Compile Include="MeasurementModels\Benchmark.cs" />
+    <Compile Include="MeasurementModels\BenchmarkSummary.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates\ArrayEach.hbs.cs">

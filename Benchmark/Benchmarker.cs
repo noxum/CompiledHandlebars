@@ -37,7 +37,24 @@ namespace CompiledHandlebars.Benchmark
       result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth2"));
       result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
       result.ExecutionDateStop = DateTime.UtcNow;
+      result.Summary = new BenchmarkSummary();
+      foreach(var benchCase in result.Cases.GroupBy(x => x.Name))
+      {// Evaluation
+        result.Summary.Items.Add(benchCase.Key, EvaluateCases(benchCase));
+      }
       return result;
+    }
+
+    private static BenchmarkSummary.BenchmarkSummaryItem EvaluateCases(IEnumerable<BenchmarkCaseModel> cases)
+    {
+      var summaryItem = new BenchmarkSummary.BenchmarkSummaryItem();
+      var measurementList = cases.SelectMany(x => x.Items).OrderBy(x => x.Throughput).ToList();
+      summaryItem.Name = cases.First().Name;
+      summaryItem.SampleSize = measurementList.Count;
+      summaryItem.AverageThroughput = measurementList.Average(x => x.Throughput);
+      summaryItem.MedianThroughput = measurementList[measurementList.Count / 2].Throughput;
+      summaryItem.StandardDeviation = Math.Sqrt(measurementList.Sum(x => Math.Pow((x.Throughput - summaryItem.AverageThroughput), 2)) / summaryItem.SampleSize);
+      return summaryItem;
     }
 
     private static BenchmarkCaseModel RunBenchmarkCase<TViewModel>(Tuple<TViewModel, Func<TViewModel, string>> values, string name)
@@ -45,26 +62,22 @@ namespace CompiledHandlebars.Benchmark
       var result = new BenchmarkCaseModel();
       result.Name = name;
       //One dryrun
+      var timeSpan = TimeSpan.FromMilliseconds(2000);
       Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name);
-      result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name));
+      for(int i = 0; i < 5;i++)
+        result.Items.Add(Measure(values.Item2, values.Item1, timeSpan, name));
       return result;
     }
 
-    private static BenchmarkCaseModel RunBenchmarkCase(Func<string> render, string name)
+    private static BenchmarkCaseModel RunBenchmarkCase(Func<string> renderMethod, string name)
     {
       var result = new BenchmarkCaseModel();
       result.Name = name;
+      var timeSpan = TimeSpan.FromMilliseconds(2000);
       //One dryrun
-      Measure(render, TimeSpan.FromSeconds(1), name);    
-      result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
-      result.Items.Add(Measure(render, TimeSpan.FromSeconds(1), name));
+      Measure(renderMethod, TimeSpan.FromSeconds(1), name);
+      for (int i = 0; i < 5; i++)
+        result.Items.Add(Measure(renderMethod, timeSpan, name));
       return result;
     }
 
@@ -171,7 +184,6 @@ namespace CompiledHandlebars.Benchmark
         sw.Stop();
         counter++;
       }
-      Console.WriteLine($"Benchmaker '{name}': Duration: {duration.ToString()};\t Throughput {counter / sw.ElapsedMilliseconds}");
       return new BenchmarkCaseModel.Measurement()
       {
         Duration = duration,
@@ -190,7 +202,6 @@ namespace CompiledHandlebars.Benchmark
         sw.Stop();
         counter++;
       }
-      Console.WriteLine($"Benchmaker '{name}': Duration: {duration.ToString()};\t Throughput {counter / sw.ElapsedMilliseconds}");
       return new BenchmarkCaseModel.Measurement()
       {
         Duration = duration,

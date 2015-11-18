@@ -1,7 +1,10 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using CompiledHandlebars.Benchmark.MeasurementModels;
+using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace CompiledHandlebars.Benchmark
@@ -10,7 +13,9 @@ namespace CompiledHandlebars.Benchmark
   {
     static void Main(string[] args)
     {
+      Console.WriteLine("Started Benchmark...");
       var benchCase = Benchmarker.CreateFullBenchmark();
+      PrintSummary(benchCase.Summary.Items.Select(x => x.Value).ToList());
       if (args.Length == 3 && args[0].Equals("-s"))
       {//if save-flag is set -> write benchmark result to blobstorage as json
         var commitHash = args[1];
@@ -25,6 +30,13 @@ namespace CompiledHandlebars.Benchmark
       }      
     }       
 
+
+    static void PrintSummary(List<BenchmarkSummary.BenchmarkSummaryItem> items)
+    {
+      Console.WriteLine($"{"Name",15}{"Average Throughput", 22}{"Standard Deviation",22}{"Sample Size",15}");
+      foreach (var item in items)
+        Console.WriteLine($"{item.Name,15}{item.AverageThroughput,22}{item.StandardDeviation,22}{item.SampleSize,15}");
+    }
 
    
   }

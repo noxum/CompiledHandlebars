@@ -12,6 +12,7 @@ namespace CompiledHandlebars.Benchmark.MeasurementModels
     public DateTime ExecutionDateStart { get; set; }
     public DateTime ExecutionDateStop { get; set; }
     public VMInformation VM { get;set;}
+    public BenchmarkSummary Summary { get; set; }
     public List<BenchmarkCaseModel> Cases { get; set; } = new List<BenchmarkCaseModel>();
   }
   public class VMInformation
