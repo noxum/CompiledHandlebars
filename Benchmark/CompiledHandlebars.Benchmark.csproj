@@ -103,15 +103,39 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Depth2.hbs</DependentUpon>
     </Compile>
+    <Compile Include="Templates\Partial.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Partial.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Paths.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Paths.hbs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Recursion.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Recursion.hbs</DependentUpon>
+    </Compile>
     <Compile Include="Templates\String.hbs.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>String.hbs</DependentUpon>
     </Compile>
+    <Compile Include="Templates\Variables.hbs.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Variables.hbs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\ArrayEach.cs" />
     <Compile Include="ViewModels\Complex.cs" />
     <Compile Include="ViewModels\Depth1.cs" />
     <Compile Include="ViewModels\Depth2.cs" />
+    <Compile Include="ViewModels\Partial.cs" />
+    <Compile Include="ViewModels\PartialRecursion.cs" />
+    <Compile Include="ViewModels\Paths.cs" />
+    <Compile Include="ViewModels\Variables.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -136,9 +160,25 @@
       <Generator>HandlebarsCompiler</Generator>
       <LastGenOutput>Depth2.hbs.cs</LastGenOutput>
     </None>
+    <None Include="Templates\Partial.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Partial.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Recursion.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Recursion.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Paths.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Paths.hbs.cs</LastGenOutput>
+    </None>
     <None Include="Templates\String.hbs">
       <Generator>HandlebarsCompiler</Generator>
       <LastGenOutput>String.hbs.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Variables.hbs">
+      <Generator>HandlebarsCompiler</Generator>
+      <LastGenOutput>Variables.hbs.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

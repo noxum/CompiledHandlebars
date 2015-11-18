@@ -25,17 +25,25 @@ namespace CompiledHandlebars.Benchmark
       };
       result.Cases.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex"));
       result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "data"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth1"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth2"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDataBenchmarkCase(), "data"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDepth1BenchmarkCase(), "depth1"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDepth2BenchmarkCase(), "depth2"));
       result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
+      result.Cases.Add(RunBenchmarkCase(PreparePartialBenchmarkCase(), "partial"));
+      result.Cases.Add(RunBenchmarkCase(PreparePartialRecursionBenchmarkCase(), "partial-recursion"));
+      result.Cases.Add(RunBenchmarkCase(PreparePathsBenchmarkCase(), "paths"));
+      result.Cases.Add(RunBenchmarkCase(PrepareVariablesBenchmarkCase(), "variables"));
       Thread.Sleep(TimeSpan.FromSeconds(30));//Sleep thirty seconds then rerun
       result.Cases.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex"));
       result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "data"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth1"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "depth2"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDataBenchmarkCase(), "data"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDepth1BenchmarkCase(), "depth1"));
+      result.Cases.Add(RunBenchmarkCase(PrepareDepth2BenchmarkCase(), "depth2"));
       result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
+      result.Cases.Add(RunBenchmarkCase(PreparePartialBenchmarkCase(), "partial"));
+      result.Cases.Add(RunBenchmarkCase(PreparePartialRecursionBenchmarkCase(), "partial-recursion"));
+      result.Cases.Add(RunBenchmarkCase(PreparePathsBenchmarkCase(), "paths"));
+      result.Cases.Add(RunBenchmarkCase(PrepareVariablesBenchmarkCase(), "variables"));
       result.ExecutionDateStop = DateTime.UtcNow;
       result.Summary = new BenchmarkSummary();
       foreach(var benchCase in result.Cases.GroupBy(x => x.Name))
@@ -171,6 +179,76 @@ namespace CompiledHandlebars.Benchmark
         }, 
         Depth2.Render
       );
+    }
+
+    private static Tuple<PartialModel, Func<PartialModel, string>> PreparePartialBenchmarkCase()
+    {
+      return new Tuple<PartialModel, Func<PartialModel, string>>(
+        new PartialModel()
+        {
+          Peeps = new List<VariablesModel>()
+          {
+            new VariablesModel() { Count = 15, Name = "Moe" },
+            new VariablesModel() { Count = 15, Name = "Lary" },
+            new VariablesModel() { Count = 15, Name = "Curly" }
+          }
+        },
+        Partial.Render
+      );      
+    }
+
+    private static Tuple<PartialRecursionModel, Func<PartialRecursionModel, string>> PreparePartialRecursionBenchmarkCase()
+    {
+      return new Tuple<PartialRecursionModel, Func<PartialRecursionModel, string>>(
+        new PartialRecursionModel()
+        {
+          Name = "1",
+          Kids = new List<PartialRecursionModel>()
+          {
+            new PartialRecursionModel()
+            {
+              Name = "1.1",
+              Kids = new List<PartialRecursionModel>()
+              {
+                new PartialRecursionModel()
+                {
+                  Name = "1.1.1"                  
+                }
+              }
+            }
+          }
+        },
+        Recursion.Render
+      );
+    }
+
+    private static Tuple<PathsModel, Func<PathsModel, string>> PreparePathsBenchmarkCase()
+    {
+      return new Tuple<PathsModel, Func<PathsModel, string>>(
+        new PathsModel()
+        {
+          Person = new PathsModel.PersonModel()
+          {
+            Age = 45,
+            Name = new PathsModel.PersonModel.NameModel() {  Bar = new PathsModel.PersonModel.NameModel.BarModel() {  Baz = "Larry"} }
+          }
+        }
+        ,
+        Paths.Render
+        );
+    }
+
+    private static Tuple<VariablesModel, Func<VariablesModel, string>> PrepareVariablesBenchmarkCase()
+    {
+      return new Tuple<VariablesModel, Func<VariablesModel, string>>(
+        new VariablesModel()
+        {
+          Name = "Mick",
+          Count = 30
+        }
+        ,
+        Variables.Render
+        );
     }
 
     private static BenchmarkCaseModel.Measurement Measure<TViewModel>(Func<TViewModel, string> RenderMethod, TViewModel viewModel, TimeSpan duration, string name)
