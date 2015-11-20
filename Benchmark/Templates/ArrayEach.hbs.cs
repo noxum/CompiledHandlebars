@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class ArrayEach
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.ArrayEachModel viewModel)
-    {
-      var sb = new StringBuilder();
+    {      
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Names))
       {
         foreach (var loopItem0 in viewModel.Names)
@@ -43,8 +43,17 @@ namespace CompiledHandlebars.Benchmark.Templates
       return ie != null && ie.Any();
     }
 
+    private static bool IsTruthy(int i)
+    {
+      return i != 0;
+    }
+
     private class CompiledHandlebarsTemplateAttribute : Attribute
     {
     }
+
+    private class CompiledHandlebarsLayoutAttribute : Attribute
+    {
+    }
   }
-}/*compiled in 193ms*/
+}

@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class Data
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.ArrayEachModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Names))
       {
         int index1 = 0;
@@ -59,4 +59,4 @@ namespace CompiledHandlebars.Benchmark.Templates
     {
     }
   }
-}/*compiled in 35ms*/
+}

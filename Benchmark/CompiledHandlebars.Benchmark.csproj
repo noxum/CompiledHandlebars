@@ -61,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.6.4\lib\net40\System.Spatial.dll</HintPath>
       <Private>True</Private>
@@ -78,56 +79,16 @@
     <Compile Include="MeasurementModels\BenchmarkSummary.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Templates\ArrayEach.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ArrayEach.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Complex.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Complex.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Data.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Data.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Depth1.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Depth1.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Depth2.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Depth2.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Partial.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Partial.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Paths.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Paths.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Recursion.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Recursion.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\String.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>String.hbs</DependentUpon>
-    </Compile>
-    <Compile Include="Templates\Variables.hbs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Variables.hbs</DependentUpon>
-    </Compile>
+    <Compile Include="Templates\ArrayEach.hbs.cs" />
+    <Compile Include="Templates\Complex.hbs.cs" />
+    <Compile Include="Templates\Data.hbs.cs" />
+    <Compile Include="Templates\Depth1.hbs.cs" />
+    <Compile Include="Templates\Depth2.hbs.cs" />
+    <Compile Include="Templates\Partial.hbs.cs" />
+    <Compile Include="Templates\Paths.hbs.cs" />
+    <Compile Include="Templates\Recursion.hbs.cs" />
+    <Compile Include="Templates\String.hbs.cs" />
+    <Compile Include="Templates\Variables.hbs.cs" />
     <Compile Include="ViewModels\ArrayEach.cs" />
     <Compile Include="ViewModels\Complex.cs" />
     <Compile Include="ViewModels\Depth1.cs" />

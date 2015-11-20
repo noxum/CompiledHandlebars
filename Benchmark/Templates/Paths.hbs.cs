@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class Paths
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.PathsModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append(WebUtility.HtmlEncode(viewModel.Person.Name.Bar.Baz));
       sb.Append(WebUtility.HtmlEncode(viewModel.Person.Age.ToString()));
       ; /* Not existing values do not compile {{person.foo}}{{animal.age}} */
@@ -52,4 +52,4 @@ namespace CompiledHandlebars.Benchmark.Templates
     {
     }
   }
-}/*compiled in 14ms*/
+}

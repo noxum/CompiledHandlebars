@@ -1,6 +1,6 @@
 ﻿using CompiledHandlebars.Benchmark.MeasurementModels;
-using CompiledHandlebars.Benchmark.Templates;
 using CompiledHandlebars.Benchmark.ViewModels;
+using CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,43 +17,45 @@ namespace CompiledHandlebars.Benchmark
     {
       var result = new BenchmarkModel();
       result.ExecutionDateStart = DateTime.UtcNow;
+      var services = System.ServiceProcess.ServiceController.GetServices();
       result.VM = new VMInformation()
       {
         RuntimeVersion = Environment.Version.ToString(),
         OSVersion = Environment.OSVersion.ToString(),
-        ProcessorCount = Environment.ProcessorCount        
+        ProcessorCount = Environment.ProcessorCount,
+        MachineName = Environment.MachineName,
+        RunningServices = services.Where(x => x.Status == System.ServiceProcess.ServiceControllerStatus.Running).Select(x => $"{x.DisplayName}|{x.ServiceName}").ToList()                              
       };
-      result.Cases.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDataBenchmarkCase(), "data"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDepth1BenchmarkCase(), "depth1"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDepth2BenchmarkCase(), "depth2"));
-      result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
-      result.Cases.Add(RunBenchmarkCase(PreparePartialBenchmarkCase(), "partial"));
-      result.Cases.Add(RunBenchmarkCase(PreparePartialRecursionBenchmarkCase(), "partial-recursion"));
-      result.Cases.Add(RunBenchmarkCase(PreparePathsBenchmarkCase(), "paths"));
-      result.Cases.Add(RunBenchmarkCase(PrepareVariablesBenchmarkCase(), "variables"));
+      result.Cases.AddRange(RunAllBenchmarks(TimeSpan.FromMilliseconds(2000), 10));
       Thread.Sleep(TimeSpan.FromSeconds(30));//Sleep thirty seconds then rerun
-      result.Cases.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex"));
-      result.Cases.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDataBenchmarkCase(), "data"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDepth1BenchmarkCase(), "depth1"));
-      result.Cases.Add(RunBenchmarkCase(PrepareDepth2BenchmarkCase(), "depth2"));
-      result.Cases.Add(RunBenchmarkCase(Templates.String.Render, "string"));
-      result.Cases.Add(RunBenchmarkCase(PreparePartialBenchmarkCase(), "partial"));
-      result.Cases.Add(RunBenchmarkCase(PreparePartialRecursionBenchmarkCase(), "partial-recursion"));
-      result.Cases.Add(RunBenchmarkCase(PreparePathsBenchmarkCase(), "paths"));
-      result.Cases.Add(RunBenchmarkCase(PrepareVariablesBenchmarkCase(), "variables"));
+      result.Cases.AddRange(RunAllBenchmarks(TimeSpan.FromMilliseconds(2000), 10));
       result.ExecutionDateStop = DateTime.UtcNow;
       result.Summary = new BenchmarkSummary();
       foreach(var benchCase in result.Cases.GroupBy(x => x.Name))
       {// Evaluation
         result.Summary.Items.Add(benchCase.Key, EvaluateCases(benchCase));
       }
+      result.Summary.AverageStandardDeviation = result.Summary.Items.Average(x => x.Value.NormalizedStandardDeviation);
       return result;
     }
 
-    private static BenchmarkSummary.BenchmarkSummaryItem EvaluateCases(IEnumerable<BenchmarkCaseModel> cases)
+    private static List<BenchmarkCase> RunAllBenchmarks(TimeSpan measureTime, int runs)
+    {
+      var result = new List<BenchmarkCase>();
+      result.Add(RunBenchmarkCase(PrepareComplexBenchmarkCase(), "complex", measureTime, runs));
+      result.Add(RunBenchmarkCase(PrepareArrayEachBenchmarkCase(), "arrayeach", measureTime, runs));
+      result.Add(RunBenchmarkCase(PrepareDataBenchmarkCase(), "data", measureTime, runs));
+      result.Add(RunBenchmarkCase(PrepareDepth1BenchmarkCase(), "depth1", measureTime, runs));
+      result.Add(RunBenchmarkCase(PrepareDepth2BenchmarkCase(), "depth2", measureTime, runs));
+      //result.Add(RunBenchmarkCase(ViewModels.MeasurementModels.Templates.Templates.String.Render, "string", measureTime, runs));
+      result.Add(RunBenchmarkCase(PreparePartialBenchmarkCase(), "partial", measureTime, runs));
+      result.Add(RunBenchmarkCase(PreparePartialRecursionBenchmarkCase(), "partial-recursion", measureTime, runs));
+      result.Add(RunBenchmarkCase(PreparePathsBenchmarkCase(), "paths", measureTime, runs));
+      result.Add(RunBenchmarkCase(PrepareVariablesBenchmarkCase(), "variables", measureTime, runs));
+      return result;
+    }
+
+    private static BenchmarkSummary.BenchmarkSummaryItem EvaluateCases(IEnumerable<BenchmarkCase> cases)
     {
       var summaryItem = new BenchmarkSummary.BenchmarkSummaryItem();
       var measurementList = cases.SelectMany(x => x.Items).OrderBy(x => x.Throughput).ToList();
@@ -62,30 +64,30 @@ namespace CompiledHandlebars.Benchmark
       summaryItem.AverageThroughput = measurementList.Average(x => x.Throughput);
       summaryItem.MedianThroughput = measurementList[measurementList.Count / 2].Throughput;
       summaryItem.StandardDeviation = Math.Sqrt(measurementList.Sum(x => Math.Pow((x.Throughput - summaryItem.AverageThroughput), 2)) / summaryItem.SampleSize);
+      summaryItem.NormalizedStandardDeviation = summaryItem.StandardDeviation / summaryItem.AverageThroughput;
       return summaryItem;
     }
 
-    private static BenchmarkCaseModel RunBenchmarkCase<TViewModel>(Tuple<TViewModel, Func<TViewModel, string>> values, string name)
+    private static BenchmarkCase RunBenchmarkCase<TViewModel>(Tuple<TViewModel, Func<TViewModel, string>> values, string name, TimeSpan measureTime, int runs)
     {
-      var result = new BenchmarkCaseModel();
+      Console.WriteLine($"Started case '{name}'");
+      var result = new BenchmarkCase();
       result.Name = name;
-      //One dryrun
-      var timeSpan = TimeSpan.FromMilliseconds(2000);
-      Measure(values.Item2, values.Item1, TimeSpan.FromSeconds(1), name);
-      for(int i = 0; i < 5;i++)
-        result.Items.Add(Measure(values.Item2, values.Item1, timeSpan, name));
+      //One dryrun      
+      Measure(values.Item2, values.Item1, TimeSpan.FromMilliseconds(100), name);
+      for(int i = 0; i < runs;i++)
+        result.Items.Add(Measure2(values.Item2, values.Item1, measureTime, name));
       return result;
     }
 
-    private static BenchmarkCaseModel RunBenchmarkCase(Func<string> renderMethod, string name)
+    private static BenchmarkCase RunBenchmarkCase(Func<string> renderMethod, string name, TimeSpan measureTime, int runs)
     {
-      var result = new BenchmarkCaseModel();
-      result.Name = name;
-      var timeSpan = TimeSpan.FromMilliseconds(2000);
+      var result = new BenchmarkCase();
+      result.Name = name;      
       //One dryrun
-      Measure(renderMethod, TimeSpan.FromSeconds(1), name);
-      for (int i = 0; i < 5; i++)
-        result.Items.Add(Measure(renderMethod, timeSpan, name));
+      Measure(renderMethod, TimeSpan.FromMilliseconds(100), name);
+      for (int i = 0; i < runs; i++)
+        result.Items.Add(Measure(renderMethod, measureTime, name));
       return result;
     }
 
@@ -251,25 +253,42 @@ namespace CompiledHandlebars.Benchmark
         );
     }
 
-    private static BenchmarkCaseModel.Measurement Measure<TViewModel>(Func<TViewModel, string> RenderMethod, TViewModel viewModel, TimeSpan duration, string name)
+    private static BenchmarkCase.Measurement Measure<TViewModel>(Func<TViewModel, string> RenderMethod, TViewModel viewModel, TimeSpan duration, string name)
     {
       var sw = new Stopwatch();
       long counter = 0;
       while (sw.ElapsedMilliseconds < duration.TotalMilliseconds)
       {
         sw.Start();
-        RenderMethod(viewModel);
+        for(int i = 0;i<100;i++)
+          RenderMethod(viewModel);
         sw.Stop();
-        counter++;
+        counter += 100;
       }
-      return new BenchmarkCaseModel.Measurement()
+      return new BenchmarkCase.Measurement()
       {
         Duration = duration,
         Throughput = counter / (sw.ElapsedMilliseconds)
       };
     }
 
-    private static BenchmarkCaseModel.Measurement Measure(Func<string> RenderMethod, TimeSpan duration, string name)
+    private static BenchmarkCase.Measurement Measure2<TViewModel>(Func<TViewModel, string> RenderMethod, TViewModel viewModel, TimeSpan duration, string name)
+    {
+      var sw = new Stopwatch();
+      long counter = 10000000;
+      sw.Start();
+      for (int i = 0; i < counter; i++)
+        RenderMethod(viewModel);
+      sw.Stop();
+      Console.Write($"{sw.ElapsedMilliseconds}|");
+      return new BenchmarkCase.Measurement()
+      {
+        Duration = duration,
+        Throughput = counter / (sw.ElapsedMilliseconds)
+      };
+    }
+
+    private static BenchmarkCase.Measurement Measure(Func<string> RenderMethod, TimeSpan duration, string name)
     {
       var sw = new Stopwatch();
       long counter = 0;
@@ -280,7 +299,7 @@ namespace CompiledHandlebars.Benchmark
         sw.Stop();
         counter++;
       }
-      return new BenchmarkCaseModel.Measurement()
+      return new BenchmarkCase.Measurement()
       {
         Duration = duration,
         Throughput = counter / (sw.ElapsedMilliseconds)

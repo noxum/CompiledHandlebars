@@ -13,17 +13,19 @@ namespace CompiledHandlebars.Benchmark.MeasurementModels
     public DateTime ExecutionDateStop { get; set; }
     public VMInformation VM { get;set;}
     public BenchmarkSummary Summary { get; set; }
-    public List<BenchmarkCaseModel> Cases { get; set; } = new List<BenchmarkCaseModel>();
+    public List<BenchmarkCase> Cases { get; set; } = new List<BenchmarkCase>();
   }
   public class VMInformation
   {
+    public double CPULoad { get; set; }
     public int ProcessorCount { get; set; }
     public string OSVersion { get; set; }
     public string RuntimeVersion { get; set; }
-    public string Location { get; set; }
+    public string MachineName { get; set; }
+    public List<string> RunningServices { get; set; }
   }
 
-  public class BenchmarkCaseModel
+  public class BenchmarkCase
   {
     public string Name { get; set; }
     public string TemplateContents { get; set; }

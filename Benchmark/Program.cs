@@ -15,7 +15,7 @@ namespace CompiledHandlebars.Benchmark
     {
       Console.WriteLine("Started Benchmark...");
       var benchCase = Benchmarker.CreateFullBenchmark();
-      PrintSummary(benchCase.Summary.Items.Select(x => x.Value).ToList());
+      PrintSummary(benchCase.Summary);
       if (args.Length == 3 && args[0].Equals("-s"))
       {//if save-flag is set -> write benchmark result to blobstorage as json
         var commitHash = args[1];
@@ -31,10 +31,12 @@ namespace CompiledHandlebars.Benchmark
     }       
 
 
-    static void PrintSummary(List<BenchmarkSummary.BenchmarkSummaryItem> items)
+    static void PrintSummary(BenchmarkSummary summary)
     {
+      Console.WriteLine("Summary: ");
+      Console.WriteLine($"Average Standard Deviation: {summary.AverageStandardDeviation*100}%");
       Console.WriteLine($"{"Name",20}{"Average Throughput", 22}{"Standard Deviation",22}{"Sample Size",15}");
-      foreach (var item in items)
+      foreach (var item in summary.Items.Select(x => x.Value).ToList())
         Console.WriteLine($"{item.Name,20}{item.AverageThroughput,22}{item.StandardDeviation,22}{item.SampleSize,15}");
     }
 

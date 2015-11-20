@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class Complex
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.ComplexModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("<h1>");
       sb.Append(WebUtility.HtmlEncode(viewModel.Header));
       sb.Append("</h1>\r\n");
@@ -82,4 +82,4 @@ namespace CompiledHandlebars.Benchmark.Templates
     {
     }
   }
-}/*compiled in 202ms*/
+}

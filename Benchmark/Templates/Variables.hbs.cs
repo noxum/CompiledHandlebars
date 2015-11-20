@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class Variables
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.VariablesModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       sb.Append("Hello ");
       sb.Append(WebUtility.HtmlEncode(viewModel.Name));
       sb.Append("! You have ");
@@ -53,4 +53,4 @@ namespace CompiledHandlebars.Benchmark.Templates
     {
     }
   }
-}/*compiled in 10ms*/
+}

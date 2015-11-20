@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.Benchmark.Templates
+namespace CompiledHandlebars.Benchmark.ViewModels.MeasurementModels.Templates.Templates
 {
   [CompiledHandlebarsTemplate]
   public static class Partial
   {
     public static string Render(CompiledHandlebars.Benchmark.ViewModels.PartialModel viewModel)
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder(64);
       if (IsTruthy(viewModel) && IsTruthy(viewModel.Peeps))
       {
         foreach (var loopItem0 in viewModel.Peeps)
@@ -56,4 +56,4 @@ namespace CompiledHandlebars.Benchmark.Templates
     {
     }
   }
-}/*compiled in 3ms*/
+}
