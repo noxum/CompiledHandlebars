@@ -60,16 +60,17 @@ namespace CompiledHandlebars.Cli
           }
           else
           {//Save file to project
-            var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(addFile, ".cs")));
+            var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(addFile.Name, ".cs")));
             if (doc != null)
             {//And change it if it does
               project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
             }
             else
             {//Otherwise add a new document
-              project = project.AddDocument(string.Concat(addFile, ".cs"), compilationResult.Item1, addFile.Folders).Project;
+              project = project.AddDocument(string.Concat(addFile.Name, ".cs"), compilationResult.Item1, addFile.Folders).Project;
             }
             workspace.TryApplyChanges(project.Solution);
+            project = workspace.CurrentSolution.Projects.FirstOrDefault(x => x.Id.Equals(projectId));
           }
         }
       }
