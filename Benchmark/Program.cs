@@ -12,7 +12,7 @@ namespace CompiledHandlebars.Benchmark
   class Program
   {
     static void Main(string[] args)
-    {
+    {      
       Console.WriteLine("Started Benchmark...");
       var benchCase = Benchmarker.CreateFullBenchmark();
       PrintSummary(benchCase.Summary);
@@ -23,11 +23,11 @@ namespace CompiledHandlebars.Benchmark
         var cloudStorageConnectionString = args[2];
         var storageAccount = CloudStorageAccount.Parse(cloudStorageConnectionString);
         var blobClient = storageAccount.CreateCloudBlobClient();
-        var container = blobClient.GetContainerReference("results");      
+        var container = blobClient.GetContainerReference("results");
         var blockBlob = container.GetBlockBlobReference($"{commitHash}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json");
         var json = JsonConvert.SerializeObject(benchCase, Formatting.Indented);
         blockBlob.UploadText(json);
-      }      
+      }
     }       
 
 

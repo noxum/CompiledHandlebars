@@ -34,8 +34,8 @@ namespace CompiledHandlebars.Benchmark.MeasurementModels
     
     public class Measurement
     {
-      public TimeSpan Duration { get; set; }
-      public long Throughput { get; set; }
+      public long RenderCount { get; set; }
+      public double Throughput { get; set; }
     }
   }
 

@@ -14,7 +14,7 @@ namespace CompiledHandlebars.Benchmark.MeasurementModels
     {
       public string Name { get; set; }
       public double AverageThroughput { get; set; }
-      public long MedianThroughput { get; set; }
+      public double MedianThroughput { get; set; }
       public int SampleSize { get; set; }
       public double StandardDeviation { get; set; }
       public double NormalizedStandardDeviation { get; set; }
