@@ -28,7 +28,16 @@ namespace CompiledHandlebars.Benchmark
         var json = JsonConvert.SerializeObject(benchCase, Formatting.Indented);
         blockBlob.UploadText(json);
       }
-    }       
+      else if (args.Length == 2 && args[0].Equals("-l"))
+      {
+        var dirPath = args[2];
+        DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
+        if (!dirInfo.Exists)
+          dirInfo.Create();
+        var json = JsonConvert.SerializeObject(benchCase, Formatting.Indented);
+        File.WriteAllText(Path.Combine(dirInfo.FullName, $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json"), json);
+      }
+    }
 
 
     static void PrintSummary(BenchmarkSummary summary)

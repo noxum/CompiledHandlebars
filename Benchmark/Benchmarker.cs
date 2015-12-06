@@ -13,6 +13,7 @@ namespace CompiledHandlebars.Benchmark
 {
   public static class Benchmarker
   {
+    static double StopwatchFrequenzyFactor = 1E9 / Stopwatch.Frequency;
     public static BenchmarkModel CreateFullBenchmark()
     {
       var result = new BenchmarkModel();
@@ -26,9 +27,9 @@ namespace CompiledHandlebars.Benchmark
         MachineName = Environment.MachineName,
         RunningServices = services.Where(x => x.Status == System.ServiceProcess.ServiceControllerStatus.Running).Select(x => $"{x.DisplayName}|{x.ServiceName}").ToList()                              
       };
-      result.Cases.AddRange(RunAllBenchmarks(100, 1000000));
-      Thread.Sleep(TimeSpan.FromSeconds(30));//Sleep thirty seconds then rerun
-      result.Cases.AddRange(RunAllBenchmarks(100, 1000000));
+      result.Cases.AddRange(RunAllBenchmarks(100, 100000));
+      //Thread.Sleep(TimeSpan.FromSeconds(30));//Sleep thirty seconds then rerun
+      //result.Cases.AddRange(RunAllBenchmarks(100, 100000));
       result.ExecutionDateStop = DateTime.UtcNow;
       result.Summary = new BenchmarkSummary();
       foreach(var benchCase in result.Cases.GroupBy(x => x.Name))
@@ -73,8 +74,9 @@ namespace CompiledHandlebars.Benchmark
       Console.WriteLine($"Started case '{name}'");
       var result = new BenchmarkCase();
       result.Name = name;
+      Console.WriteLine(values.Item2(values.Item1));
       //One dryrun      
-      Measure(values.Item2, values.Item1, 100000, name);
+      Measure(values.Item2, values.Item1, renderCountPerRun, name);
       for(int i = 0; i < runs;i++)
         result.Items.Add(Measure(values.Item2, values.Item1, renderCountPerRun, name));
       return result;
@@ -83,9 +85,10 @@ namespace CompiledHandlebars.Benchmark
     private static BenchmarkCase RunBenchmarkCase(Func<string> renderMethod, string name, int runs, long renderCountPerRun)
     {
       var result = new BenchmarkCase();
-      result.Name = name;      
+      result.Name = name;
+      Console.WriteLine(renderMethod());
       //One dryrun
-      Measure(renderMethod, 100000, name);
+      Measure(renderMethod, renderCountPerRun, name);
       for (int i = 0; i < runs; i++)
         result.Items.Add(Measure(renderMethod, renderCountPerRun, name));
       return result;
@@ -102,8 +105,8 @@ namespace CompiledHandlebars.Benchmark
           Items = new List<ComplexModel.ItemModel>()
           {
             new ComplexModel.ItemModel() { Current = true, Name = "red", Url = "#Red" },
-            new ComplexModel.ItemModel() { Current = true, Name = "green", Url = "#Green" },
-            new ComplexModel.ItemModel() { Current = true, Name = "blue", Url = "#Blue" }
+            new ComplexModel.ItemModel() { Current = false, Name = "green", Url = "#Green" },
+            new ComplexModel.ItemModel() { Current = false, Name = "blue", Url = "#Blue" }
           }
         },
         Complex.Render
@@ -191,8 +194,8 @@ namespace CompiledHandlebars.Benchmark
           Peeps = new List<VariablesModel>()
           {
             new VariablesModel() { Count = 15, Name = "Moe" },
-            new VariablesModel() { Count = 15, Name = "Lary" },
-            new VariablesModel() { Count = 15, Name = "Curly" }
+            new VariablesModel() { Count = 5, Name = "Lary" },
+            new VariablesModel() { Count = 1, Name = "Curly" }
           }
         },
         Partial.Render
@@ -256,6 +259,9 @@ namespace CompiledHandlebars.Benchmark
     private static BenchmarkCase.Measurement Measure<TViewModel>(Func<TViewModel, string> RenderMethod, TViewModel viewModel, long renderCountPerRun, string name)
     {
       var sw = new Stopwatch();
+      GC.Collect();
+      GC.WaitForPendingFinalizers();
+      GC.Collect();
       sw.Start();
       for (int i = 0; i < renderCountPerRun; i++)
         RenderMethod(viewModel);
@@ -264,13 +270,16 @@ namespace CompiledHandlebars.Benchmark
       return new BenchmarkCase.Measurement()
       {
         RenderCount= renderCountPerRun,
-        Throughput = renderCountPerRun / (sw.ElapsedMilliseconds)
+        Throughput = renderCountPerRun / ((sw.ElapsedTicks * StopwatchFrequenzyFactor /*ns*/) / 1E6 /*ms*/)
       };
     }
 
     private static BenchmarkCase.Measurement Measure(Func<string> RenderMethod, long renderCount, string name)
     {
       var sw = new Stopwatch();
+      GC.Collect();
+      GC.WaitForPendingFinalizers();
+      GC.Collect();
       sw.Start();
       for (int i = 0; i < renderCount; i++)
         RenderMethod();
@@ -278,7 +287,7 @@ namespace CompiledHandlebars.Benchmark
       return new BenchmarkCase.Measurement()
       {
         RenderCount = renderCount,
-        Throughput = renderCount / (sw.ElapsedMilliseconds)
+        Throughput = renderCount / ((sw.ElapsedTicks * StopwatchFrequenzyFactor /*ns*/) / 1E6 /*ms*/)
       };
     }
 
