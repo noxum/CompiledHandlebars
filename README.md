@@ -2,6 +2,8 @@ Compiled Handlebars for C#
 ==========================
 
 Compiling Handlebars-Templates into native C# code for performant and type-safe serverside HTML rendering.
+### About
+This compiler is the result of Jakob Demler's bachelor thesis which covers the approach, design decisions, implementation details and its evaluation and can be found [here](ReadmeAssets/CompiledHandlebars_Jakob-Demler.pdf)
 
 ### Project Status
 This project is currently in a beta phase.
