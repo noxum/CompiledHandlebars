@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Compiler", "Compiler\CompiledHandlebars.Compiler.csproj", "{55E767E0-44F0-4297-9A00-7211B424BE03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.CompilerTests", "CompilerTests\CompiledHandlebars.CompilerTests.csproj", "{7E220970-73F8-4A28-BF5B-CCB938890924}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Cli", "Cli\CompiledHandlebars.Cli.csproj", "{1F9A3019-8FBE-494B-95FE-10C0D7A85600}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.CustomTool", "CustomTool\CompiledHandlebars.CustomTool.csproj", "{35510CE3-E149-4EB3-8A43-F572F328ACD0}"
 EndProject
@@ -29,10 +27,6 @@ Global
 		{7E220970-73F8-4A28-BF5B-CCB938890924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E220970-73F8-4A28-BF5B-CCB938890924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E220970-73F8-4A28-BF5B-CCB938890924}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F9A3019-8FBE-494B-95FE-10C0D7A85600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F9A3019-8FBE-494B-95FE-10C0D7A85600}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F9A3019-8FBE-494B-95FE-10C0D7A85600}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F9A3019-8FBE-494B-95FE-10C0D7A85600}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35510CE3-E149-4EB3-8A43-F572F328ACD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
