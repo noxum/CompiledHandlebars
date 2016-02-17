@@ -1,8 +1,3 @@
 {
-  "profiles": {
-    "Cli": {
-      "commandName": "Cli",
-      "commandLineArgs": "-f  -enode_modules \"C:\\Users\\demler\\Documents\\Visual Studio 2015\\Projects\\HandlebarsCliTestProject\\src\\HandlebarsCliTestProject\\project.json\""
-    }
-  }
+  "profiles": {}
 }

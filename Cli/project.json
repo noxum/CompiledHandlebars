@@ -1,7 +1,7 @@
 {
   "version": "1.0.0-*",
-  "description": "Cli Console Application",
-  "authors": [ "demler" ],
+  "description": "CompiledHandlebars Commandline-Interface",
+  "authors": [ "Jakob Demler" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",

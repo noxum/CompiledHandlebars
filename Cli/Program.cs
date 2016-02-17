@@ -14,6 +14,7 @@ namespace Cli
 {
   public class Program
   {
+    private static readonly char[] validFlags = {'n', 'f'};
     private class CompilerOptions
     {
       public string SolutionFile { get; set; }
@@ -30,23 +31,16 @@ namespace Cli
     public static void Main(string[] args)
     {
       var options = new CompilerOptions();      
-      if (args.Length > 1)
+      if (IsValidFlagArgument(args[0]))
       {
-        if (args[0].StartsWith("-"))
+        foreach(var chr in args[0].Skip(1))
         {
-          foreach(var chr in args[0].Skip(1))
+          switch(chr)
           {
-            switch(chr)
-            {
-              case 'f': options.ForceRecompilation = true; break;
-              case 'n': options.DryRun = true; break;
-              default: ShowUsage(); return;
-            }
+            case 'f': options.ForceRecompilation = true; break;
+            case 'n': options.DryRun = true; break;
+            default: ShowUsage(); return;
           }
-        } else
-        {
-          ShowUsage();
-          return;
         }
         args = args.Skip(1).ToArray();
       }
@@ -101,6 +95,12 @@ namespace Cli
       Console.ReadLine();
     }
 
+    private static bool IsValidFlagArgument(string arg)
+    {
+      return (arg.StartsWith("-") && arg.Skip(1).All(x => validFlags.Contains(x)));
+    }
+
+
     private static void PrintUnknownExtension(string ext)
     {
       Console.WriteLine($"Unknown file extension '{ext}'. The compiler accepts solution files (.sln) or project files (.csproj or .json)");
@@ -110,21 +110,21 @@ namespace Cli
     {
       Project project;
       Workspace workspace;
-      var handlebarFiles = new List<string>();
+      var handlebarsFiles = new List<string>();
       if (options.JSONProject)
       {
         workspace = new ProjectJsonWorkspace(options.ProjectFile);
         project = workspace.CurrentSolution.Projects.First();
-        handlebarFiles.AddRange(ScrapeDirectoryForHandlebarsFiles(new DirectoryInfo(Path.GetDirectoryName(project.FilePath)), options));        
+        handlebarsFiles.AddRange(ScrapeDirectoryForHandlebarsFiles(new DirectoryInfo(Path.GetDirectoryName(project.FilePath)), options));        
       } else
-      {
+      {//Old project files. Accessible via MSBuildWorkspace
         var properties = new Dictionary<string, string>() {
         { "AdditionalFileItemNames", "none" }};
         workspace = MSBuildWorkspace.Create(properties);
         project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
-        handlebarFiles.AddRange(project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath));
+        handlebarsFiles.AddRange(project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath));
       }
-      CompileHandlebarsFiles(project, workspace, handlebarFiles, options);
+      CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
     }
 
     private static List<string> ScrapeDirectoryForHandlebarsFiles(DirectoryInfo directory, CompilerOptions options, bool recursive = true)
@@ -156,7 +156,16 @@ namespace Cli
 
     private static void CompileSolution(CompilerOptions options)
     {
-
+      var properties = new Dictionary<string, string>() {
+        { "AdditionalFileItemNames", "none" }};
+      var workspace = MSBuildWorkspace.Create(properties);
+      var solution = (workspace as MSBuildWorkspace).OpenSolutionAsync(options.SolutionFile).Result;
+      foreach(var project in solution.Projects)
+      {
+        var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).ToList();
+        if (handlebarsFiles.Any())
+          CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
+      }
     }
 
     private static void CompileHandlebarsFiles(Project project, Workspace workspace, List<string> hbsFiles, CompilerOptions options)
@@ -168,7 +177,7 @@ namespace Cli
         var fileInfo = new FileInfo(file);
         string @namespace;
         bool compiledVersionExists = File.Exists($"{file}.cs");
-        bool compiledVersionIsOlder = false;
+        bool compiledVersionIsOlder = true;
         if (compiledVersionExists)
         {//Compiled Version already exists
           var compiledFileInfo = new FileInfo($"{file}.cs");
@@ -178,42 +187,43 @@ namespace Cli
         {
           @namespace = DetermineNamespace(fileInfo, project);
         }
-        string content = File.ReadAllText(file);       
-        string name = Path.GetFileNameWithoutExtension(file);
-        var compilationResult = CompileHandlebarsTemplate(content, @namespace, name, project, options);
-        if (!options.DryRun)
+        if (compiledVersionIsOlder || options.ForceRecompilation)
         {
-          if (compilationResult?.Item2?.Any() ?? false)
-          {//Errors occured
-            if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
-            {//Unresolvable Partial... could be due to compiling sequence
-              Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
-              nextRound.Add(file);
+          string content = File.ReadAllText(file);       
+          string name = Path.GetFileNameWithoutExtension(file);
+          var compilationResult = CompileHandlebarsTemplate(content, @namespace, name, project, options);
+          if (!options.DryRun)
+          {
+            if (compilationResult?.Item2?.Any() ?? false)
+            {//Errors occured
+              if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
+              {//Unresolvable Partial... could be due to compiling sequence
+                Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
+                nextRound.Add(file);
+              }
+              else
+                foreach (var error in compilationResult.Item2)
+                  PrintError(error);
             }
             else
             {
-              foreach (var error in compilationResult.Item2)
-                PrintError(error);
-            }
-          }
-          else
-          {
-            successFullCompilation = true;
-            //Check if template already exits
-            var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(file, ".cs")));
-            if (doc != null)
-            {//And change it if it does
-              project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
-            }
-            else
-            {//Otherwise add a new document
-              project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
-            }
-            try {
-              workspace.TryApplyChanges(project.Solution);
-            } catch(NotSupportedException)
-            {//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
-              File.WriteAllText($"{file}.cs", compilationResult.Item1);
+              successFullCompilation = true;
+              //Check if template already exits
+              var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(file, ".cs")));
+              if (doc != null)
+              {//And change it if it does
+                project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
+              }
+              else
+              {//Otherwise add a new document
+                project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
+              }
+              try {
+                workspace.TryApplyChanges(project.Solution);
+              } catch(NotSupportedException)
+              {//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
+                File.WriteAllText($"{file}.cs", compilationResult.Item1);
+              }
             }
           }
         }    
