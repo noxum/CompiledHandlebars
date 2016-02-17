@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0-*",
+  "description": "Cli Console Application",
+  "authors": [ "demler" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Microsoft.CodeAnalysis": "1.1.1",
+    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.4.2",
+    "System.Threading.Tasks": "4.0.10"
+  },
+
+  "commands": {
+    "Cli": "Cli"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "CompiledHandlebars.Compiler": "1.0.0-*"
+      }
+    }
+   
+  }
+}

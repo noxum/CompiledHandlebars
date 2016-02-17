@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net451": {
+      "bin": {
+        "assembly": "../../packages/System.Reflection.Metadata.1.1.0/lib/portable-net45+win8/System.Reflection.Metadata.dll"
+      }
+    }
+  }
+}
