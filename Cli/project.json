@@ -7,17 +7,19 @@
   "licenseUrl": "",
 
   "compilationOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true    
   },
 
   "dependencies": {
     "Microsoft.CodeAnalysis": "1.1.1",
     "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.4.2",
+    "Microsoft.Framework.CommandLineUtils": "1.0.0-beta4",
     "System.Threading.Tasks": "4.0.10"
   },
 
+
   "commands": {
-    "Cli": "Cli"
+    "HandlebarsCompiler": "Cli"
   },
 
   "frameworks": {

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Cli
+namespace CompiledHandlebars.Cli
 {
   public class Program
   {
@@ -31,6 +31,11 @@ namespace Cli
     public static void Main(string[] args)
     {
       var options = new CompilerOptions();      
+      if (!args.Any())
+      {
+        ShowUsage();
+        return;
+      }
       if (IsValidFlagArgument(args[0]))
       {
         foreach(var chr in args[0].Skip(1))
@@ -92,7 +97,6 @@ namespace Cli
         ShowUsage();
         return;
       }
-      Console.ReadLine();
     }
 
     private static bool IsValidFlagArgument(string arg)
