@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ViewEngine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CompiledHandlebars.ViewEngine")]
+[assembly: AssemblyDescription("A ViewEngine for ASP.NET MVC Projects")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ViewEngine")]

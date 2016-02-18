@@ -24,7 +24,6 @@ namespace CompiledHandlebars.ViewEngine
       MethodInfo renderMethod = _templateType.GetMethod("Render");      
       string output = (string)renderMethod.Invoke(null, new object[1] { viewContext.ViewData?.Model });
       writer.Write(output);
-
     }  
   }
 }

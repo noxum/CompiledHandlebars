@@ -11,10 +11,12 @@ namespace CompiledHandlebars.ViewEngine
 {
   public class CompiledHandlebarsViewEngine : VirtualPathProviderViewEngine
   {
-    private Dictionary<string, Type> _mappings { get; set; }
+    private Dictionary<string, Type> _mappings { get; set; } = new Dictionary<string, Type>();
     public CompiledHandlebarsViewEngine(Assembly assembly)
     {
-      foreach(var template in assembly.GetTypes().Where(x => x.GetCustomAttribute(typeof(CompiledHandlebarsTemplateAttribute), false)!=null))
+      ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/Shared/{0}.hbs" };
+      PartialViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/Shared/{0}.hbs" };
+      foreach (var template in assembly.GetTypes().Where(x => x.GetCustomAttribute(typeof(CompiledHandlebarsTemplateAttribute), false)!=null))
       {
         _mappings.Add(GetVirtualPath(assembly, template), template);
       }
