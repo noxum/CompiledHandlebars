@@ -236,6 +236,12 @@
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest2.cs" />
     <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest1.cs" />
     <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest2.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest1.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest2.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest3.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest4.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest5.cs" />
+    <Compile Include="TestTemplates\ParserTests\NestedCommentsTest6.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />

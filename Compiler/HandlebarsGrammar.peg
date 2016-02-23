@@ -43,7 +43,10 @@ RenderBodyToken
 //------------------------------
 
 Element 
-    = Node / Leaf
+    =  CommentToken / Node / Leaf
+
+CommentToken <ASTElementBase>
+    = Opening CommentIdentifier val:Comment Closing{ val }
 
 Leaf <ASTElementBase>
     = Opening value:HandlebarsLeaf Closing { value }
@@ -51,8 +54,7 @@ Leaf <ASTElementBase>
     / MarkupLiteral
 
 HandlebarsLeaf <ASTElementBase>
-    = CommentIdentifier val:Comment { val }
-    / PartialCallIdentifier val:PartialCall { val } 
+    = PartialCallIdentifier val:PartialCall { val } 
     / UnencodedTokenIdentifier val:YieldStatement { {val.SetTokenType(TokenType.Unencoded); return val;} }  
     / YieldStatement
     / HelperCall    
@@ -86,6 +88,7 @@ LiteralContent
 HandlebarsToken
     = Opening (!AnyOpening !Closing .)+ Closing
     / EscapedOpening (!AnyOpening !EscapedClosing .)+ EscapedClosing
+    / CommentToken { "Comment" }
 
 Comment <ASTElementBase>
     = "--" val:(!MultilineCommentClosing .)* "--" { new CommentLiteral(CommentType.Multi, string.Concat(val), valStart.Line, valStart.Column)}

@@ -25,11 +25,11 @@ namespace CompiledHandlebars.Compiler.Introspection
         UpdateProjectCompilations(project);
       } else if (ContainingProject.Equals(project.Id))
       {
-        var changes = project.Solution.GetChanges(solution);
-        foreach (var addedProject in changes.GetAddedProjects())
-          projectCompilations.Add(addedProject.Id, GetCompilationForProject(addedProject));
+        var changes = project.Solution.GetChanges(solution);        
         foreach (var removedProject in changes.GetRemovedProjects())
           projectCompilations.Remove(removedProject.Id);
+        foreach (var addedProject in changes.GetAddedProjects())
+          projectCompilations.Add(addedProject.Id, GetCompilationForProject(addedProject));
         foreach (var projectChanges in changes.GetProjectChanges())
           //Bruteforce way: Just get the new compilation...
           //If that does not scale try adding documents to the compilation (incremental update)
@@ -39,6 +39,8 @@ namespace CompiledHandlebars.Compiler.Introspection
       {//Solution and workspace does not change but project does and so do the dependencies. 
        //We then need different projects in the projectCompilations Dictionary
         UpdateProjectCompilations(project);
+        workspace = project.Solution.Workspace;
+        solution = workspace.CurrentSolution;
       }
       ContainingProject = project.Id;
     }

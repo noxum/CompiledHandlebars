@@ -2,13 +2,13 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CompiledHandlebars.Compiler;
 using CompiledHandlebars.CompilerTests.Helper;
+using CompiledHandlebars.CompilerTests.TestViewModels;
 
 namespace CompiledHandlebars.CompilerTests
 {
   [TestClass]
   public class ParserTests : CompilerTestBase
   {
-    //Acts as Dummy inside this class
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
 
     static ParserTests()
@@ -79,6 +79,23 @@ namespace CompiledHandlebars.CompilerTests
     public void UnexpectedCharacterTest()
     {
       ShouldRaiseError("UnexpectedCharacterTest1", HandlebarsSyntaxErrorKind.MalformedHandlebarsToken);
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("NestedCommentsTest1", "{{#if Phobos}}{{!-- NestedComment--}}{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("NestedCommentsTest2", "{{#if Phobos}}{{!-- {{#if Token~}}--}}{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("NestedCommentsTest3", "{{#if Phobos}}{{!-- {{#if Token~}}--}}{{#if Deimos}}Deimos{{/if}}{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("NestedCommentsTest4", "{{#with this}}{{#if Phobos}}{{!-- {{#if Token~}}--}}{{#if Deimos}}Deimos{{/if}}{{/if}}{{/with}}", _marsModel)]
+    [RegisterHandlebarsTemplate("NestedCommentsTest5", "{{#if Phobos}}\n{{!-- {{#if Token}}--}}{{/if}}", _marsModel)]
+    [RegisterHandlebarsTemplate("NestedCommentsTest6", "{{!-- {{#if ../../ContentItems}} --}}", _marsModel)]
+    public void NestedCommentsTest()
+    {
+      ShouldRender("NestedCommentsTest1", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("NestedCommentsTest2", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("NestedCommentsTest3", MarsModelFactory.CreateFullMarsModel(), "Deimos");
+      ShouldRender("NestedCommentsTest4", MarsModelFactory.CreateFullMarsModel(), "Deimos");
+      ShouldRender("NestedCommentsTest5", MarsModelFactory.CreateFullMarsModel(), "\n");
+      ShouldRender("NestedCommentsTest6", MarsModelFactory.CreateFullMarsModel(), "");
     }
 
 

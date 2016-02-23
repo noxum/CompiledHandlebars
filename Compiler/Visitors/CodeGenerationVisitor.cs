@@ -37,8 +37,9 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       try
       {
-        state.Template.Accept(this);
-        return resultingCompilationUnit;
+        state.Template.Accept(this);   
+        //If resultingCompilationUnit is null, compilation failed and errors where written -> return Empty CompilationUnit
+        return resultingCompilationUnit?? SyntaxFactory.CompilationUnit();
       } catch(HandlebarsTypeError e)
       {
         state.AddTypeError(e);
