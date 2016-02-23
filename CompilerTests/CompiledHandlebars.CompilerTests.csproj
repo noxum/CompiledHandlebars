@@ -261,6 +261,8 @@
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest2.cs" />
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest3.cs" />
+    <Compile Include="TestTemplates\TruthynessTests\UnnecessaryIfTest1.cs" />
+    <Compile Include="TestTemplates\TruthynessTests\UnnecessaryIfTest2.cs" />
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
     <Compile Include="TestViewModels\NamingConflicts.cs" />

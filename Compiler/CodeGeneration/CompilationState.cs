@@ -283,14 +283,15 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       if (lastCheckedElements.Any())
       {
         int i = 0;
-        for (i = 0; i < lastCheckedElements.Length; i++)
+        for (i = 0; i < Math.Min(lastCheckedElements.Length, pathToCheckElements.Length); i++)
         {
           if (lastCheckedElements[i].Equals(pathToCheckElements[i]))
             prefixElements.Add(lastCheckedElements[i]);
           else
             break;
         }
-        relevantElements.AddRange(pathToCheckElements.Skip(i));
+        if (pathToCheckElements.Length > i)
+          relevantElements.AddRange(pathToCheckElements.Skip(i));
       }
       else
         relevantElements = pathToCheckElements.ToList();

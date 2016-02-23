@@ -72,5 +72,15 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("CaretIsElseTest1", MarsModelFactory.CreateFullMarsModel(), "Name");
     }
 
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("UnnecessaryIfTest1", "{{#if Phobos}}{{#if this}}{{Phobos.Name}}{{/if}}{{/if}}",_marsModel)]
+    [RegisterHandlebarsTemplate("UnnecessaryIfTest2", "{{#if Phobos}}{{#if this}}{{Phobos.Name}}{{/if}}{{else}}{{#if this}}No Phobos{{/if}}{{/if}}", _marsModel)]
+    public void UnnecessaryIfTest()
+    {
+      ShouldRender("UnnecessaryIfTest1", MarsModelFactory.CreateFullMarsModel(), "Phobos");
+      ShouldRender("UnnecessaryIfTest2", MarsModelFactory.CreateFullMarsModel(), "Phobos");
+      ShouldRender("UnnecessaryIfTest2", new MarsModel(), "No Phobos");
+    }
   }
 }
