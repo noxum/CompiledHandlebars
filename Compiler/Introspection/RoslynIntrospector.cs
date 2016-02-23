@@ -88,6 +88,17 @@ namespace CompiledHandlebars.Compiler.Introspection
       return null;
     }
 
+    /// <summary>
+    /// Searches each referenced project for helper methods. 
+    /// These must serve following conditions:
+    ///   - correct name
+    ///   - be static
+    ///   - have a "CompiledHandlebarsHelperMethod" attribute
+    ///   - have matching parameters
+    /// </summary>
+    /// <param name="funtionName">Name of the Helper as declared in the handlebars-template</param>
+    /// <param name="parameters">Types of the Parameters that are passed to the helper method</param>
+    /// <returns>The MethodSymbol for the called HelperMethod or null if it could not be found</returns>
     public IMethodSymbol GetHelperMethod(string funtionName, List<ITypeSymbol> parameters)
     {
       foreach(var comp in projectCompilations.Values)
@@ -95,7 +106,7 @@ namespace CompiledHandlebars.Compiler.Introspection
         var candidates =  comp.GetSymbolsWithName(x => x.Equals(funtionName))
                                           .OfType<IMethodSymbol>()
                                           .Where(x => x.IsStatic &&
-                                                      x.GetAttributes().Any(y => y.AttributeClass.Name.Equals("CompiledHandlebarsHelperMethodAttribute")));
+                                                      x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)));
         var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
         if (helperMethod != null)
           return helperMethod;

@@ -10,7 +10,10 @@ namespace CompiledHandlebars.Compiler
   {
     internal const string LAYOUTATTRIBUTE = "CompiledHandlebarsLayout";
     internal const string TEMPLATEATTRIBUTE = "CompiledHandlebarsTemplate";
+    internal const string HELPERMETHODATTRIBUTE = "CompiledHandlebarsHelperMethod";
+
     internal const string LAYOUTATTRIBUTEFULL = "CompiledHandlebarsLayoutAttribute";
     internal const string TEMPLATEATTRIBUTEFULL = "CompiledHandlebarsTemplateAttribute";
+    internal const string HELPERMETHODATTRIBUTEFULL = "CompiledHandlebarsHelperMethodAttribute";
   }
 }
