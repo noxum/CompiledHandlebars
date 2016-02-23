@@ -7,12 +7,11 @@
     <authors>Jakob Demler</authors>
     <owners>Jakob Demler</owners>
     <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <projectUrl>https://github.com/Noxum/CompiledHandlebars</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>see Github Page</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <description>A ViewEngine to be able to use CompiledHandlebars in a MVC environment.</description>
+    <releaseNotes>see https://github.com/Noxum/CompiledHandlebars/releases </releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>Tag1 Tag2</tags>
+    <tags>Handlebars MVC</tags>
   </metadata>
 </package>

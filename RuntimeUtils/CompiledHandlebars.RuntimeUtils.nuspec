@@ -5,12 +5,10 @@
     <version>$version$</version>
     <title>$title$</title>
     <authors>Jakob Demler</authors>
-    <owners>Jakob Demler</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>https://github.com/Noxum/CompiledHandlebars</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <owners>Jakob Demler</owners>    
+    <projectUrl>https://github.com/Noxum/CompiledHandlebars</projectUrl>    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Runtime utilities for Compiled Handlebars Templates</description>
+    <description>Runtime Utilities for CompiledHandlebars Templates</description>
     <releaseNotes>see Github Repository</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>Handlebars Html Rendering</tags>
