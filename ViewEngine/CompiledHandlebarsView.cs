@@ -10,37 +10,30 @@ using System.Web.Mvc;
 
 namespace CompiledHandlebars.ViewEngine
 {
-  public class CompiledHandlebarsView : IView
+  public class CompiledHandlebarsView : IView 
   {
-    private readonly Type _templateType;    
+    private readonly RenderMethodWrapperBase _funcWrapper;    
 
-    public CompiledHandlebarsView(Type templateType)
+    public CompiledHandlebarsView(RenderMethodWrapperBase funcWrapper)
     {
-      _templateType = templateType;
+      _funcWrapper = funcWrapper;
     }
 
     public void Render(ViewContext viewContext, TextWriter writer)
     {
-      MethodInfo renderMethod = _templateType.GetMethod("Render");
-      string output;
+      //If there is no HtmlHelper in the HttpContext.Items yet, provide it
       if (!viewContext.HttpContext.Items.Contains("CompiledHanldbearsHtmlHelper"))
       {        
-        var helper = new HtmlHelper(viewContext, new MockViewDataContainer(viewContext.ViewData));
+        var helper = new HtmlHelper(viewContext, new ViewDataContainer(viewContext.ViewData));
         viewContext.HttpContext.Items["CompiledHandlebarsHtmlHelper"] = helper;      
       }
-      if (renderMethod.GetParameters().Any())
-      {
-        output = (string)renderMethod.Invoke(null, new object[1] { viewContext.ViewData?.Model });
-      } else
-      {
-        output = (string)renderMethod.Invoke(null, null);
-      }
+      string output = _funcWrapper.InvokeRender(viewContext.ViewData?.Model);
       writer.Write(output);
     }
 
-    public class MockViewDataContainer : IViewDataContainer
+    public class ViewDataContainer : IViewDataContainer
     {
-      public MockViewDataContainer(ViewDataDictionary viewData)
+      public ViewDataContainer(ViewDataDictionary viewData)
       {
         ViewData = viewData;
       }

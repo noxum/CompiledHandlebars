@@ -9,16 +9,35 @@ using System.Web.Mvc;
 
 namespace CompiledHandlebars.ViewEngine
 {
+
   public class CompiledHandlebarsViewEngine : VirtualPathProviderViewEngine
   {
-    private Dictionary<string, Type> _mappings { get; set; } = new Dictionary<string, Type>();
+    private Dictionary<string, RenderMethodWrapperBase> _mappings { get; set; } = new Dictionary<string, RenderMethodWrapperBase>();
     public CompiledHandlebarsViewEngine(Assembly assembly)
     {
+      //Defaults. Must be set, can be overwritten
       ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/Shared/{0}.hbs" };
       PartialViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/Shared/{0}.hbs" };
+
+      //This part is close to magic.
+      //The basic idea: Search through the assembly, find all compiled HandlebarsTemplates and create Func<>-objects for their render methods.
+      //Wrap these Func<>-objects in a generic class and store it in a Dictionary to be able to access them at runtime            
+      //Then the View can call the wrapped Func<>-object without knowing the actual type of the viewModel and without using reflection!
       foreach (var template in assembly.GetTypes().Where(x => x.GetCustomAttribute(typeof(CompiledHandlebarsTemplateAttribute), false)!=null))
       {
-        _mappings.Add(GetVirtualPath(assembly, template), template);
+        var renderMethod = template.GetMethod("Render");
+        Type wrapperType;
+        if (!renderMethod.GetParameters().Any())
+        {
+          wrapperType = typeof(StaticRenderMethodWrapper);
+        } else if (renderMethod.GetParameters().Count() == 1)
+        {
+          wrapperType = typeof(RenderMethodWrapper<>).MakeGenericType(renderMethod.GetParameters().First().ParameterType);               
+        } else
+        {
+          continue;
+        }
+        _mappings.Add(GetVirtualPath(assembly, template), Activator.CreateInstance(wrapperType, renderMethod) as RenderMethodWrapperBase);
       }
     }
 
@@ -46,5 +65,7 @@ namespace CompiledHandlebars.ViewEngine
         return new CompiledHandlebarsView(_mappings[viewPath]);
       return null;
     }
+
+
   }
 }
