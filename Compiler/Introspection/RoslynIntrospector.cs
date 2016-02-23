@@ -17,18 +17,13 @@ namespace CompiledHandlebars.Compiler.Introspection
     //TODO: Test what happens if multiple instances of VisualStudio run...
     public RoslynIntrospector(Project project)
     {
-      ContainingProject = project.Id;
       if (workspace == null)
         workspace = project.Solution.Workspace;
       if (solution == null)
       {
         solution = workspace.CurrentSolution;
-        projectCompilations[project.Id] = GetCompilationForProject(project);
-        foreach (var projectId in solution.GetProjectDependencyGraph().GetProjectsThatThisProjectDirectlyDependsOn(project.Id))
-        {
-          projectCompilations[projectId] = GetCompilationForProject(solution.GetProject(projectId));
-        }
-      } else
+        UpdateProjectCompilations(project);
+      } else if (ContainingProject.Equals(project.Id))
       {
         var changes = project.Solution.GetChanges(solution);
         foreach (var addedProject in changes.GetAddedProjects())
@@ -40,6 +35,21 @@ namespace CompiledHandlebars.Compiler.Introspection
           //If that does not scale try adding documents to the compilation (incremental update)
           projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
         solution = project.Solution;
+      } else
+      {//Solution and workspace does not change but project does and so do the dependencies. 
+       //We then need different projects in the projectCompilations Dictionary
+        UpdateProjectCompilations(project);
+      }
+      ContainingProject = project.Id;
+    }
+
+    private void UpdateProjectCompilations(Project project)
+    {
+      projectCompilations = new Dictionary<ProjectId, Compilation>();
+      projectCompilations[project.Id] = GetCompilationForProject(project);
+      foreach (var projectId in solution.GetProjectDependencyGraph().GetProjectsThatThisProjectDirectlyDependsOn(project.Id))
+      {
+        projectCompilations[projectId] = GetCompilationForProject(solution.GetProject(projectId));
       }
     }
 

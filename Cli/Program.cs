@@ -164,78 +164,87 @@ namespace CompiledHandlebars.Cli
         { "AdditionalFileItemNames", "none" }};
       var workspace = MSBuildWorkspace.Create(properties);
       var solution = (workspace as MSBuildWorkspace).OpenSolutionAsync(options.SolutionFile).Result;
-      foreach(var project in solution.Projects)
+      foreach(var projectId in solution.ProjectIds)
       {
+        var project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(projectId));
         var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).ToList();
         if (handlebarsFiles.Any())
-          CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
+        {
+          workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options) as MSBuildWorkspace;          
+        }
       }
     }
 
-    private static void CompileHandlebarsFiles(Project project, Workspace workspace, List<string> hbsFiles, CompilerOptions options)
+    private static Workspace CompileHandlebarsFiles(Project project, Workspace workspace, List<string> hbsFiles, CompilerOptions options)
     {
-      bool successFullCompilation = false;
-      var nextRound = new List<string>();
-      foreach(var file in hbsFiles)
+      bool successFullCompilation = true;      
+      while(hbsFiles.Any() && successFullCompilation)
       {
-        var fileInfo = new FileInfo(file);
-        string @namespace;
-        bool compiledVersionExists = File.Exists($"{file}.cs");
-        bool compiledVersionIsOlder = true;
-        if (compiledVersionExists)
-        {//Compiled Version already exists
-          var compiledFileInfo = new FileInfo($"{file}.cs");
-          compiledVersionIsOlder = (fileInfo.LastWriteTimeUtc > compiledFileInfo.LastWriteTimeUtc);
-          @namespace = DetermineNamespace(compiledFileInfo);
-        } else
+        successFullCompilation = false;
+        var nextRound = new List<string>();
+        foreach(var file in hbsFiles)
         {
-          @namespace = DetermineNamespace(fileInfo, project);
-        }
-        if (compiledVersionIsOlder || options.ForceRecompilation)
-        {
-          string content = File.ReadAllText(file);       
-          string name = Path.GetFileNameWithoutExtension(file);
-          var compilationResult = CompileHandlebarsTemplate(content, @namespace, name, project, options);
-          if (!options.DryRun)
+          var fileInfo = new FileInfo(file);
+          string @namespace;
+          bool compiledVersionExists = File.Exists($"{file}.cs");
+          bool compiledVersionIsOlder = true;
+          if (compiledVersionExists)
+          {//Compiled Version already exists
+            var compiledFileInfo = new FileInfo($"{file}.cs");
+            compiledVersionIsOlder = (fileInfo.LastWriteTimeUtc > compiledFileInfo.LastWriteTimeUtc);
+            @namespace = DetermineNamespace(compiledFileInfo);
+          } else
           {
-            if (compilationResult?.Item2?.Any() ?? false)
-            {//Errors occured
-              if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
-              {//Unresolvable Partial... could be due to compiling sequence
-                Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
-                nextRound.Add(file);
-              }
-              else
-                foreach (var error in compilationResult.Item2)
-                  PrintError(error);
-            }
-            else
-            {
-              successFullCompilation = true;
-              //Check if template already exits
-              var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(file, ".cs")));
-              if (doc != null)
-              {//And change it if it does
-                project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
-              }
-              else
-              {//Otherwise add a new document
-                project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
-              }
-              try {
-                workspace.TryApplyChanges(project.Solution);
-              } catch(NotSupportedException)
-              {//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
-                File.WriteAllText($"{file}.cs", compilationResult.Item1);
-              }
-            }
+            @namespace = DetermineNamespace(fileInfo, project);
           }
-        }    
+          if (compiledVersionIsOlder || options.ForceRecompilation)
+          {
+            string content = File.ReadAllText(file);       
+            string name = Path.GetFileNameWithoutExtension(file);
+            var compilationResult = CompileHandlebarsTemplate(content, @namespace, name, project, options);
+            if (!options.DryRun)
+            {
+              if (compilationResult?.Item2?.Any() ?? false)
+              {//Errors occured
+                if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
+                {//Unresolvable Partial... could be due to compiling sequence
+                  //Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
+                  nextRound.Add(file);
+                }
+                else
+                  foreach (var error in compilationResult.Item2)
+                    PrintError(error);
+              }
+              else
+              {
+                successFullCompilation = true;
+                //Check if template already exits
+                var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(name, ".hbs.cs")));
+                if (doc != null)
+                {//And change it if it does
+                  project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
+                }
+                else
+                {//Otherwise add a new document
+                  project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
+                }
+                try {
+                  if (workspace.TryApplyChanges(project.Solution))
+                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++");
+                  else
+                    Console.WriteLine("---------------------------------------------");
+                  project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));
+                } catch(NotSupportedException)
+                {//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
+                  File.WriteAllText($"{file}.cs", compilationResult.Item1);
+                }
+              }
+            }
+          }    
+        }
+        hbsFiles = nextRound;
       }
-      if (nextRound.Any() && successFullCompilation)
-      {
-        CompileHandlebarsFiles(project, workspace, nextRound, options);
-      }
+      return workspace;
     }
         
     private static void PrintError(HandlebarsException error)
