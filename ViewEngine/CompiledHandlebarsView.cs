@@ -23,6 +23,11 @@ namespace CompiledHandlebars.ViewEngine
     {
       MethodInfo renderMethod = _templateType.GetMethod("Render");
       string output;
+      if (!viewContext.HttpContext.Items.Contains("CompiledHanldbearsHtmlHelper"))
+      {        
+        var helper = new HtmlHelper(viewContext, new MockViewDataContainer(viewContext.ViewData));
+        viewContext.HttpContext.Items["CompiledHandlebarsHtmlHelper"] = helper;      
+      }
       if (renderMethod.GetParameters().Any())
       {
         output = (string)renderMethod.Invoke(null, new object[1] { viewContext.ViewData?.Model });
@@ -31,6 +36,15 @@ namespace CompiledHandlebars.ViewEngine
         output = (string)renderMethod.Invoke(null, null);
       }
       writer.Write(output);
-    }  
+    }
+
+    public class MockViewDataContainer : IViewDataContainer
+    {
+      public MockViewDataContainer(ViewDataDictionary viewData)
+      {
+        ViewData = viewData;
+      }
+      public ViewDataDictionary ViewData { get; set; }      
+    }
   }
 }
