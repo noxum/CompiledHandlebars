@@ -30,7 +30,7 @@ namespace CompiledHandlebars.ViewEngine
     /// <returns></returns>
     private string GetVirtualPath(Assembly assembly, Type template)
     {
-      return string.Concat("~/", template.Namespace.Substring(assembly.GetName().Name.Length + 1), "/", template.Name.Replace('.', '/'), ".hbs");
+      return string.Concat("~/", template.Namespace.Substring(assembly.GetName().Name.Length + 1).Replace('.', '/'), "/", template.Name.Replace('.', '/'), ".hbs");
     }
 
     protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)

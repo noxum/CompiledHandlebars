@@ -21,8 +21,15 @@ namespace CompiledHandlebars.ViewEngine
 
     public void Render(ViewContext viewContext, TextWriter writer)
     {
-      MethodInfo renderMethod = _templateType.GetMethod("Render");      
-      string output = (string)renderMethod.Invoke(null, new object[1] { viewContext.ViewData?.Model });
+      MethodInfo renderMethod = _templateType.GetMethod("Render");
+      string output;
+      if (renderMethod.GetParameters().Any())
+      {
+        output = (string)renderMethod.Invoke(null, new object[1] { viewContext.ViewData?.Model });
+      } else
+      {
+        output = (string)renderMethod.Invoke(null, null);
+      }
       writer.Write(output);
     }  
   }
