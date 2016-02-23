@@ -47,9 +47,11 @@ namespace CompiledHandlebars.CompilerTests
 
     [TestMethod]
     [RegisterHandlebarsTemplate("SelfReferencingPartialTest1", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> SelfReferencingPartialTest1 Child}}{{/if}}", _selfRefModel)]
+    [RegisterHandlebarsTemplate("SelfReferencingPartialTest2", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> CompilerTests.SelfReferencingPartialTest2 Child}}{{/if}}", _selfRefModel)]
     public void SelfReferencingPartialTest()
     {
       ShouldRender("SelfReferencingPartialTest1", SelfReferencingViewModelFactory.Create(), "ParentChild");
+      ShouldRender("SelfReferencingPartialTest2", SelfReferencingViewModelFactory.Create(), "ParentChild");
     }
 
     [TestMethod]

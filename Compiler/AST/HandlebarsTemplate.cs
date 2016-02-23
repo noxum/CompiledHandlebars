@@ -84,6 +84,11 @@ namespace CompiledHandlebars.Compiler.AST
       ParseErrors = parseErrors;
     }
 
+    internal bool IsSelfReferencingPartial(string partial)
+    {
+      return string.Concat(Namespace, ".", Name).EndsWith(partial);
+    }
+
     internal virtual void Accept(IASTVisitor visitor)
     {
       visitor.VisitEnter(this);

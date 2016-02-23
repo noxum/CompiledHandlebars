@@ -124,7 +124,7 @@ namespace CompiledHandlebars.Compiler.Introspection
           return helperMethod;
       }
       return null;
-    }
+    }    
 
     private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ITypeSymbol> parameters)
     {

@@ -221,7 +221,7 @@ namespace CompiledHandlebars.Compiler.Visitors
       Context argumentContext;
       if (astLeaf.Expr.TryEvaluate(state, out argumentContext))
       {
-        if (astLeaf.TemplateName.ToString().Equals(state.Template.Name, StringComparison.OrdinalIgnoreCase))
+        if (state.Template.IsSelfReferencingPartial(astLeaf.TemplateName.ToString()))
         {//Self referencing Template
           state.PushStatement(SyntaxHelper.SelfReferencingPartialCall(argumentContext.FullPath));
         }
@@ -240,7 +240,7 @@ namespace CompiledHandlebars.Compiler.Visitors
               argumentContext.FullPath));        
         }
       }
-    }
+    }    
 
     public void Visit(HelperCall astLeaf)
     {
