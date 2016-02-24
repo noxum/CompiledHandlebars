@@ -98,7 +98,6 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("NestedCommentsTest6", MarsModelFactory.CreateFullMarsModel(), "");
     }
 
-
   }
 
 }

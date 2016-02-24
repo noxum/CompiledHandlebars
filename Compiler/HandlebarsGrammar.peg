@@ -271,10 +271,11 @@ IndexKeyword = "index"
 KeyKeyword = "key"
 AnyOpening = EscapedOpening / Opening
 Opening = "{{"TrimWhitespaceIdentifier?
-Closing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}"
+Closing = TrimWhitespace"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?
-EscapedClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"}}}"
-MultilineCommentClosing = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; })?"--}}"
+EscapedClosing = TrimWhitespace"}}}"
+MultilineCommentClosing = TrimWhitespace"--}}"
+TrimWhitespace = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; }) / #STATE{ state["trimStart"]=false; }
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"

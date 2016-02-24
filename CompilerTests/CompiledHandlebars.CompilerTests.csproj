@@ -155,6 +155,7 @@
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlTest3.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\WhitespaceControlThroughTokensTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\WithTest.cs" />
     <Compile Include="TestTemplates\EachTests\EachOverObjectTest1.cs" />
     <Compile Include="TestTemplates\EachTests\EachOverObjectTest2.cs" />

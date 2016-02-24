@@ -161,6 +161,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("WhitespaceControlTest3", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("WhitespaceControlThroughTokensTest1", "{{Name~}}{{#if Deimos}} Deimos{{/if}}", _marsModel)]
+    public void WhitespaceControlThroughTokensTest()
+    {
+      ShouldRender("WhitespaceControlThroughTokensTest1", MarsModelFactory.CreateFullMarsModel(), "Mars Deimos");
+    }
+
 
     [TestMethod]
     [RegisterHandlebarsTemplate("CommentTest1","{{!Name}}", _marsModel)]
