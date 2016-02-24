@@ -6,6 +6,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web;
+using System.Web.Compilation;
+using System.Web.Hosting;
+using System.Web.WebPages;
 
 namespace CompiledHandlebars.ViewEngine
 {
@@ -37,8 +41,9 @@ namespace CompiledHandlebars.ViewEngine
         {
           continue;
         }
-        _mappings.Add(GetVirtualPath(assembly, template), Activator.CreateInstance(wrapperType, renderMethod) as RenderMethodWrapperBase);
+        _mappings.Add(GetVirtualPath(assembly, template).ToLower(), Activator.CreateInstance(wrapperType, renderMethod) as RenderMethodWrapperBase);
       }
+
     }
 
     /// <summary>
@@ -54,6 +59,7 @@ namespace CompiledHandlebars.ViewEngine
 
     protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)
     {
+      partialPath = EnsureVirtualPathPrefixToLower(partialPath);
       if (_mappings.ContainsKey(partialPath))
         return new CompiledHandlebarsView(_mappings[partialPath]);
       return null;
@@ -61,11 +67,54 @@ namespace CompiledHandlebars.ViewEngine
 
     protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath)
     {
+      viewPath = EnsureVirtualPathPrefixToLower(viewPath);
       if (_mappings.ContainsKey(viewPath))
         return new CompiledHandlebarsView(_mappings[viewPath]);
       return null;
     }
 
+    private static string EnsureVirtualPathPrefixToLower(string virtualPath)
+    {
+      if (!String.IsNullOrEmpty(virtualPath))
+      {
+        // For a virtual path lookups to succeed, it needs to start with a ~/.
+        if (!virtualPath.StartsWith("~/", StringComparison.Ordinal))
+        {
+          virtualPath = "~/" + virtualPath.TrimStart(new[] { '/', '~' });
+        }
+      }
+      return virtualPath.ToLower();
+    }
 
+    protected override bool FileExists(ControllerContext controllerContext, string virtualPath)
+    {
+      return _mappings.ContainsKey(virtualPath);
+    }
+
+    public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+    {
+      var result = base.FindPartialView(controllerContext, partialViewName, useCache);
+      if (result.View != null)
+        return result;
+      foreach(var loc in result.SearchedLocations)
+      {
+        if (_mappings.ContainsKey(loc.ToLower()))
+          return new ViewEngineResult(CreatePartialView(controllerContext, loc), this);
+      }
+      return result;
+    }
+
+    public override ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+    {
+      var result = base.FindView(controllerContext, viewName, masterName, useCache);
+      if (result.View != null)
+        return result;
+      foreach (var loc in result.SearchedLocations)
+      {
+        if (_mappings.ContainsKey(loc.ToLower()))
+          return new ViewEngineResult(CreatePartialView(controllerContext, loc), this);
+      }
+      return result;
+    }
   }
 }
