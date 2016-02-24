@@ -65,7 +65,22 @@ namespace CompiledHandlebars.Compiler.Introspection
 
     public INamedTypeSymbol GetTypeSymbol(string fullTypeName)
     {
-      return projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
+      //Usual Namespace: Name.Space.Class
+      var symbol = projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
+      if (symbol != null)
+        return symbol;
+      //Maybe its a nested class... try out Name.Space+Class      
+      while(fullTypeName.LastIndexOf('.')>=0)
+      {
+        //Wow. That sucks...
+        int index = fullTypeName.LastIndexOf('.');
+        fullTypeName = fullTypeName.Remove(index, 1);
+        fullTypeName = fullTypeName.Insert(index, "+");
+        symbol = projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
+        if (symbol != null)
+          return symbol;
+      }
+      return null;
     }
 
     public bool RuntimeUtilsReferenced()

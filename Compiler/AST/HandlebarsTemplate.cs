@@ -84,6 +84,7 @@ namespace CompiledHandlebars.Compiler.AST
       ParseErrors = parseErrors;
     }
 
+    //TODO: Not clean. Build a NamespaceUtility that can handle namespaces correctly. See also: Namespace operations in RoslynIntrospector
     internal bool IsSelfReferencingPartial(string partial)
     {
       return string.Concat(Namespace, ".", Name).EndsWith(partial);

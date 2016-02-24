@@ -137,6 +137,7 @@
     <Compile Include="TestTemplates\BasicCompilerTests\HtmlEncodeTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\IfElseTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\IfTest.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\NestedClassAsModelTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\NestedIfTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\PathTest2.cs" />

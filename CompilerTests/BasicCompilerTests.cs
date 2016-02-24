@@ -23,6 +23,7 @@ namespace CompiledHandlebars.CompilerTests
   public class BasicCompilerTests : CompilerTestBase
   {
     private const string _marsModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel}}";
+    private const string _planitiaModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.MarsModel.Planitia}}";
     private const string _starModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.StarModel}}";
 
     static BasicCompilerTests()
@@ -183,6 +184,13 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("StaticHandlebarsTemplateTest3", "{{NoHandlebarsToken}}");
     }
 
+    [TestMethod]
+    [RegisterHandlebarsTemplate("NestedClassAsModelTest1", "{{Name}}", _planitiaModel)]    
+    public void NestedClassAsModelTest()
+    {
+      ShouldRender("NestedClassAsModelTest1", MarsModelFactory.CreateFullMarsModel().Plains[0], "Acidalia Planitia");
+    }
+  
 
   }
 }

@@ -21,6 +21,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       Index = -1; //To make MoveNext behave like other MoveNexts (e.g. First call MoveNext before you do anything else);
     }
 
+    //Iterates the context over the members of a class
     internal bool MoveNext()
     {
       Index++;
