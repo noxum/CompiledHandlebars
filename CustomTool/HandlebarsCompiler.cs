@@ -82,7 +82,7 @@ namespace CompiledHandlebars.CustomTool
         foreach(var error in compilationResult.Item2)        
           pGenerateProgress.GeneratorError(0, 1, error.Message, (uint)error.Line-1, (uint)error.Column-1);
       }
-      byte[] bytes = Encoding.UTF8.GetBytes(string.Concat(compilationResult.Item1, $"/*compiled in {sw.ElapsedMilliseconds}ms*/"));
+      byte[] bytes = Encoding.UTF8.GetBytes(compilationResult.Item1);
       rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);
       Marshal.Copy(bytes, 0, rgbOutputFileContents[0], bytes.Length);
       pcbOutput = (uint)bytes.Length;

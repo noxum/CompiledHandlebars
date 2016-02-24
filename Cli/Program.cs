@@ -229,10 +229,7 @@ namespace CompiledHandlebars.Cli
                   project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
                 }
                 try {
-                  if (workspace.TryApplyChanges(project.Solution))
-                    Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++");
-                  else
-                    Console.WriteLine("---------------------------------------------");
+                  workspace.TryApplyChanges(project.Solution);
                   project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));
                 } catch(NotSupportedException)
                 {//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
