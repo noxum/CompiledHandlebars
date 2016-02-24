@@ -60,5 +60,15 @@ namespace CompiledHandlebars.CompilerTests
     {
       ShouldRaiseError("UnknownPartialTest1", HandlebarsTypeErrorKind.UnknownPartial);
     }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("_PartialWithUnderscoreTest1", "{{Name}}", _marsModel)]
+    [RegisterHandlebarsTemplate("PartialWithUnderscoreTest2", "{{> _PartialWithUnderscoreTest1}}", _marsModel)]
+    [RegisterHandlebarsTemplate("PartialWithUnderscoreTest3", "{{> CompilerTests._PartialWithUnderscoreTest1 this}}", _marsModel)]
+    public void PartialWithUnderscoreTest()
+    {
+      ShouldRender("PartialWithUnderscoreTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
+      ShouldRender("PartialWithUnderscoreTest3", MarsModelFactory.CreateFullMarsModel(), "Mars");
+    }
   }
 }

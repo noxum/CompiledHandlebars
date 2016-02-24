@@ -70,6 +70,7 @@ namespace CompiledHandlebars.Compiler.Introspection
       if (symbol != null)
         return symbol;
       //Maybe its a nested class... try out Name.Space+Class      
+      //TODO: Think of something more clever. i.e. Check if Name.Space exists and than look for nested type Class
       while(fullTypeName.LastIndexOf('.')>=0)
       {
         //Wow. That sucks...
