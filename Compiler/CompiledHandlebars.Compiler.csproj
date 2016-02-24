@@ -136,6 +136,7 @@
     <Compile Include="Introspection\Context.cs" />
     <Compile Include="Introspection\RoslynIntrospector.cs" />
     <Compile Include="Introspection\SymbolExtensions.cs" />
+    <Compile Include="NamespaceUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringConstants.cs" />
     <Compile Include="Visitors\CodeGenerationVisitor.cs" />

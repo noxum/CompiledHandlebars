@@ -248,6 +248,7 @@
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\BasicPartialTest3.cs" />
     <Compile Include="TestTemplates\PartialTests\ImpliedThisParameterTest1.cs" />
+    <Compile Include="TestTemplates\PartialTests\NamespacedPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\NullParameterPartialTest1.cs" />
     <Compile Include="TestTemplates\PartialTests\PartialWithUnderscoreTest2.cs" />
     <Compile Include="TestTemplates\PartialTests\PartialWithUnderscoreTest3.cs" />

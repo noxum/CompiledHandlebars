@@ -86,8 +86,8 @@ namespace CompiledHandlebars.Compiler.AST
 
     //TODO: Not clean. Build a NamespaceUtility that can handle namespaces correctly. See also: Namespace operations in RoslynIntrospector
     internal bool IsSelfReferencingPartial(string partial)
-    {
-      return string.Concat(Namespace, ".", Name).EndsWith(partial);
+    {      
+      return NamespaceUtility.IsPartOf(string.Concat(Namespace, ".", Name), partial);
     }
 
     internal virtual void Accept(IASTVisitor visitor)

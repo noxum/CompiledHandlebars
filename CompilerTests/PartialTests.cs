@@ -48,10 +48,12 @@ namespace CompiledHandlebars.CompilerTests
     [TestMethod]
     [RegisterHandlebarsTemplate("SelfReferencingPartialTest1", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> SelfReferencingPartialTest1 Child}}{{/if}}", _selfRefModel)]
     [RegisterHandlebarsTemplate("SelfReferencingPartialTest2", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> CompilerTests.SelfReferencingPartialTest2 Child}}{{/if}}", _selfRefModel)]
+    [RegisterHandlebarsTemplate("SelfReferencingPartialTest3", "{{#if Name}}{{Name}}{{/if}}{{#if Child}}{{> Tests.SelfReferencingPartialTest3 Child}}{{/if}}", _selfRefModel, false)]
     public void SelfReferencingPartialTest()
     {
       ShouldRender("SelfReferencingPartialTest1", SelfReferencingViewModelFactory.Create(), "ParentChild");
       ShouldRender("SelfReferencingPartialTest2", SelfReferencingViewModelFactory.Create(), "ParentChild");
+      ShouldRaiseError("SelfReferencingPartialTest3", HandlebarsTypeErrorKind.UnknownPartial);
     }
 
     [TestMethod]
@@ -69,6 +71,13 @@ namespace CompiledHandlebars.CompilerTests
     {
       ShouldRender("PartialWithUnderscoreTest2", MarsModelFactory.CreateFullMarsModel(), "Mars");
       ShouldRender("PartialWithUnderscoreTest3", MarsModelFactory.CreateFullMarsModel(), "Mars");
+    }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("NamespacedPartialTest1", "{{> CompilerTests.BasicPartialTest1 Name}}", _marsModel)]
+    public void NamespacedPartialTest()
+    {
+      ShouldRender("NamespacedPartialTest1", MarsModelFactory.CreateFullMarsModel(), "Mars");
     }
   }
 }

@@ -100,14 +100,14 @@ namespace CompiledHandlebars.Compiler.Introspection
       return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL);
     }
 
-    private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attribute, bool ignoreCase = true)
+    private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attribute)
     {
       var name = fullName.Split('.').Last();
       foreach (var comp in projectCompilations.Values)
       {
-        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(name, ignoreCase?System.StringComparison.OrdinalIgnoreCase:System.StringComparison.Ordinal))
+        INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(name, System.StringComparison.Ordinal))
                                         .OfType<INamedTypeSymbol>()
-                                        .Where(x => x.ToDisplayString().EndsWith(fullName))                                                                                
+                                        .Where(x => NamespaceUtility.IsPartOf(x.ToDisplayString(), fullName))                                                                                
                                         .FirstOrDefault(x => x.GetAttributes()
                                                               .Any(y => y.AttributeClass.Name.Equals(attribute)));
         if (template != null)
