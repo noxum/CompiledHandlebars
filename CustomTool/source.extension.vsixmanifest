@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="HandlebarsCompiler.Jakob Demler.71222594-41cc-4ba2-b691-ad7c2783a83b" Version="0.2.3" Language="en-US" Publisher="Jakob Demler" />
+    <Identity Id="HandlebarsCompiler.Jakob Demler.71222594-41cc-4ba2-b691-ad7c2783a83b" Version="0.2.4" Language="en-US" Publisher="Jakob Demler" />
     <DisplayName>HandlebarsCompiler</DisplayName>
     <Description xml:space="preserve">Compiles Handlebars Templates into performant and typechecked C# Code</Description>
     <MoreInfo>https://github.com/Noxum/CompiledHandlebars</MoreInfo>
