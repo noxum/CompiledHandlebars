@@ -64,6 +64,7 @@
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -118,6 +119,7 @@
     <Compile Include="HelperTests.cs" />
     <Compile Include="Helper\CompilerTestBase.cs" />
     <Compile Include="Helper\HandlebarsTemplateAttribute.cs" />
+    <Compile Include="InterfacedModelsTests.cs" />
     <Compile Include="LayoutTests.cs" />
     <Compile Include="PartialTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -234,6 +236,14 @@
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest1.cs" />
     <Compile Include="TestTemplates\HelperTests\SpecialParametersHelperTest2.cs" />
     <Compile Include="TestTemplates\HelperTests\UnencodedResultTest1.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IBaseClassTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IBaseIntegerTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IBaseListTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IBaseStringTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IDerivedClassTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IDerivedIntegerTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IDerivedListTest.cs" />
+    <Compile Include="TestTemplates\InterfacedModelsTests\IDerivedStringTest.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest1.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest2.cs" />
     <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest1.cs" />
@@ -276,6 +286,7 @@
     <Compile Include="TestTemplates\TruthynessTests\RedundantTruthynessCheckTest3.cs" />
     <Compile Include="TestTemplates\TruthynessTests\UnnecessaryIfTest1.cs" />
     <Compile Include="TestTemplates\TruthynessTests\UnnecessaryIfTest2.cs" />
+    <Compile Include="TestViewModels\InterfacedModels.cs" />
     <Compile Include="TestViewModels\LinkModel.cs" />
     <Compile Include="TestViewModels\Mars.cs" />
     <Compile Include="TestViewModels\NamingConflicts.cs" />
@@ -298,7 +309,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="TestTemplates\InterfacedModelsTests\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
