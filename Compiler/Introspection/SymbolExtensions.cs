@@ -58,6 +58,17 @@ namespace CompiledHandlebars.Compiler.Introspection
       if (result == null && symbol.BaseType != null)
         //Ask base type
         return symbol.BaseType.FindMemberRec(name);
+
+      foreach (var iface in symbol.AllInterfaces)
+      {
+        var ifaceResult = iface.GetMembers(name).FirstOrDefault();
+        if (ifaceResult != null)
+        {
+          result = ifaceResult;
+          break;
+        }          
+      }
+
       if (!(result is ITypeSymbol))
       {
         if (result is IPropertySymbol)
