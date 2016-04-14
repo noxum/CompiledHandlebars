@@ -31,7 +31,7 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("IDerivedIntegerTest", "{{model CompiledHandlebars.CompilerTests.TestViewModels.IDerived}}{{AnotherInt}}")]
     public void IDerivedIntegerTest()
     {
-      ShouldRender("IDerivedIntegerTest", DerivedModelFactory.CreateFullDerivedModel(), "20");
+      ShouldRender("IDerivedIntegerTest", DerivedModelFactory.CreateFullDerivedModel(), "10");
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("IDerivedStringTest", "{{model CompiledHandlebars.CompilerTests.TestViewModels.IDerived}}{{AnotherString}}")]
     public void IDerivedStringTest()
     {
-      ShouldRender("IDerivedStringTest", BaseModelFactory.CreateFullBaseModel(), "nothing");
+      ShouldRender("IDerivedStringTest", DerivedModelFactory.CreateFullDerivedModel(), "nothing");
     }
 
     [TestMethod]
@@ -59,7 +59,7 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("IDerivedListTest", "{{model CompiledHandlebars.CompilerTests.TestViewModels.IDerived}}{{#each AnotherList}}{{this}}{{/each}}")]
     public void IDerivedListTest()
     {
-      ShouldRender("IDerivedListTest", BaseModelFactory.CreateFullBaseModel(), "firstStringsecondString");
+      ShouldRender("IDerivedListTest", DerivedModelFactory.CreateFullDerivedModel(), "firstStringsecondString");
     }
 
     [TestMethod]
@@ -73,7 +73,7 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("IDerivedClassTest", "{{model CompiledHandlebars.CompilerTests.TestViewModels.IDerived}}{{AnotherClass.DummyString}}")]
     public void IDerivedClassTest()
     {
-      ShouldRender("IDerivedClassTest", BaseModelFactory.CreateFullBaseModel(), "justAnotherString");
+      ShouldRender("IDerivedClassTest", DerivedModelFactory.CreateFullDerivedModel(), "justAnotherString");
     }
   }
 }

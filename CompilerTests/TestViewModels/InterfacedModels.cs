@@ -59,7 +59,7 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
     }
   }
 
-  public static class BaseModelFactory
+  public static class BaseModelFactory 
   {
     public static ImplementsBaseModel CreateFullBaseModel()
     {

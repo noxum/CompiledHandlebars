@@ -12,6 +12,7 @@ namespace CompiledHandlebars.CompilerTests
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.IDerived viewModel)
     {
       var sb = new StringBuilder(64);
+      sb.Append(WebUtility.HtmlEncode(viewModel.AnotherClass.DummyString));
       return sb.ToString();
     }
 
@@ -48,5 +49,4 @@ namespace CompiledHandlebars.CompilerTests
     {
     }
   }
-}/*Line: 1; Column 69: Could not find Member 'AnotherClass' in Type 'CompiledHandlebars.CompilerTests.TestViewModels.IDerived'!
-Line: 1; Column 69: Could not find Helper Method 'AnotherClass.DummyString'*/
+}/**/

@@ -12,7 +12,14 @@ namespace CompiledHandlebars.CompilerTests
     public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.IDerived viewModel)
     {
       var sb = new StringBuilder(64);
-      sb.Append(WebUtility.HtmlEncode(viewModel.ToString()));
+      if (IsTruthy(viewModel) && IsTruthy(viewModel.AnotherList))
+      {
+        foreach (var loopItem0 in viewModel.AnotherList)
+        {
+          sb.Append(WebUtility.HtmlEncode(loopItem0));
+        }
+      }
+
       return sb.ToString();
     }
 
@@ -49,4 +56,4 @@ namespace CompiledHandlebars.CompilerTests
     {
     }
   }
-}/*Line: 1; Column 67: Could not find Member 'AnotherList' in Type 'CompiledHandlebars.CompilerTests.TestViewModels.IDerived'!*/
+}/**/
