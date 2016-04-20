@@ -90,7 +90,6 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
       ShouldRender("CompilingWithStringContext1", "bye", "bye3");
     }
 
-
     //These tests do not quite fit. Both templates throw compile-time errors 
     [TestMethod]
     [RegisterHandlebarsTemplate("CompileWithUndefinedContext1", "Goodbye\n{{cruel}}\n{{world.bar}}!", _fooModel)]

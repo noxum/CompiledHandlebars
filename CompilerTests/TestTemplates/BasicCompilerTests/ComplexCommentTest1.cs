@@ -4,16 +4,16 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
+namespace CompiledHandlebars.CompilerTests
 {
   [CompiledHandlebarsTemplate]
-  public static class Comments3
+  public static class ComplexCommentTest1
   {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.FooModel viewModel)
+    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.MarsModel viewModel)
     {
       var sb = new StringBuilder(64);
-      ; /* long-comment */
-      sb.Append("blah");
+      ; /*-- {{{module*/
+      sb.Append("} --~}}");
       return sb.ToString();
     }
 

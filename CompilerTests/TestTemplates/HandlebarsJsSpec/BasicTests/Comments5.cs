@@ -13,7 +13,7 @@ namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec
     {
       var sb = new StringBuilder(64);
       sb.Append("    ");
-      ; /*-- long-comment --*/
+      ; /* long-comment */
       sb.Append("blah");
       return sb.ToString();
     }

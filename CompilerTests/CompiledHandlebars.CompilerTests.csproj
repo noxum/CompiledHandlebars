@@ -129,6 +129,10 @@
     <Compile Include="TestTemplates\BasicCompilerTests\CommentTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\CommentTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\CommentTest3.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest4.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest5.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\CommentTest6.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\ComplexCommentTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest3.cs" />
@@ -246,6 +250,7 @@
     <Compile Include="TestTemplates\InterfacedModelsTests\IDerivedStringTest.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest1.cs" />
     <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest2.cs" />
+    <Compile Include="TestTemplates\LayoutTests\BasicLayoutTest3.cs" />
     <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest1.cs" />
     <Compile Include="TestTemplates\LayoutTests\LayoutsWithInterfaceModelTest2.cs" />
     <Compile Include="TestTemplates\ParserTests\NestedCommentsTest1.cs" />

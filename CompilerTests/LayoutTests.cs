@@ -23,9 +23,11 @@ namespace CompiledHandlebars.CompilerTests
     [TestMethod]
     [RegisterHandlebarsTemplate("BasicLayoutTest1", "{{model System.String}}<h1>{{body}}</h1>")]
     [RegisterHandlebarsTemplate("BasicLayoutTest2", "{{model System.String}}{{layout BasicLayoutTest1}}{{.}}")]
+    [RegisterHandlebarsTemplate("BasicLayoutTest3", "{{model System.String}}\n{{layout BasicLayoutTest1}}{{.}}")]
     public void BasicLayoutTest()
     {
       ShouldRender("BasicLayoutTest2", "Hans", "<h1>Hans</h1>");
+      ShouldRender("BasicLayoutTest3", "Hans", "<h1>Hans</h1>");
     }
 
     [TestMethod]

@@ -173,12 +173,19 @@ namespace CompiledHandlebars.CompilerTests
     [RegisterHandlebarsTemplate("CommentTest1","{{!Name}}", _marsModel)]
     [RegisterHandlebarsTemplate("CommentTest2", "{{!--{{Name}}--}}", _marsModel)]
     [RegisterHandlebarsTemplate("CommentTest3", "No {{!Comment}}Comment", _marsModel)]
+    [RegisterHandlebarsTemplate("CommentTest4", "{{!-- {{{Name}}} --}}", _marsModel)]
+    [RegisterHandlebarsTemplate("CommentTest5", "{{~!-- {{{Name}}} --~}}  ", _marsModel)]
+    [RegisterHandlebarsTemplate("CommentTest6", "{{~!-- {{{Name}}} ~--}}  ", _marsModel)]
     public void CommentTest()
     {
       ShouldRender("CommentTest1", MarsModelFactory.CreateFullMarsModel(), "");
       ShouldRender("CommentTest2", MarsModelFactory.CreateFullMarsModel(), "");
       ShouldRender("CommentTest3", MarsModelFactory.CreateFullMarsModel(), "No Comment");
+      ShouldRender("CommentTest4", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("CommentTest5", MarsModelFactory.CreateFullMarsModel(), "");
+      ShouldRender("CommentTest6", MarsModelFactory.CreateFullMarsModel(), "  ");
     }
+
 
     [TestMethod]
     [RegisterHandlebarsTemplate("StaticHandlebarsTemplateTest1", "StaticString")]
