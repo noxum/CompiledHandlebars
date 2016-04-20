@@ -24,7 +24,7 @@
 Template<HandlebarsTemplate> 
     = markup:MarkupLiteral EOF { new StaticHandlebarsTemplate(markup, state["errors"] as IList<HandlebarsSyntaxError>)}
     / model:ModelToken preItems:(Element*) RenderBodyToken postItems:(Element*) EOF { new HandlebarsLayout(preItems, postItems, model, state["errors"] as IList<HandlebarsSyntaxError>)}
-    / model:ModelToken layout:LayoutToken items:(Element*) EOF { new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
+    / model:ModelToken Whitespace layout:LayoutToken items:(Element*) EOF { new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)}
     / model:ModelToken items:(Element*) EOF {new HandlebarsTemplate(items, model, state["errors"] as IList<HandlebarsSyntaxError>)}     
 
 ModelToken <NamespaceOrTypeName>
@@ -274,13 +274,13 @@ Opening = "{{"TrimWhitespaceIdentifier?
 Closing = TrimWhitespace"}}"
 EscapedOpening = "{{{"TrimWhitespaceIdentifier?
 EscapedClosing = TrimWhitespace"}}}"
-MultilineCommentClosing = TrimWhitespace"--}}"
+MultilineCommentClosing = "--"Closing
 TrimWhitespace = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; }) / #STATE{ state["trimStart"]=false; }
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
 LiteralDelimiter = "\""
-Whitespace = " "*
+Whitespace = (" " / "\n" / "\r" / "\t")*
 ThisKeyword = "this" / ("."!".")
 
 

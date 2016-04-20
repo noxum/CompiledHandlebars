@@ -228,44 +228,53 @@ namespace
                 var model = ValueOrDefault(r10);
                 if (r10 != null)
                 {
-                    IParseResult<string> r11 = null;
-                    var layoutStart = cursor;
-                    r11 = this.LayoutToken(ref cursor);
-                    var layoutEnd = cursor;
-                    var layout = ValueOrDefault(r11);
+                    IParseResult<IList<string>> r11 = null;
+                    r11 = this.Whitespace(ref cursor);
                     if (r11 != null)
                     {
-                        IParseResult<IList<ASTElementBase>> r12 = null;
-                        var itemsStart = cursor;
-                        var startCursor5 = cursor;
-                        var l2 = new List<ASTElementBase>();
-                        while (true)
-                        {
-                            IParseResult<ASTElementBase> r13 = null;
-                            r13 = this.Element(ref cursor);
-                            if (r13 != null)
-                            {
-                                l2.Add(r13.Value);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        r12 = this.ReturnHelper<IList<ASTElementBase>>(startCursor5, ref cursor, state => l2.AsReadOnly());
-                        var itemsEnd = cursor;
-                        var items = ValueOrDefault(r12);
+                        IParseResult<string> r12 = null;
+                        var layoutStart = cursor;
+                        r12 = this.LayoutToken(ref cursor);
+                        var layoutEnd = cursor;
+                        var layout = ValueOrDefault(r12);
                         if (r12 != null)
                         {
-                            IParseResult<string> r14 = null;
-                            r14 = this.EOF(ref cursor);
-                            if (r14 != null)
+                            IParseResult<IList<ASTElementBase>> r13 = null;
+                            var itemsStart = cursor;
+                            var startCursor5 = cursor;
+                            var l2 = new List<ASTElementBase>();
+                            while (true)
                             {
-                                r0 = this.ReturnHelper<HandlebarsTemplate>(startCursor4, ref cursor, state =>
-                                    #line 27 "HandlebarsGrammar.peg"
-                                                                 new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)
-                                    #line default
-                                    );
+                                IParseResult<ASTElementBase> r14 = null;
+                                r14 = this.Element(ref cursor);
+                                if (r14 != null)
+                                {
+                                    l2.Add(r14.Value);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            r13 = this.ReturnHelper<IList<ASTElementBase>>(startCursor5, ref cursor, state => l2.AsReadOnly());
+                            var itemsEnd = cursor;
+                            var items = ValueOrDefault(r13);
+                            if (r13 != null)
+                            {
+                                IParseResult<string> r15 = null;
+                                r15 = this.EOF(ref cursor);
+                                if (r15 != null)
+                                {
+                                    r0 = this.ReturnHelper<HandlebarsTemplate>(startCursor4, ref cursor, state =>
+                                        #line 27 "HandlebarsGrammar.peg"
+                                                                            new LayoutedHandlebarsTemplate(layout, items, model, state["errors"] as IList<HandlebarsSyntaxError>)
+                                        #line default
+                                        );
+                                }
+                                else
+                                {
+                                    cursor = startCursor4;
+                                }
                             }
                             else
                             {
@@ -290,38 +299,38 @@ namespace
             if (r0 == null)
             {
                 var startCursor6 = cursor;
-                IParseResult<NamespaceOrTypeName> r15 = null;
+                IParseResult<NamespaceOrTypeName> r16 = null;
                 var modelStart = cursor;
-                r15 = this.ModelToken(ref cursor);
+                r16 = this.ModelToken(ref cursor);
                 var modelEnd = cursor;
-                var model = ValueOrDefault(r15);
-                if (r15 != null)
+                var model = ValueOrDefault(r16);
+                if (r16 != null)
                 {
-                    IParseResult<IList<ASTElementBase>> r16 = null;
+                    IParseResult<IList<ASTElementBase>> r17 = null;
                     var itemsStart = cursor;
                     var startCursor7 = cursor;
                     var l3 = new List<ASTElementBase>();
                     while (true)
                     {
-                        IParseResult<ASTElementBase> r17 = null;
-                        r17 = this.Element(ref cursor);
-                        if (r17 != null)
+                        IParseResult<ASTElementBase> r18 = null;
+                        r18 = this.Element(ref cursor);
+                        if (r18 != null)
                         {
-                            l3.Add(r17.Value);
+                            l3.Add(r18.Value);
                         }
                         else
                         {
                             break;
                         }
                     }
-                    r16 = this.ReturnHelper<IList<ASTElementBase>>(startCursor7, ref cursor, state => l3.AsReadOnly());
+                    r17 = this.ReturnHelper<IList<ASTElementBase>>(startCursor7, ref cursor, state => l3.AsReadOnly());
                     var itemsEnd = cursor;
-                    var items = ValueOrDefault(r16);
-                    if (r16 != null)
+                    var items = ValueOrDefault(r17);
+                    if (r17 != null)
                     {
-                        IParseResult<string> r18 = null;
-                        r18 = this.EOF(ref cursor);
-                        if (r18 != null)
+                        IParseResult<string> r19 = null;
+                        r19 = this.EOF(ref cursor);
+                        if (r19 != null)
                         {
                             r0 = this.ReturnHelper<HandlebarsTemplate>(startCursor6, ref cursor, state =>
                                 #line 28 "HandlebarsGrammar.peg"
@@ -4898,11 +4907,11 @@ namespace
             IParseResult<string> r0 = null;
             var startCursor0 = cursor;
             IParseResult<string> r1 = null;
-            r1 = this.TrimWhitespace(ref cursor);
+            r1 = this.ParseLiteral(ref cursor, "--");
             if (r1 != null)
             {
                 IParseResult<string> r2 = null;
-                r2 = this.ParseLiteral(ref cursor, "--}}");
+                r2 = this.Closing(ref cursor);
                 if (r2 != null)
                 {
                     {
@@ -5056,7 +5065,22 @@ namespace
             while (true)
             {
                 IParseResult<string> r1 = null;
-                r1 = this.ParseLiteral(ref cursor, " ");
+                if (r1 == null)
+                {
+                    r1 = this.ParseLiteral(ref cursor, " ");
+                }
+                if (r1 == null)
+                {
+                    r1 = this.ParseLiteral(ref cursor, "\n");
+                }
+                if (r1 == null)
+                {
+                    r1 = this.ParseLiteral(ref cursor, "\r");
+                }
+                if (r1 == null)
+                {
+                    r1 = this.ParseLiteral(ref cursor, "\t");
+                }
                 if (r1 != null)
                 {
                     l0.Add(r1.Value);
