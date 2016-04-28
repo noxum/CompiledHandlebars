@@ -26,18 +26,30 @@ namespace CompiledHandlebars.Compiler.Introspection
     /// <param name=""></param>
     /// <returns></returns>
     public static ITypeSymbol GetElementSymbol(this ISymbol symbol)
-    {
+    {//This is a recursive method
+
+      //If we have a property return the result of its type
       if (symbol.Kind == SymbolKind.Property)
         return (symbol as IPropertySymbol).Type.GetElementSymbol();
+
+      //If we have an array return its ElementType
       if (symbol.Kind == SymbolKind.ArrayType)
         return (symbol as IArrayTypeSymbol).ElementType;
 
+      //If we have a NamedType 
       if (symbol.Kind == SymbolKind.NamedType && (symbol as INamedTypeSymbol).IsGenericType)
       {
+        //inheritedList.Add(new PageModel() { Title = "A", Headline = "B" });
         if (symbol.MetadataName.Equals("IEnumerable`1"))
-          return (symbol as INamedTypeSymbol).TypeArguments.First();
-        return (symbol as INamedTypeSymbol).AllInterfaces.First(x => x.MetadataName.Equals("IEnumerable`1"))?.TypeArguments.First();
-      }
+          return (symbol as INamedTypeSymbol).TypeArguments.Single();
+        //Check if it implements an IEnumerable interface
+        var iEnumerableElement = (symbol as INamedTypeSymbol).AllInterfaces.Single(x => x.MetadataName.Equals("IEnumerable`1"))?.TypeArguments.Single();
+        if (iEnumerableElement != null)
+          return iEnumerableElement;       
+      } 
+      if (symbol.Kind == SymbolKind.NamedType)
+        //Otherwise check its base type if exists
+        return (symbol as INamedTypeSymbol).BaseType?.GetElementSymbol();
       return null;
     }
 

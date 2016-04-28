@@ -66,7 +66,7 @@ namespace CompiledHandlebars.Compiler.Introspection
     public INamedTypeSymbol GetTypeSymbol(string fullTypeName)
     {
       //Usual Namespace: Name.Space.Class
-      var symbol = projectCompilations.Values.Select(x => x.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
+      var symbol = projectCompilations.Values.Select(x => x?.GetTypeByMetadataName(fullTypeName)).Where(x => x != null).FirstOrDefault();
       if (symbol != null)
         return symbol;
       //Maybe its a nested class... try out Name.Space+Class      
