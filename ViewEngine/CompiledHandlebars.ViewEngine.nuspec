@@ -13,7 +13,7 @@
     <copyright>Copyright 2016</copyright>
     <tags>Handlebars MVC</tags>
     <dependencies>
-      <dependency id="CompiledHandlebars.RuntimeUtils" version="0.2.5" />
+      <dependency id="CompiledHandlebars.RuntimeUtils" version="0.2.6" />
     </dependencies>
   </metadata>  
 </package>
