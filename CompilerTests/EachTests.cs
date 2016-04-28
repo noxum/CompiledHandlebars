@@ -14,6 +14,8 @@ namespace CompiledHandlebars.CompilerTests
   {
     private const string _pageModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.PageModel}}";
     private const string _pageListModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.PageListModel}}";
+    private const string _inheritedListModel = "{{model CompiledHandlebars.CompilerTests.TestViewModels.InheritedListModel}}";
+
 
     static EachTests()
     {
@@ -63,5 +65,17 @@ namespace CompiledHandlebars.CompilerTests
       ShouldRender("NestedEachLoopsTest6", pageList, "00A1B10C1D20E1F");
 
     }
+
+    [TestMethod]
+    [RegisterHandlebarsTemplate("InheritedListTest1", "{{#each this}}{{Title}}-{{Headline}}{{/each}}", _inheritedListModel)]
+    public void InheritedListTest()
+    {
+      var inheritedList = new InheritedListModel();
+      inheritedList.Add(new PageModel() { Title = "A", Headline = "B" });
+      inheritedList.Add(new PageModel() { Title = "C", Headline = "D" });
+      inheritedList.Add(new PageModel() { Title = "E", Headline = "F" });
+      ShouldRender("InheritedListTest1", inheritedList, "A-BC-DE-F");
+    }
+
   }
 }

@@ -20,4 +20,9 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
   {
     public List<PageModel> Items { get; set; }
   }
+
+  public class InheritedListModel : List<PageModel>
+  {
+    public string Title { get; set; }
+  }
 }

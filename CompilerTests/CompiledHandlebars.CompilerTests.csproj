@@ -168,6 +168,7 @@
     <Compile Include="TestTemplates\EachTests\EachOverObjectTest3.cs" />
     <Compile Include="TestTemplates\EachTests\EachOverObjectTest4.cs" />
     <Compile Include="TestTemplates\EachTests\EachOverObjectTest5.cs" />
+    <Compile Include="TestTemplates\EachTests\InheritedListTest1.cs" />
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest1.cs" />
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest2.cs" />
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest3.cs" />
