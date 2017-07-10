@@ -139,6 +139,7 @@
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest4.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EachTest5.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\EmptyListsAreFalsyTest1.cs" />
+    <Compile Include="TestTemplates\BasicCompilerTests\EqualsTest.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\HtmlEncodeTest1.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\HtmlEncodeTest2.cs" />
     <Compile Include="TestTemplates\BasicCompilerTests\IfElseTest.cs" />
