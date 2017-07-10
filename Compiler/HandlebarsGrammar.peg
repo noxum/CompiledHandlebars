@@ -160,7 +160,7 @@ EqualsBlock <EqualsBlock>
   / expr:EqualsOpeningToken body:BlockBody EqualsClosingToken { new EqualsBlock(expr, body, exprStart.Line, exprStart.Column) }
 
 EqualsOpeningToken <Expression>
-  = Opening BlockOpeningIdentifier EqualsKeyword expr:Expression Closing { expr }
+  = Opening BlockOpeningIdentifier EqualsKeyword expr:EqualsExpression Closing { expr }
 
 EqualsClosingToken
   = Opening BlockClosingIdentifier EqualsKeyword Closing
@@ -168,6 +168,9 @@ EqualsClosingToken
 //-----------------------------------------------
 //    Expressions, Statements
 //-----------------------------------------------
+
+EqualsExpression <EqualsExpression>
+    = Expression Whitespace Expression
 
 LiteralExpression <LiteralExpression>
     = Whitespace LiteralDelimiter val:(!LiteralDelimiter .)* LiteralDelimiter { new LiteralExpression(string.Concat(val)) }

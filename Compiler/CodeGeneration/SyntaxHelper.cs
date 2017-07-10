@@ -353,6 +353,43 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             );
         }
 
+        /// <summary>
+        /// private static bool IsEqual(object a, object b)
+        /// </summary>
+        /// <returns></returns>
+        internal static MethodDeclarationSyntax IsEqualMethodObject()
+        {
+            var paramList = new SeparatedSyntaxList<ParameterSyntax>();
+            paramList.Add(SyntaxFactory.Parameter(
+                  default(SyntaxList<AttributeListSyntax>),
+                  default(SyntaxTokenList),
+                  SF.PredefinedType(SF.Token(SyntaxKind.ObjectKeyword)),
+                  SF.Identifier("a"),
+                  default(EqualsValueClauseSyntax)));
+            paramList.Add(SyntaxFactory.Parameter(
+                  default(SyntaxList<AttributeListSyntax>),
+                  default(SyntaxTokenList),
+                  SF.PredefinedType(SF.Token(SyntaxKind.ObjectKeyword)),
+                  SF.Identifier("b"),
+                  default(EqualsValueClauseSyntax)));
+            return
+              SF.MethodDeclaration(
+                new SyntaxList<AttributeListSyntax>(),
+                SF.TokenList(
+                  SF.Token(SyntaxKind.PrivateKeyword),
+                  SF.Token(SyntaxKind.StaticKeyword)),
+                SF.PredefinedType(SF.Token(SyntaxKind.BoolKeyword)),
+                default(ExplicitInterfaceSpecifierSyntax),
+                SF.Identifier("IsEqual"),
+                default(TypeParameterListSyntax),
+                SF.ParameterList(paramList),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                SF.Block(
+                  SF.ReturnStatement(SF.ParseExpression("a!=null && b!=null && a.Equals(b)"))
+                ),
+                default(SyntaxToken)
+            );
+        }
 
         /// <summary>
         ///     public static bool IsTruthy<T>(IEnumerable<T> ie)

@@ -10,15 +10,15 @@ namespace CompiledHandlebars.Compiler.AST
 {
     internal class EqualsBlock : BlockWithElse
     {
-        internal readonly Expression Expr;
+        internal readonly EqualsExpression Expr;
 
-        internal EqualsBlock(Expression member, IList<ASTElementBase> children, int line, int column)
+        internal EqualsBlock(EqualsExpression member, IList<ASTElementBase> children, int line, int column)
                         : base(children, line, column)
         {
             Expr = member;
         }
 
-        internal EqualsBlock(Expression expr, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column)
+        internal EqualsBlock(EqualsExpression expr, IList<ASTElementBase> elseBlock, IList<ASTElementBase> children, int line, int column)
                         : base(children, elseBlock, line, column)
         {
             Expr = expr;

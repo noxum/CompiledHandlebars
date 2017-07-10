@@ -6,43 +6,47 @@ using System.Threading.Tasks;
 
 namespace CompiledHandlebars.RuntimeUtils
 {
-  public static class RenderHelper
-  {
-    public static bool IsTruthy(bool b)
+    public static class RenderHelper
     {
-      return b;
+        public static bool IsTruthy(bool b)
+        {
+            return b;
+        }
+
+        public static bool IsTruthy(string s)
+        {
+            return !string.IsNullOrEmpty(s);
+        }
+
+        public static bool IsTruthy(object o)
+        {
+            return o != null;
+        }
+
+        public static bool IsTruthy<T>(IEnumerable<T> ie)
+        {
+            return (ie != null && ie.Any());
+        }
+
+        public static bool IsTruthy(int i)
+        {
+            return i != 0;
+        }
+
+        public static bool IsEqual(object a, object b)
+        {
+            return a != null && b != null && a.Equals(b);
+        }
     }
 
-    public static bool IsTruthy(string s)
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class CompiledHandlebarsTemplateAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class CompiledHandlebarsLayoutAttribute : Attribute
     {
-      return !string.IsNullOrEmpty(s);
     }
 
-    public static bool IsTruthy(object o)
-    {
-      return o != null;
-    }
-
-    public static bool IsTruthy<T>(IEnumerable<T> ie)
-    {
-      return (ie != null && ie.Any());
-    }
-
-    public static bool IsTruthy(int i)
-    {
-      return i != 0;
-    }
-
-  }
-
-  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-  public class CompiledHandlebarsTemplateAttribute : Attribute { }
-
-  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-  public class CompiledHandlebarsLayoutAttribute : Attribute
-  {
-  }
-
-  [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-  public class CompiledHandlebarsHelperMethodAttribute : Attribute { }
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    public class CompiledHandlebarsHelperMethodAttribute : Attribute { }
 }
