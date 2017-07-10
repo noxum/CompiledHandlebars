@@ -141,7 +141,35 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.PushNewBlock();
     }
 
-    public void Visit(CommentLiteral astLeaf)
+        public void VisitEnter(EqualsBlock astNode)
+        {
+            state.SetCursor(astNode);
+            Context context;
+            if (astNode.Expr.TryEvaluate(state, out context))
+            {
+                state.PushNewBlock();
+                state.PromiseEqualsCheck(context);
+            }
+        }
+
+        public void VisitLeave(EqualsBlock astNode)
+        {
+            var latestBlock = state.PopBlock();
+            if (astNode.HasElseBlock)
+                state.DoEqualsCheck(state.PopBlock(), latestBlock);
+            else
+                state.DoEqualsCheck(latestBlock);
+        }
+
+        public void VisitElse(EqualsBlock astNode)
+        {
+            var equalsContext = state.EqualsStack.Pop();
+            equalsContext.Equal = !equalsContext.Equal;
+            state.EqualsStack.Push(equalsContext);
+            state.PushNewBlock();
+        }
+
+        public void Visit(CommentLiteral astLeaf)
     {
       state.AddComment(astLeaf.Value);
     }

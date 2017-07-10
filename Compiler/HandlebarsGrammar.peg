@@ -102,6 +102,7 @@ Node <ASTElementBase>
     = WithBlock
     / EachBlock
     / IfBlock
+	/ EqualsBlock
     / Opening BlockOpeningIdentifier name:(!Closing .)+ Closing #STATE{ AddError(string.Format("Unknown Block Token '{0}'!",string.Concat(name)), HandlebarsSyntaxErrorKind.UnknownBlock, state);} { new MarkupLiteral(null,0,0)}
 
 BlockBody 
@@ -153,10 +154,23 @@ UnlessClosingToken
 ElseToken
   = Opening ElseKeyword Closing
 
+//#Equals
+EqualsBlock <EqualsBlock>
+  = expr:EqualsOpeningToken body:BlockBody ElseToken elseBlock:BlockBody EqualsClosingToken { new EqualsBlock(expr, elseBlock, body, exprStart.Line, exprStart.Column) }
+  / expr:EqualsOpeningToken body:BlockBody EqualsClosingToken { new EqualsBlock(expr, body, exprStart.Line, exprStart.Column) }
+
+EqualsOpeningToken <Expression>
+  = Opening BlockOpeningIdentifier EqualsKeyword expr:EqualsExpression Closing { expr }
+
+EqualsClosingToken
+  = Opening BlockClosingIdentifier EqualsKeyword Closing
 
 //-----------------------------------------------
 //    Expressions, Statements
 //-----------------------------------------------
+
+EqualsExpression <EqualsExpression>
+    = Expression Whitespace Expression
 
 LiteralExpression <LiteralExpression>
     = Whitespace LiteralDelimiter val:(!LiteralDelimiter .)* LiteralDelimiter { new LiteralExpression(string.Concat(val)) }
@@ -260,6 +274,7 @@ WithKeyword = "with"
 EachKeyword = "each"
 IfKeyword = "if"
 UnlessKeyword = "unless"
+EqualsKeyword = "equals"
 ElseKeyword = "else" / "^"
 RenderBodyKeyword = "body"
 ModelKeyword = "model"
