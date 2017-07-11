@@ -34,9 +34,9 @@ namespace CompiledHandlebars.Cli
 			{
 				ShowUsage();
 				return;
-			}
+			}		
 			if (IsValidFlagArgument(args[0]))
-			{
+			{	// If there are flags, handle them. We already checked, that they are valid
 				foreach (var chr in args[0].Skip(1))
 				{
 					switch (chr)
@@ -46,31 +46,40 @@ namespace CompiledHandlebars.Cli
 						default: ShowUsage(); return;
 					}
 				}
+				// Remove the flag from the arguments list
 				args = args.Skip(1).ToArray();
-			}
+			}			
+			// We have more than one argument left. So there must be some black/whitelisting going on!
 			if (args.Length > 1)
 			{//Handle blacklisted and whitelisted directories
 				foreach (var arg in args.Take(args.Length - 1))
 				{
 					if (arg.StartsWith("-e"))
+						// Exclude directory
 						options.DirectoryBlacklist.Add(arg.Substring(2));
 					else if (arg.StartsWith("-i"))
+						// Include directory
 						options.DirectoryWhitelist.Add(arg.Substring(2));
 					else
 					{
+						// Some argument we do not know. Tell the user what to do!
 						ShowUsage();
 						return;
 					}
 				}
+				// All but the last argument is handled
 				args = args.Skip(args.Length - 1).ToArray();
 			}
+			//The last argument is the solution/project file
 			if (args.Length == 1)
 			{
+				//Make sure it exists
 				if (!File.Exists(args[0]))
 				{
 					FileDoesNotExist(args[0]);
 					return;
 				}
+				// Check if we have a project or a solution file
 				string extension = Path.GetExtension(args[0]);
 				if (extension.Equals(".csproj"))
 				{
@@ -94,6 +103,12 @@ namespace CompiledHandlebars.Cli
 			}
 		}
 
+		/// <summary>
+		/// Check if string is a valid flag.
+		/// Valid flags start with '-' and are known to the program 
+		/// </summary>
+		/// <param name="arg"></param>
+		/// <returns></returns>
 		private static bool IsValidFlagArgument(string arg)
 		{
 			return (arg.StartsWith("-") && arg.Skip(1).All(x => validFlags.Contains(x)));
@@ -102,53 +117,26 @@ namespace CompiledHandlebars.Cli
 
 		private static void PrintUnknownExtension(string ext)
 		{
-			Console.WriteLine($"Unknown file extension '{ext}'. The compiler accepts solution files (.sln) or project files (.csproj or .json)");
+			Console.WriteLine($"Unknown file extension '{ext}'. The compiler accepts solution files (.sln) or project files (.csproj)");
 		}
 
 		private static void CompileProject(CompilerOptions options)
-		{
-			Project project;
-			Workspace workspace;
+		{			
 			var handlebarsFiles = new List<string>();
 
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }};
-			workspace = MSBuildWorkspace.Create(properties);
-			Console.WriteLine("HANS!");
-			project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
+			var workspace = MSBuildWorkspace.Create(properties);
+			var project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
 			handlebarsFiles.AddRange(project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath));
 
 			CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
-		}
+		}		
 
-		private static List<string> ScrapeDirectoryForHandlebarsFiles(DirectoryInfo directory, CompilerOptions options, bool recursive = true)
-		{
-			var result = new List<string>();
-			foreach (var file in directory.EnumerateFiles())
-			{
-				if (file.Extension.Equals(".hbs"))
-					result.Add(file.FullName);
-			}
-			if (recursive)
-			{
-				if (options.DirectoryWhitelist.Any())
-				{//is there a directory whitelist?
-					foreach (var subDir in directory.EnumerateDirectories().Where(x => options.DirectoryWhitelist.Contains(x.Name)))
-					{
-						result.AddRange(ScrapeDirectoryForHandlebarsFiles(subDir, options));
-					}
-				}
-				else
-				{
-					foreach (var subDir in directory.EnumerateDirectories().Where(x => !options.DirectoryBlacklist.Contains(x.Name)))
-					{
-						result.AddRange(ScrapeDirectoryForHandlebarsFiles(subDir, options));
-					}
-				}
-			}
-			return result;
-		}
-
+		/// <summary>
+		/// Compiles all Handlebars-Files in a Solution.
+		/// </summary>
+		/// <param name="options"></param>
 		private static void CompileSolution(CompilerOptions options)
 		{
 			var properties = new Dictionary<string, string>() {
@@ -166,32 +154,46 @@ namespace CompiledHandlebars.Cli
 			}
 		}
 
+		/// <summary>
+		/// Calls the compiler for every handlebars-file provided.
+		/// Tries to resolve dependencies (partial templates) by rerunning failed compilations
+		/// </summary>
+		/// <param name="project">Project containing the handlebars-files</param>	
+		/// <param name="workspace">A Workspace instance where compiled templates can be inserted</param>
+		/// <param name="hbsFiles">A List of handlebars-files to compile</param>
+		/// <param name="options">The Compiler-Options as provided by user input</param>
+		/// <returns></returns>
 		private static Workspace CompileHandlebarsFiles(Project project, Workspace workspace, List<string> hbsFiles, CompilerOptions options)
 		{
 			bool successFullCompilation = true;
+			// As long as there are files to compile and the previous run was successfull
 			while (hbsFiles.Any() && successFullCompilation)
 			{
 				successFullCompilation = false;
 				var nextRound = new List<string>();
 				foreach (var file in hbsFiles)
 				{
-
+					//For each template
 					var fileInfo = new FileInfo(file);
 					string @namespace;
+
 					bool compiledVersionExists = File.Exists($"{file}.cs");
 					bool compiledVersionIsOlder = true;
 					if (compiledVersionExists)
 					{//Compiled Version already exists
 						var compiledFileInfo = new FileInfo($"{file}.cs");
 						compiledVersionIsOlder = (fileInfo.LastWriteTimeUtc > compiledFileInfo.LastWriteTimeUtc);
+						//Get the namespace from the csharp code
 						@namespace = DetermineNamespace(compiledFileInfo);
 					}
 					else
 					{
+						//No compiled version found.
+						//Get the namespace from Roslyn
 						@namespace = DetermineNamespace(fileInfo, project);
 					}
 					if (compiledVersionIsOlder || options.ForceRecompilation)
-					{
+					{// Try to compile if the template changed or if the user wants to
 						string content = File.ReadAllText(file);
 						string name = Path.GetFileNameWithoutExtension(file);
 						var compilationResult = CompileHandlebarsTemplate(content, @namespace, name, project, options);
@@ -210,7 +212,7 @@ namespace CompiledHandlebars.Cli
 							}
 							else
 							{
-								successFullCompilation = true;
+								successFullCompilation = true;								
 								//Check if template already exits
 								var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(name, ".hbs.cs")));
 								if (doc != null)
@@ -244,10 +246,19 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine($"Compilation failed: {error.Message}");
 		}
 
+		/// <summary>
+		/// Calls the actual compiler. Returns the resulting code and a list of compiler errors
+		/// </summary>
+		/// <param name="content">The Template's Content</param>
+		/// <param name="namespace">Its Namespace</param>
+		/// <param name="name">Its Name</param>
+		/// <param name="containingProject">Its Project</param>
+		/// <param name="options">Compiler Options as provided by the user</param>
+		/// <returns></returns>
 		private static Tuple<string, IEnumerable<HandlebarsException>> CompileHandlebarsTemplate(string content, string @namespace, string name, Project containingProject, CompilerOptions options)
 		{
 			if (options.DryRun)
-			{
+			{ 
 				Console.WriteLine($"Compile file '{name}' in namespace '{@namespace}'");
 				return null;
 			}
@@ -258,7 +269,12 @@ namespace CompiledHandlebars.Cli
 			}
 		}
 
-
+		/// <summary>
+		/// Get the Namespace for a template from its compiled counterpart.
+		/// Do this by parsing the code (with Roslyn) and finding the namespacedeclaration
+		/// </summary>
+		/// <param name="compiledTemplate"></param>
+		/// <returns></returns>
 		private static string DetermineNamespace(FileInfo compiledTemplate)
 		{
 			var code = File.ReadAllText(compiledTemplate.FullName);
@@ -267,13 +283,26 @@ namespace CompiledHandlebars.Cli
 			return root.Members.OfType<NamespaceDeclarationSyntax>().First().Name.ToString();
 		}
 
+		/// <summary>
+		/// Get the Namespace for a template by asking the containing Project	
+		/// </summary>
+		/// <param name="hbsFile"></param>
+		/// <param name="containingProject"></param>
+		/// <returns></returns>
 		private static string DetermineNamespace(FileInfo hbsFile, Project containingProject)
 		{
+			// Get 
 			string templateDir = Path.GetDirectoryName(hbsFile.FullName);
-			string projectDir = Path.GetDirectoryName(containingProject.FilePath);
+			string projectDir = Path.GetDirectoryName(containingProject.FilePath);			
 			return string.Concat(containingProject.AssemblyName, templateDir.Substring(projectDir.Length).Replace(Path.DirectorySeparatorChar, '.'));
 		}
 
+		/// <summary>
+		/// Returns a list of folders a file is in.		
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="containingProject"></param>
+		/// <returns></returns>
 		private static IEnumerable<string> GetFolderStructureForFile(FileInfo file, Project containingProject)
 		{
 			string fileDir = Path.GetDirectoryName(file.FullName);
@@ -295,9 +324,9 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine("-i<Included Directory> includeds a directory from compilation. Only Handlebars files in this folder will be compiled. Multiple statements possible.");
 		}
 
-		private static void FileDoesNotExist(string solutionFile)
+		private static void FileDoesNotExist(string file)
 		{
-			Console.WriteLine($"File '{solutionFile}' does not exist!");
+			Console.WriteLine($"File '{file}' does not exist!");
 		}
 	}
 }

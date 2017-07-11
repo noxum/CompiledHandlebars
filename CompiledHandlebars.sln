@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.RuntimeU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.ViewEngine", "ViewEngine\CompiledHandlebars.ViewEngine.csproj", "{CCF0E5FF-74C8-4095-BE8C-143CF34DB3B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI", "CLI\CLI.csproj", "{7DC8BCB3-DC28-4737-B508-C514BA970518}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Cli", "CLI\CompiledHandlebars.Cli.csproj", "{7DC8BCB3-DC28-4737-B508-C514BA970518}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
