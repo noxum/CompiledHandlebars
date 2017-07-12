@@ -19,9 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework", "Examples
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore", "Examples\DotNetCore\DotNetCore.csproj", "{0B37FA71-6386-4C46-99B0-61126F33AAD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspDotNetCore", "AspDotNetCore\AspDotNetCore.csproj", "{D8FDFAD0-6D0D-463A-BE02-EA93A47C5A6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspDotNetCore", "Examples\AspDotNetCore\AspDotNetCore.csproj", "{D8FDFAD0-6D0D-463A-BE02-EA93A47C5A6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyProject", "DummyProject\DummyProject.csproj", "{8F756761-11F3-427E-A8C3-2B671211723B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyProject", "Examples\DummyProject\DummyProject.csproj", "{8F756761-11F3-427E-A8C3-2B671211723B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
