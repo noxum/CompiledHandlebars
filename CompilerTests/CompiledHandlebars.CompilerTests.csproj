@@ -163,6 +163,7 @@
     <Compile Include="BasicCompilerTests.cs" />
     <Compile Include="BasicFailingCompilerTests.cs" />
     <Compile Include="EachTests.cs" />
+    <Compile Include="EqualsTests.cs" />
     <Compile Include="HandlebarsJsSpec\Basic.cs" />
     <Compile Include="HandlebarsJsSpec\Builtins.cs" />
     <Compile Include="HandlebarsJsSpec\Partials.cs" />
@@ -225,6 +226,9 @@
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest4.cs" />
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest5.cs" />
     <Compile Include="TestTemplates\EachTests\NestedEachLoopsTest6.cs" />
+    <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest1.cs" />
+    <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest2.cs" />
+    <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest3.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments2.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments3.cs" />
