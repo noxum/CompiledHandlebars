@@ -5,7 +5,7 @@ Because of a [bug](https://github.com/dotnet/roslyn/issues/20808), the Handlebar
 Fortunately, there is a workaround for this bug.
 The asp.net core project must have a project reference to a .net core project (not asp.net core).
 
-**Handlebars-Templates must have their `BuildAction` set to `C# analyzer additional file` in order to be found by the compiler!**
+Handlebars-Templates **must** have their `BuildAction` set to **`C# analyzer additional file`** in order to be found by the compiler!
 
 So: here is how to use the HandlebarsCompiler with asp.net core projects:
 1. Put the HandlebarsCompiler.exe in your PATH
