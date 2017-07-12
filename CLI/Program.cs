@@ -13,7 +13,7 @@ namespace CompiledHandlebars.Cli
 {
 	public class Program
 	{
-		private static readonly char[] validFlags = { 'n', 'f' };
+		private static readonly char[] validFlags = { 'n', 'f', 'c' };
 		private class CompilerOptions
 		{
 			public string SolutionFile { get; set; }
@@ -22,7 +22,7 @@ namespace CompiledHandlebars.Cli
 			public string Namespace { get; set; }
 			public List<string> DirectoryBlacklist { get; set; } = new List<string>();
 			public List<string> DirectoryWhitelist { get; set; } = new List<string>();
-			public bool JSONProject { get; set; }
+			public bool NetCoreProject { get; set; }
 			public bool DryRun { get; set; }
 			public bool ForceRecompilation { get; set; }
 		}
@@ -30,17 +30,19 @@ namespace CompiledHandlebars.Cli
 		public static void Main(string[] args)
 		{
 			var options = new CompilerOptions();
+			Console.WriteLine(Directory.GetCurrentDirectory());
 			if (!args.Any())
 			{
 				ShowUsage();
 				return;
 			}		
-			if (IsValidFlagArgument(args[0]))
+			while (IsValidFlagArgument(args[0]))
 			{	// If there are flags, handle them. We already checked, that they are valid
 				foreach (var chr in args[0].Skip(1))
 				{
 					switch (chr)
 					{
+						case 'c': options.NetCoreProject = true; break;
 						case 'f': options.ForceRecompilation = true; break;
 						case 'n': options.DryRun = true; break;
 						default: ShowUsage(); return;
@@ -55,11 +57,13 @@ namespace CompiledHandlebars.Cli
 				foreach (var arg in args.Take(args.Length - 1))
 				{
 					if (arg.StartsWith("-e"))
-						// Exclude directory
-						options.DirectoryBlacklist.Add(arg.Substring(2));
+						// Exclude directory						
+						options.DirectoryBlacklist.Add(
+							Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), arg.Substring(2))));
 					else if (arg.StartsWith("-i"))
 						// Include directory
-						options.DirectoryWhitelist.Add(arg.Substring(2));
+						options.DirectoryWhitelist.Add(
+							Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), arg.Substring(2))));
 					else
 					{
 						// Some argument we do not know. Tell the user what to do!
@@ -122,14 +126,12 @@ namespace CompiledHandlebars.Cli
 
 		private static void CompileProject(CompilerOptions options)
 		{			
-			var handlebarsFiles = new List<string>();
-
 			var properties = new Dictionary<string, string>() {
-				{ "AdditionalFileItemNames", "none" }};
+				{ "AdditionalFileItemNames", "none" }
+			};
 			var workspace = MSBuildWorkspace.Create(properties);
 			var project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
-			handlebarsFiles.AddRange(project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath));
-
+			var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
 			CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
 		}		
 
@@ -140,17 +142,39 @@ namespace CompiledHandlebars.Cli
 		private static void CompileSolution(CompilerOptions options)
 		{
 			var properties = new Dictionary<string, string>() {
-		  { "AdditionalFileItemNames", "none" }};
-			var workspace = MSBuildWorkspace.Create(properties);
+				{ "AdditionalFileItemNames", "none" }
+			};
+			var workspace = MSBuildWorkspace.Create(properties);			
 			var solution = (workspace as MSBuildWorkspace).OpenSolutionAsync(options.SolutionFile).Result;
 			foreach (var projectId in solution.ProjectIds)
 			{
 				var project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(projectId));
-				var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).ToList();
+				var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
 				if (handlebarsFiles.Any())
 				{
 					workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options) as MSBuildWorkspace;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Checks if file needs to be compiled according to configured black or whitelisted directories
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		private static bool ShouldCompileFile(string file, CompilerOptions options)
+		{
+			if (options.DirectoryBlacklist.Any())
+			{
+				return (!options.DirectoryBlacklist.Any(x => file.StartsWith(x)));
+			}
+			else if (options.DirectoryWhitelist.Any())
+			{
+				return (options.DirectoryWhitelist.Any(x => file.StartsWith(x)));
+			} else
+			{
+				return true;
 			}
 		}
 
@@ -221,17 +245,17 @@ namespace CompiledHandlebars.Cli
 								}
 								else
 								{//Otherwise add a new document
-									project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
+									if (options.NetCoreProject) {
+										//For .net core projects -> directly to the filesystem
+										File.WriteAllText($"{file}.cs", compilationResult.Item1);
+									}
+									else
+									{  //for .net projects through the .csproj
+										project = project.AddDocument(string.Concat(name, ".hbs.cs"), SourceText.From(compilationResult.Item1), GetFolderStructureForFile(fileInfo, project)).Project;
+									}
 								}
-								try
-								{
-									workspace.TryApplyChanges(project.Solution);
-									project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));
-								}
-								catch (NotSupportedException)
-								{//ProjectJsonWorkspace does not support adding documents (as of 2016-02-17). So just add it manually
-									File.WriteAllText($"{file}.cs", compilationResult.Item1);
-								}
+								workspace.TryApplyChanges(project.Solution);
+								project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));																
 							}
 						}
 					}
@@ -318,6 +342,8 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine("         Dry-Run: don't actually compile anything, just show what would be done ");
 			Console.WriteLine("      -f");
 			Console.WriteLine("         Force Compilation: compile handlebars-file even if it did not change");
+			Console.WriteLine("      -c");
+			Console.WriteLine("         .net core Project: The compiler will not add files to the project files");
 			Console.WriteLine("");
 			Console.WriteLine("Directory Black-     and Whitelists:");
 			Console.WriteLine("-e<Exluded Directory> excludes a directory from compilation. Handlebars files in this folder will be ignored. Multiple statements possible.");
