@@ -98,6 +98,7 @@ namespace CompiledHandlebars.Cli
 				{
 					PrintUnknownExtension(extension);
 				}
+				Console.WriteLine("Done!");
 			}
 			else
 			{
