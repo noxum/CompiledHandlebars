@@ -33,13 +33,13 @@ namespace CompiledHandlebars.Compiler.AST
 	{
 		internal readonly EqualsExpression Expr;
 
-		internal EqualsBlock(EqualsExpression expr, IList<ASTElementBase> children, int line, int column) 
+		internal EqualsBlock(EqualsExpression expr, IList<ASTElementBase> children, int line, int column)
 			: base(children, line, column)
 		{
 			Expr = expr;
 		}
 
-		internal EqualsBlock(EqualsExpression expr, IList<ASTElementBase> children, IList<ASTElementBase> elseBlock, int line, int column) 
+		internal EqualsBlock(EqualsExpression expr, IList<ASTElementBase> children, IList<ASTElementBase> elseBlock, int line, int column)
 			: base(children, elseBlock, line, column)
 		{
 			Expr = expr;

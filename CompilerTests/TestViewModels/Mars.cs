@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 
 namespace CompiledHandlebars.CompilerTests.TestViewModels
 {
-  public class MarsModel : PlanetModel
-  {
-    public int MoonCount { get; set; }
-    public MoonModel Phobos { get; set; }
-    public MoonModel Deimos { get; set; }
-    public Planitia[] Plains { get; set; }
-    public List<Mountain> Mountains { get; set; }
-    public Dictionary<string, Rover> Rovers { get; set; }
-    public class Planitia
-    {
-      public string Name { get; set; }
-    }
+	public class MarsModel : PlanetModel
+	{
+		public int MoonCount { get; set; }
+		public MoonModel Phobos { get; set; }
+		public MoonModel Deimos { get; set; }
+		public Planitia[] Plains { get; set; }
+		public List<Mountain> Mountains { get; set; }
+		public Dictionary<string, Rover> Rovers { get; set; }
+		public class Planitia
+		{
+			public string Name { get; set; }
+		}
 
-    public class Mountain
-    {
-      public string Name { get; set; }
-    }
+		public class Mountain
+		{
+			public string Name { get; set; }
+		}
 
-    public class Rover
-    {
-      public string Name { get; set; }
-    }
-  }
+		public class Rover
+		{
+			public string Name { get; set; }
+		}
+	}
 
-  public static class MarsModelFactory
-  {
-    public static MarsModel CreateFullMarsModel()
-    {
+	public static class MarsModelFactory
+	{
+		public static MarsModel CreateFullMarsModel()
+		{
 			var model = new MarsModel()
 			{
 				Name = "Mars",
@@ -62,6 +62,6 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
 				Description = "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>."
 			};
 			return model;
-    }
-  }
+		}
+	}
 }

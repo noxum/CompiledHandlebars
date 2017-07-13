@@ -7,26 +7,26 @@ using CompiledHandlebars.Compiler.Visitors;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class CommentLiteral : ASTElementBase
-  {
-    internal readonly string Value;
-    internal readonly CommentType Type;
-    internal CommentLiteral(CommentType type, string value, int line, int column) : base(line, column)
-    {
-      Type = type;
-      Value = value;
-    }
+	internal class CommentLiteral : ASTElementBase
+	{
+		internal readonly string Value;
+		internal readonly CommentType Type;
+		internal CommentLiteral(CommentType type, string value, int line, int column) : base(line, column)
+		{
+			Type = type;
+			Value = value;
+		}
 
-    internal override void Accept(IASTVisitor visitor)
-    {
-      visitor.Visit(this);
-    }
+		internal override void Accept(IASTVisitor visitor)
+		{
+			visitor.Visit(this);
+		}
 
-    internal override bool HasExpressionOnLoopLevel<T>()
-    {
-      return false;
-    }
-  }
+		internal override bool HasExpressionOnLoopLevel<T>()
+		{
+			return false;
+		}
+	}
 
-  internal enum CommentType { Single, Multi }
+	internal enum CommentType { Single, Multi }
 }

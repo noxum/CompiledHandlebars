@@ -6,60 +6,60 @@ using System.Collections.Generic;
 
 namespace CompiledHandlebars.CompilerTests
 {
-  [CompiledHandlebarsTemplate]
-  public static class IterateOverNullTest2
-  {
-    public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.StarModel viewModel)
-    {
-      var sb = new StringBuilder(64);
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Planets))
-      {
-        foreach (var loopItem0 in viewModel.Planets)
-        {
-          if (IsTruthy(loopItem0) && IsTruthy(loopItem0.Moons))
-          {
-            foreach (var loopItem1 in loopItem0.Moons)
-            {
-              sb.Append(WebUtility.HtmlEncode(loopItem1.Name));
-            }
-          }
-        }
-      }
+	[CompiledHandlebarsTemplate]
+	public static class IterateOverNullTest2
+	{
+		public static string Render(CompiledHandlebars.CompilerTests.TestViewModels.StarModel viewModel)
+		{
+			var sb = new StringBuilder(64);
+			if (IsTruthy(viewModel) && IsTruthy(viewModel.Planets))
+			{
+				foreach (var loopItem0 in viewModel.Planets)
+				{
+					if (IsTruthy(loopItem0) && IsTruthy(loopItem0.Moons))
+					{
+						foreach (var loopItem1 in loopItem0.Moons)
+						{
+							sb.Append(WebUtility.HtmlEncode(loopItem1.Name));
+						}
+					}
+				}
+			}
 
-      return sb.ToString();
-    }
+			return sb.ToString();
+		}
 
-    private static bool IsTruthy(bool b)
-    {
-      return b;
-    }
+		private static bool IsTruthy(bool b)
+		{
+			return b;
+		}
 
-    private static bool IsTruthy(string s)
-    {
-      return !string.IsNullOrEmpty(s);
-    }
+		private static bool IsTruthy(string s)
+		{
+			return !string.IsNullOrEmpty(s);
+		}
 
-    private static bool IsTruthy(object o)
-    {
-      return o != null;
-    }
+		private static bool IsTruthy(object o)
+		{
+			return o != null;
+		}
 
-    private static bool IsTruthy<T>(IEnumerable<T> ie)
-    {
-      return ie != null && ie.Any();
-    }
+		private static bool IsTruthy<T>(IEnumerable<T> ie)
+		{
+			return ie != null && ie.Any();
+		}
 
-    private static bool IsTruthy(int i)
-    {
-      return i != 0;
-    }
+		private static bool IsTruthy(int i)
+		{
+			return i != 0;
+		}
 
-    private class CompiledHandlebarsTemplateAttribute : Attribute
-    {
-    }
+		private class CompiledHandlebarsTemplateAttribute : Attribute
+		{
+		}
 
-    private class CompiledHandlebarsLayoutAttribute : Attribute
-    {
-    }
-  }
+		private class CompiledHandlebarsLayoutAttribute : Attribute
+		{
+		}
+	}
 }/**/

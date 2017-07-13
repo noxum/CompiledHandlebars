@@ -6,55 +6,55 @@ using System.Collections.Generic;
 
 namespace CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins
 {
-  [CompiledHandlebarsTemplate]
-  public static class WithWithElse1
-  {
-    public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel viewModel)
-    {
-      var sb = new StringBuilder(64);
-      if (IsTruthy(viewModel) && IsTruthy(viewModel.Person))
-      {
-        sb.Append("Person is present");
-      }
-      else
-      {
-        sb.Append("Person is not present");
-      }
+	[CompiledHandlebarsTemplate]
+	public static class WithWithElse1
+	{
+		public static string Render(CompiledHandlebars.CompilerTests.HandlebarsJsSpec.Builtins.PersonModel viewModel)
+		{
+			var sb = new StringBuilder(64);
+			if (IsTruthy(viewModel) && IsTruthy(viewModel.Person))
+			{
+				sb.Append("Person is present");
+			}
+			else
+			{
+				sb.Append("Person is not present");
+			}
 
-      return sb.ToString();
-    }
+			return sb.ToString();
+		}
 
-    private static bool IsTruthy(bool b)
-    {
-      return b;
-    }
+		private static bool IsTruthy(bool b)
+		{
+			return b;
+		}
 
-    private static bool IsTruthy(string s)
-    {
-      return !string.IsNullOrEmpty(s);
-    }
+		private static bool IsTruthy(string s)
+		{
+			return !string.IsNullOrEmpty(s);
+		}
 
-    private static bool IsTruthy(object o)
-    {
-      return o != null;
-    }
+		private static bool IsTruthy(object o)
+		{
+			return o != null;
+		}
 
-    private static bool IsTruthy<T>(IEnumerable<T> ie)
-    {
-      return ie != null && ie.Any();
-    }
+		private static bool IsTruthy<T>(IEnumerable<T> ie)
+		{
+			return ie != null && ie.Any();
+		}
 
-    private static bool IsTruthy(int i)
-    {
-      return i != 0;
-    }
+		private static bool IsTruthy(int i)
+		{
+			return i != 0;
+		}
 
-    private class CompiledHandlebarsTemplateAttribute : Attribute
-    {
-    }
+		private class CompiledHandlebarsTemplateAttribute : Attribute
+		{
+		}
 
-    private class CompiledHandlebarsLayoutAttribute : Attribute
-    {
-    }
-  }
+		private class CompiledHandlebarsLayoutAttribute : Attribute
+		{
+		}
+	}
 }/**/

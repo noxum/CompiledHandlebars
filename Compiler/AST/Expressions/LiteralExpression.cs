@@ -8,19 +8,19 @@ using CompiledHandlebars.Compiler.Introspection;
 
 namespace CompiledHandlebars.Compiler.AST.Expressions
 {
-  internal class LiteralExpression : Expression
-  {
-    private readonly string _value;
+	internal class LiteralExpression : Expression
+	{
+		private readonly string _value;
 
-    internal LiteralExpression(string value)
-    {
-      _value = value;
-    }
+		internal LiteralExpression(string value)
+		{
+			_value = value;
+		}
 
-    internal override bool TryEvaluate(CompilationState state, out Context context)
-    {
-      context = new Context($"\"{_value}\"", state.Introspector.GetStringTypeSymbol());
-      return true;
-    }
-  }
+		internal override bool TryEvaluate(CompilationState state, out Context context)
+		{
+			context = new Context($"\"{_value}\"", state.Introspector.GetStringTypeSymbol());
+			return true;
+		}
+	}
 }

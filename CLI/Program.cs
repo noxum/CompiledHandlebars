@@ -35,9 +35,9 @@ namespace CompiledHandlebars.Cli
 			{
 				ShowUsage();
 				return;
-			}		
+			}
 			while (IsValidFlagArgument(args[0]))
-			{	// If there are flags, handle them. We already checked, that they are valid
+			{  // If there are flags, handle them. We already checked, that they are valid
 				foreach (var chr in args[0].Skip(1))
 				{
 					switch (chr)
@@ -50,7 +50,7 @@ namespace CompiledHandlebars.Cli
 				}
 				// Remove the flag from the arguments list
 				args = args.Skip(1).ToArray();
-			}			
+			}
 			// We have more than one argument left. So there must be some black/whitelisting going on!
 			if (args.Length > 1)
 			{//Handle blacklisted and whitelisted directories
@@ -125,7 +125,7 @@ namespace CompiledHandlebars.Cli
 		}
 
 		private static void CompileProject(CompilerOptions options)
-		{			
+		{
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }
 			};
@@ -133,7 +133,7 @@ namespace CompiledHandlebars.Cli
 			var project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
 			var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
 			CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
-		}		
+		}
 
 		/// <summary>
 		/// Compiles all Handlebars-Files in a Solution.
@@ -144,7 +144,7 @@ namespace CompiledHandlebars.Cli
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }
 			};
-			var workspace = MSBuildWorkspace.Create(properties);			
+			var workspace = MSBuildWorkspace.Create(properties);
 			var solution = (workspace as MSBuildWorkspace).OpenSolutionAsync(options.SolutionFile).Result;
 			foreach (var projectId in solution.ProjectIds)
 			{
@@ -172,7 +172,8 @@ namespace CompiledHandlebars.Cli
 			else if (options.DirectoryWhitelist.Any())
 			{
 				return (options.DirectoryWhitelist.Any(x => file.StartsWith(x)));
-			} else
+			}
+			else
 			{
 				return true;
 			}
@@ -236,7 +237,7 @@ namespace CompiledHandlebars.Cli
 							}
 							else
 							{
-								successFullCompilation = true;								
+								successFullCompilation = true;
 								//Check if template already exits
 								var doc = project.Documents.FirstOrDefault(x => x.Name.Equals(string.Concat(name, ".hbs.cs")));
 								if (doc != null)
@@ -245,7 +246,8 @@ namespace CompiledHandlebars.Cli
 								}
 								else
 								{//Otherwise add a new document
-									if (options.NetCoreProject) {
+									if (options.NetCoreProject)
+									{
 										//For .net core projects -> directly to the filesystem
 										File.WriteAllText($"{file}.cs", compilationResult.Item1);
 									}
@@ -255,7 +257,7 @@ namespace CompiledHandlebars.Cli
 									}
 								}
 								workspace.TryApplyChanges(project.Solution);
-								project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));																
+								project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(project.Id));
 							}
 						}
 					}
@@ -282,7 +284,7 @@ namespace CompiledHandlebars.Cli
 		private static Tuple<string, IEnumerable<HandlebarsException>> CompileHandlebarsTemplate(string content, string @namespace, string name, Project containingProject, CompilerOptions options)
 		{
 			if (options.DryRun)
-			{ 
+			{
 				Console.WriteLine($"Compile file '{name}' in namespace '{@namespace}'");
 				return null;
 			}
@@ -317,7 +319,7 @@ namespace CompiledHandlebars.Cli
 		{
 			// Get 
 			string templateDir = Path.GetDirectoryName(hbsFile.FullName);
-			string projectDir = Path.GetDirectoryName(containingProject.FilePath);			
+			string projectDir = Path.GetDirectoryName(containingProject.FilePath);
 			return string.Concat(containingProject.AssemblyName, templateDir.Substring(projectDir.Length).Replace(Path.DirectorySeparatorChar, '.'));
 		}
 
