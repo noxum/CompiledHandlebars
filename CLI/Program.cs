@@ -178,17 +178,25 @@ namespace CompiledHandlebars.Cli
 				watcher.IncludeSubdirectories = true;
 				watcher.EnableRaisingEvents = true;
 
-				Console.WriteLine("Press \'q\' to quit.");
+				Console.WriteLine("Started watcher! \'q\' to quit.");
 				while (Console.Read() != 'q');
 			}
 		}
 
+		/// <summary>
+		/// This method is called when a .hbs file changes!
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
 		private static void OnChanged(object source, FileSystemEventArgs e)
 		{
-			Console.WriteLine("Change detected!");
-			_workspace = CompileHandlebarsFiles(_project, _workspace, new List<string> { e.FullPath }, _options);
-			var project = _workspace.CurrentSolution.Projects.First(x => x.Id.Equals(_project.Id));
-			_project = project;
+			if (ShouldCompileFile(e.FullPath, _options))
+			{
+				Console.WriteLine("Change detected!");
+				_workspace = CompileHandlebarsFiles(_project, _workspace, new List<string> { e.FullPath }, _options);
+				var project = _workspace.CurrentSolution.Projects.First(x => x.Id.Equals(_project.Id));
+				_project = project;
+			}
 		}
 
 		/// <summary>
@@ -429,6 +437,8 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine("         .net core Project: The compiler will not add compiled files to its project file");
 			Console.WriteLine("      -d");
 			Console.WriteLine("         Print diagnostic messages from MsBuildWorkspace");
+			Console.WriteLine("      -w");
+			Console.WriteLine("         Watch the target project for changes");
 			Console.WriteLine("");
 			Console.WriteLine("Directory Black-     and Whitelists:");
 			Console.WriteLine("-e<Exluded Directory> excludes a directory from compilation. Handlebars files in this folder will be ignored. Multiple statements possible.");
