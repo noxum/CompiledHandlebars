@@ -229,6 +229,9 @@
     <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest1.cs" />
     <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest2.cs" />
     <Compile Include="TestTemplates\EqualsTests\BasicEqualsTest3.cs" />
+    <Compile Include="TestTemplates\EqualsTests\SpecialExpressionsEqualTest1.cs" />
+    <Compile Include="TestTemplates\EqualsTests\SpecialExpressionsEqualTest2.cs" />
+    <Compile Include="TestTemplates\EqualsTests\SpecialExpressionsEqualTest3.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments1.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments2.cs" />
     <Compile Include="TestTemplates\HandlebarsJsSpec\BasicTests\Comments3.cs" />

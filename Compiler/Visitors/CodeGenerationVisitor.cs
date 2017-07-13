@@ -83,9 +83,8 @@ namespace CompiledHandlebars.Compiler.Visitors
     {
       state.SetCursor(astNode);
       state.PushNewBlock();
-      //Enter new Context and promise to check its truthyness
-      Context context;
-      if (astNode.Expr.TryEvaluate(state, out context))
+      //Enter new Context and promise to check its truthyness      
+      if (astNode.Expr.TryEvaluate(state, out Context context))
       {
         state.PromiseTruthyCheck(context);
         state.ContextStack.Push(context);

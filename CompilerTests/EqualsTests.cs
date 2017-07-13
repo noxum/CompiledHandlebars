@@ -34,9 +34,16 @@ namespace CompiledHandlebars.CompilerTests
 		}
 
 		[TestMethod]
+		[RegisterHandlebarsTemplate("SpecialExpressionsEqualTest1", "{{#equals @root.Name Name}}EQUAL1{{/equals}}", _marsModel)]
+		[RegisterHandlebarsTemplate("SpecialExpressionsEqualTest2", "{{#each Plains}}{{#equals @first @last}}impossible{{else}}ok{{/equals}}{{/each}}", _marsModel)]
+		[RegisterHandlebarsTemplate("SpecialExpressionsEqualTest3", "{{#each Plains}}{{#equals @index ../MoonCount}}Second Plain is {{Name}}{{/equals}}{{/each}}", _marsModel)]
 		public void SpecialExpressionsEqualTest()
 		{
-
+			ShouldRender("SpecialExpressionsEqualTest1", MarsModelFactory.CreateFullMarsModel(), "EQUAL1");
+			ShouldRender("SpecialExpressionsEqualTest2", MarsModelFactory.CreateFullMarsModel(), "okok");
+			var mm = MarsModelFactory.CreateFullMarsModel();
+			mm.MoonCount = 1;
+			ShouldRender("SpecialExpressionsEqualTest3", mm, "Second Plain is Utopia Planitia");
 		}
 	}
 }

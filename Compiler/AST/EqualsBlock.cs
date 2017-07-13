@@ -18,6 +18,15 @@ namespace CompiledHandlebars.Compiler.AST
 			Lhs = lhs;
 			Rhs = rhs;
 		}
+
+		internal bool HasExpressionOnLoopLevel<T>()
+		{
+			if (Lhs is T || Rhs is T)
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 
 	internal class EqualsBlock : BlockWithElse
@@ -54,7 +63,7 @@ namespace CompiledHandlebars.Compiler.AST
 
 		internal override bool HasExpressionOnLoopLevel<T>()
 		{
-			if (Expr is T)
+			if (Expr.HasExpressionOnLoopLevel<T>())
 				return true;
 			if (HasElseBlock)
 				return _elseBlock.Any(x => x.HasExpressionOnLoopLevel<T>()) || _children.Any(x => x.HasExpressionOnLoopLevel<T>());
