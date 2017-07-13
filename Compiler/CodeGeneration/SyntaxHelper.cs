@@ -513,6 +513,23 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       else return SF.IfStatement(condition, SF.EmptyStatement());
     }
 
+		/// <summary>
+		/// Creates an if statement that checks lhs and rhs for equality
+		/// 
+		/// if ((lhs == null && rhs == null) || (lhs != null && rhs != null && lhs.Equals(rhs)))
+		/// </summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		internal static IfStatementSyntax IfEquals(string lhs, string rhs)
+		{
+
+			var condition = 
+				SF.ParseExpression($"({lhs} == null && {rhs} == null) || ({lhs} != null && {rhs} != null && {lhs}.Equals({rhs}))");
+			if (condition == null)
+				return null;
+			else return SF.IfStatement(condition, SF.EmptyStatement());
+		}
 
     internal static StatementSyntax EmptyStatementWithComment(string comment)
     {      
@@ -692,7 +709,6 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                                       : BinaryUnlessIsTruthyExpression(result, element);
       return result;
     }
-
 
     /// <summary>
     /// Yields IsTruthy(a) && IsTruthy(b)

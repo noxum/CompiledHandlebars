@@ -20,7 +20,11 @@ namespace CompiledHandlebars.Compiler.Visitors
     void VisitLeave(IfBlock astNode);
     void VisitElse(IfBlock astNode);
 
-    void Visit(YieldStatement astLeaf);
+		void VisitEnter(EqualsBlock astNode);
+		void VisitLeave(EqualsBlock astNode);
+		void VisitElse(EqualsBlock astNode);
+
+		void Visit(YieldStatement astLeaf);
     void Visit(MarkupLiteral astLeaf);
     void Visit(CommentLiteral astLeaf);
     void Visit(PartialCall astLeaf);

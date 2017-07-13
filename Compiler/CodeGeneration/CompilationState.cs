@@ -215,6 +215,23 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
       return result;
     }
 
+	internal void DoEqualsCheck(Context lhs, Context rhs, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null)
+		{
+			var ifStatement = SyntaxHelper.IfEquals(lhs.FullPath, rhs.FullPath);
+			if (elseBlock!= null)
+			{
+				resultStack.Peek().Add(
+					ifStatement.WithStatement(SyntaxFactory.Block(ifBlock))
+					.WithElse(SyntaxFactory.ElseClause(SyntaxFactory.Block(elseBlock)))
+				);
+			} else
+			{
+				resultStack.Peek().Add(
+					ifStatement.WithStatement(SyntaxFactory.Block(ifBlock))					
+				);
+			}
+		}
+
     internal void PromiseTruthyCheck(Context contextToCheck, IfType ifType = IfType.If)
     {
       contextToCheck.Truthy = ifType == IfType.If;
