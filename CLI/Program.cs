@@ -13,7 +13,10 @@ namespace CompiledHandlebars.Cli
 {
 	public class Program
 	{
-		private static readonly char[] validFlags = { 'n', 'f', 'c', 'd' };
+		private static readonly char[] validFlags = { 'n', 'f', 'c', 'd', 'w' };
+		private static CompilerOptions _options;
+		private static Workspace _workspace;
+		private static Project _project;
 
 		private class CompilerOptions
 		{
@@ -26,6 +29,7 @@ namespace CompiledHandlebars.Cli
 			public bool NetCoreProject { get; set; }
 			public bool Debug { get; set; }
 			public bool DryRun { get; set; }
+			public bool Watch { get; set; }
 			public bool ForceRecompilation { get; set; }
 		}
 
@@ -47,6 +51,7 @@ namespace CompiledHandlebars.Cli
 						case 'f': options.ForceRecompilation = true; break;
 						case 'n': options.DryRun = true; break;
 						case 'd': options.Debug = true; break;
+						case 'w': options.Watch = true; break;
 						default: ShowUsage(); return;
 					}
 				}
@@ -157,6 +162,33 @@ namespace CompiledHandlebars.Cli
 			{
 				NoTemplates();
 			}	
+			if (options.Watch)
+			{
+				_options = options;
+				_workspace = workspace;
+				_project = project;
+				var watcher = new FileSystemWatcher(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), options.ProjectFile))), "*.hbs");
+				watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+							 | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+				watcher.Changed += new FileSystemEventHandler(OnChanged);
+				watcher.Created += new FileSystemEventHandler(OnChanged);
+				watcher.Deleted += new FileSystemEventHandler(OnChanged);
+
+				watcher.IncludeSubdirectories = true;
+				watcher.EnableRaisingEvents = true;
+
+				Console.WriteLine("Press \'q\' to quit.");
+				while (Console.Read() != 'q');
+			}
+		}
+
+		private static void OnChanged(object source, FileSystemEventArgs e)
+		{
+			Console.WriteLine("Change detected!");
+			_workspace = CompileHandlebarsFiles(_project, _workspace, new List<string> { e.FullPath }, _options);
+			var project = _workspace.CurrentSolution.Projects.First(x => x.Id.Equals(_project.Id));
+			_project = project;
 		}
 
 		/// <summary>
@@ -196,7 +228,7 @@ namespace CompiledHandlebars.Cli
 				{
 					NoTemplates();
 				}
-			}
+			}			
 		}
 
 		/// <summary>
