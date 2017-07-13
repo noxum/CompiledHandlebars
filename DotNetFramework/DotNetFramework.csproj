@@ -54,6 +54,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>HandlebarsCompiler.exe $(ProjectDir)DotNetFramework.csproj</PreBuildEvent>
+    <PreBuildEvent>HandlebarsCompiler.exe $(ProjectPath)</PreBuildEvent>
   </PropertyGroup>
 </Project>
