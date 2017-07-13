@@ -216,7 +216,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     }
 
 	internal void DoEqualsCheck(Context lhs, Context rhs, List<StatementSyntax> ifBlock, List<StatementSyntax> elseBlock = null)
-		{
+		{						
 			var ifStatement = SyntaxHelper.IfEquals(lhs.FullPath, rhs.FullPath);
 			if (elseBlock!= null)
 			{

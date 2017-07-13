@@ -20,17 +20,23 @@ namespace CompiledHandlebars.CompilerTests
 		}
 
 		[TestMethod]
-		[RegisterHandlebarsTemplate("BasicEqualsTest1", "{{#equals Name Name}}EQUAL{{else}}NOTEQUAL{{/equal}}", _marsModel)]
-		[RegisterHandlebarsTemplate("BasicEqualsTest2", "{{#equals Phobos Deimos}}EQUAL{{else}}NOTEQUAL{{/equal}}", _marsModel)]
-		[RegisterHandlebarsTemplate("BasicEqualsTest3", "{{#equals Name \"Mars\"}}EQUAL{{else}}NOTEQUAL{{/equal}}", _marsModel)]
+		[RegisterHandlebarsTemplate("BasicEqualsTest1", "{{#equals Name Name}}EQUAL1{{else}}NOTEQUAL1{{/equals}}", _marsModel)]
+		[RegisterHandlebarsTemplate("BasicEqualsTest2", "{{#equals Phobos Deimos}}EQUAL2{{else}}NOTEQUAL2{{/equals}}", _marsModel)]
+		[RegisterHandlebarsTemplate("BasicEqualsTest3", "{{#equals Name \"Mars\"}}EQUAL3{{else}}NOTEQUAL3{{/equals}}", _marsModel)]
 		public void BasicEqualsTest()
 		{
-			ShouldRender("BasicEqualsTest1", MarsModelFactory.CreateFullMarsModel(), "EQUAL");
-			ShouldRender("BasicEqualsTest1", (MarsModel)null, "EQUAL");
-			ShouldRender("BasicEqualsTest2", MarsModelFactory.CreateFullMarsModel(), "NOTEQUAL");
-			ShouldRender("BasicEqualsTest2", (MarsModel)null, "EQUAL");
-			ShouldRender("BasicEqualsTest3", MarsModelFactory.CreateFullMarsModel(), "EQUAL");
-			ShouldRender("BasicEqualsTest3", (MarsModel)null, "NOTEQUAL");
+			ShouldRender("BasicEqualsTest1", MarsModelFactory.CreateFullMarsModel(), "EQUAL1");
+			ShouldRender("BasicEqualsTest1", new MarsModel(), "EQUAL1");
+			ShouldRender("BasicEqualsTest2", MarsModelFactory.CreateFullMarsModel(), "NOTEQUAL2");
+			ShouldRender("BasicEqualsTest2", new MarsModel(), "EQUAL2");
+			ShouldRender("BasicEqualsTest3", MarsModelFactory.CreateFullMarsModel(), "EQUAL3");
+			ShouldRender("BasicEqualsTest3", new MarsModel(), "NOTEQUAL3");
+		}
+
+		[TestMethod]
+		public void SpecialExpressionsEqualTest()
+		{
+
 		}
 	}
 }

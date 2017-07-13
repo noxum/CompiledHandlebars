@@ -38,6 +38,7 @@ namespace CompiledHandlebars.Compiler.Introspection
         return false;
     }
   }
+
   internal class Context
   {
     internal string FullPath { get; set; }

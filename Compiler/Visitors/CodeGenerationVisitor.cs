@@ -144,6 +144,7 @@ namespace CompiledHandlebars.Compiler.Visitors
 		public void VisitEnter(EqualsBlock astNode)
 		{
 			state.SetCursor(astNode);
+			state.PushNewBlock();
 		}
 
 		public void VisitLeave(EqualsBlock astNode)
@@ -154,7 +155,7 @@ namespace CompiledHandlebars.Compiler.Visitors
 			{
 				var latestBlock = state.PopBlock();
 				if (astNode.HasElseBlock)
-					state.DoEqualsCheck(lhs, rhs, latestBlock, state.PopBlock());
+					state.DoEqualsCheck(lhs, rhs, state.PopBlock(), latestBlock);
 				else
 					state.DoEqualsCheck(lhs, rhs, latestBlock);
 			}
