@@ -34,32 +34,34 @@ namespace CompiledHandlebars.CompilerTests.TestViewModels
   {
     public static MarsModel CreateFullMarsModel()
     {
-      var model = new MarsModel();
-      model.Name = "Mars";
-      model.Phobos = new MoonModel() { Name = "Phobos" };
-      model.Deimos = new MoonModel() { Name = "Deimos" };
-      model.MoonCount = 2;
-      model.WikiLink = new LinkModel()
-      {
-        Url = "https://en.wikipedia.org/wiki/Mars",
-        Text = "Mars"
-      };
-      model.Plains = new MarsModel.Planitia[] {
-        new MarsModel.Planitia() { Name = "Acidalia Planitia"},
-        new MarsModel.Planitia() { Name = "Utopia Planitia"},
-      };
-      model.Mountains = new List<MarsModel.Mountain>()
-      {
-        new MarsModel.Mountain() { Name = "Aeolis Mons"},
-        new MarsModel.Mountain() { Name = "Olympus Mons"},
-      };
-      model.Rovers = new Dictionary<string, MarsModel.Rover>()
-      {
-        { "Opportunity", new MarsModel.Rover() {Name = "Opportunity" } },
-        { "Curiosity", new MarsModel.Rover() {Name = "Curiosity" } },
-      };
-      model.Description = "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>.";
-      return model;
+			var model = new MarsModel()
+			{
+				Name = "Mars",
+				Phobos = new MoonModel() { Name = "Phobos" },
+				Deimos = new MoonModel() { Name = "Deimos" },
+				MoonCount = 2,
+				WikiLink = new LinkModel()
+				{
+					Url = "https://en.wikipedia.org/wiki/Mars",
+					Text = "Mars"
+				},
+				Plains = new MarsModel.Planitia[] {
+		  new MarsModel.Planitia() { Name = "Acidalia Planitia"},
+		  new MarsModel.Planitia() { Name = "Utopia Planitia"},
+		},
+				Mountains = new List<MarsModel.Mountain>()
+		{
+		  new MarsModel.Mountain() { Name = "Aeolis Mons"},
+		  new MarsModel.Mountain() { Name = "Olympus Mons"},
+		},
+				Rovers = new Dictionary<string, MarsModel.Rover>()
+		{
+		  { "Opportunity", new MarsModel.Rover() {Name = "Opportunity" } },
+		  { "Curiosity", new MarsModel.Rover() {Name = "Curiosity" } },
+		},
+				Description = "<b>Mars</b> is the fourth <a href=\"/wiki/Planet\" title=\"Planet\">planet</a> from the <a href=\"/wiki/Sun\" title=\"Sun\">Sun</a> and the second smallest planet in the <a href=\"/wiki/Solar_System\" title=\"Solar System\">Solar System</a>, after <a href=\"/wiki/Mercury_(planet)\" title=\"Mercury (planet)\">Mercury</a>."
+			};
+			return model;
     }
   }
 }

@@ -28,9 +28,8 @@ namespace CompiledHandlebars.Compiler.Visitors
     }
     public CodeGenerationVisitor(RoslynIntrospector introspector, HandlebarsTemplate template)
     {
-      state = new CompilationState(introspector, template);
-      state.Introspector = introspector;
-    }
+			state = new CompilationState(introspector, template);
+		}
     
 
     public CompilationUnitSyntax GenerateCode()
@@ -61,9 +60,8 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     public void Visit(YieldStatement astLeaf)
     {
-      state.SetCursor(astLeaf);
-      Context yieldContext;
-      if (astLeaf.Expr.TryEvaluate(state, out yieldContext))
+      state.SetCursor(astLeaf);      
+      if (astLeaf.Expr.TryEvaluate(state, out Context yieldContext))
       {
         state.PushStatement(SyntaxHelper.AppendMember(
           yieldContext.FullPath, 
@@ -114,9 +112,8 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     public void VisitEnter(IfBlock astNode)
     {
-      state.SetCursor(astNode);
-      Context context;
-      if (astNode.Expr.TryEvaluate(state, out context))
+      state.SetCursor(astNode);      
+      if (astNode.Expr.TryEvaluate(state, out Context context))
       {
         state.PushNewBlock();
         state.PromiseTruthyCheck(context, astNode.QueryType);
@@ -147,10 +144,8 @@ namespace CompiledHandlebars.Compiler.Visitors
 		}
 
 		public void VisitLeave(EqualsBlock astNode)
-		{
-			Context lhs;
-			Context rhs;
-			if (astNode.Expr.Lhs.TryEvaluate(state, out lhs) && astNode.Expr.Rhs.TryEvaluate(state, out rhs))
+		{			
+			if (astNode.Expr.Lhs.TryEvaluate(state, out Context lhs) && astNode.Expr.Rhs.TryEvaluate(state, out Context rhs))
 			{
 				var latestBlock = state.PopBlock();
 				if (astNode.HasElseBlock)
@@ -177,9 +172,8 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astNode);
       //Check if we are already in a compiletime loop. 
       if (astNode.Type!=EachBlock.LoopType.CompileTime)
-      {//Not in compiletime loop. procede as usual
-        Context loopedVariable;
-        if (astNode.Member.TryEvaluate(state, out loopedVariable))
+      {//Not in compiletime loop. procede as usual        
+        if (astNode.Member.TryEvaluate(state, out Context loopedVariable))
         { 
           state.PromiseTruthyCheck(loopedVariable);
           state.PushNewBlock();
@@ -216,9 +210,8 @@ namespace CompiledHandlebars.Compiler.Visitors
         //Leave loop context
         state.ContextStack.Pop();
         state.LoopLevel--;
-        var prepareLoopStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);
-        Context context;
-        if (astNode.Member.TryEvaluate(state, out context))
+        var prepareLoopStatements = SyntaxHelper.PrepareForLoop(astNode.Flags, state.LoopLevel + 1);        
+        if (astNode.Member.TryEvaluate(state, out Context context))
         {
           prepareLoopStatements.Add(SyntaxHelper.ForLoop(astNode.Member.EvaluateLoop(state).FullPath, context.FullPath, state.PopBlock()));
         }
@@ -243,9 +236,8 @@ namespace CompiledHandlebars.Compiler.Visitors
 
     public void Visit(PartialCall astLeaf)
     {
-      state.SetCursor(astLeaf);
-      Context argumentContext;
-      if (astLeaf.Expr.TryEvaluate(state, out argumentContext))
+      state.SetCursor(astLeaf);      
+      if (astLeaf.Expr.TryEvaluate(state, out Context argumentContext))
       {
         if (state.Template.IsSelfReferencingPartial(astLeaf.TemplateName.ToString()))
         {//Self referencing Template
@@ -273,9 +265,8 @@ namespace CompiledHandlebars.Compiler.Visitors
       state.SetCursor(astLeaf);
       var paramContextList = new List<Context>();
       foreach(var param in astLeaf.Parameters)
-      {
-        Context paramContext;
-        if (param.TryEvaluate(state, out paramContext))
+      {        
+        if (param.TryEvaluate(state, out Context paramContext))
           paramContextList.Add(paramContext);
       }            
       var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, paramContextList.Select(x => x.Symbol).ToList());
