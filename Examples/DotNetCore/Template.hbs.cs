@@ -14,7 +14,7 @@ namespace DotNetCore
       var sb = new StringBuilder(64);
       sb.Append("\r\nHello ");
       sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-      sb.Append("!-");
+      sb.Append("!");
       return sb.ToString();
     }
 
