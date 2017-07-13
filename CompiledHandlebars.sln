@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Compiler", "Compiler\CompiledHandlebars.Compiler.csproj", "{55E767E0-44F0-4297-9A00-7211B424BE03}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.ViewEngine", "ViewEngine\CompiledHandlebars.ViewEngine.csproj", "{CCF0E5FF-74C8-4095-BE8C-143CF34DB3B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.Cli", "CLI\CompiledHandlebars.Cli.csproj", "{7DC8BCB3-DC28-4737-B508-C514BA970518}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C4719D54-5922-4DAD-9215-C016292D49DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework", "DotNetFramework\DotNetFramework.csproj", "{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,8 +63,19 @@ Global
 		{7DC8BCB3-DC28-4737-B508-C514BA970518}.Release|Any CPU.ActiveCfg = Release|x86
 		{7DC8BCB3-DC28-4737-B508-C514BA970518}.Release|x86.ActiveCfg = Release|x86
 		{7DC8BCB3-DC28-4737-B508-C514BA970518}.Release|x86.Build.0 = Release|x86
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Debug|x86.Build.0 = Debug|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{11E891F3-0912-4F5D-A2C7-9E5E9A8EB9FF} = {C4719D54-5922-4DAD-9215-C016292D49DB}
 	EndGlobalSection
 EndGlobal
