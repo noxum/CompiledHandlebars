@@ -13,7 +13,8 @@ namespace CompiledHandlebars.Cli
 {
 	public class Program
 	{
-		private static readonly char[] validFlags = { 'n', 'f', 'c' };
+		private static readonly char[] validFlags = { 'n', 'f', 'c', 'd' };
+
 		private class CompilerOptions
 		{
 			public string SolutionFile { get; set; }
@@ -23,13 +24,14 @@ namespace CompiledHandlebars.Cli
 			public List<string> DirectoryBlacklist { get; set; } = new List<string>();
 			public List<string> DirectoryWhitelist { get; set; } = new List<string>();
 			public bool NetCoreProject { get; set; }
+			public bool Debug { get; set; }
 			public bool DryRun { get; set; }
 			public bool ForceRecompilation { get; set; }
 		}
 
 		public static void Main(string[] args)
 		{
-			var options = new CompilerOptions();			
+			var options = new CompilerOptions();
 			if (!args.Any())
 			{
 				ShowUsage();
@@ -44,6 +46,7 @@ namespace CompiledHandlebars.Cli
 						case 'c': options.NetCoreProject = true; break;
 						case 'f': options.ForceRecompilation = true; break;
 						case 'n': options.DryRun = true; break;
+						case 'd': options.Debug = true; break;
 						default: ShowUsage(); return;
 					}
 				}
@@ -129,22 +132,31 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine($"Loading project '{options.ProjectFile}'...");
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }
-			};			
+			};
 			var workspace = MSBuildWorkspace.Create(properties);
 			var project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
 			if (workspace.Diagnostics.IsEmpty)
 			{
 				Console.WriteLine("Ok!");
-			} else
+			}
+			else if (options.Debug)
 			{
 				Console.WriteLine("Following errors occured:");
-				foreach (var diag in workspace.Diagnostics) {
+				foreach (var diag in workspace.Diagnostics)
+				{
 					Console.WriteLine(diag.Message);
 				}
 				Console.WriteLine("Trying to continue...");
 			}
 			var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
-			CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
+			if (handlebarsFiles.Any())
+			{
+				CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
+			}
+			else
+			{
+				NoTemplates();
+			}	
 		}
 
 		/// <summary>
@@ -163,7 +175,7 @@ namespace CompiledHandlebars.Cli
 			{
 				Console.WriteLine("Ok!");
 			}
-			else
+			else if (options.Debug)
 			{
 				Console.WriteLine("Following errors occured:");
 				foreach (var diag in workspace.Diagnostics)
@@ -179,6 +191,10 @@ namespace CompiledHandlebars.Cli
 				if (handlebarsFiles.Any())
 				{
 					workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options) as MSBuildWorkspace;
+				}
+				else
+				{
+					NoTemplates();
 				}
 			}
 		}
@@ -257,7 +273,8 @@ namespace CompiledHandlebars.Cli
 								 //Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
 									nextRound.Add(file);
 								}
-								else {									
+								else
+								{
 									foreach (var error in compilationResult.Item2)
 										PrintError(error);
 								}
@@ -363,6 +380,11 @@ namespace CompiledHandlebars.Cli
 			return fileDir.Substring(projectDir.Length).Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
+		private static void NoTemplates()
+		{
+			Console.WriteLine("No handlebars templates found. Did you set build action to 'None' or 'C# analyzer additional file' (asp.net core for .net core)?");
+		}
+
 		private static void ShowUsage()
 		{
 			Console.WriteLine("Usage: HandlebarsCompiler.exe -[flags] ([-e<Excluded Directory>]*|[-i<Included Directory>]*)  <SolutionFile>|<ProjectFile>");
@@ -373,6 +395,8 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine("         Force Compilation: compile handlebars-file even if it did not change");
 			Console.WriteLine("      -c");
 			Console.WriteLine("         .net core Project: The compiler will not add compiled files to its project file");
+			Console.WriteLine("      -d");
+			Console.WriteLine("         Print diagnostic messages from MsBuildWorkspace");
 			Console.WriteLine("");
 			Console.WriteLine("Directory Black-     and Whitelists:");
 			Console.WriteLine("-e<Exluded Directory> excludes a directory from compilation. Handlebars files in this folder will be ignored. Multiple statements possible.");
