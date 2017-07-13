@@ -29,8 +29,7 @@ namespace CompiledHandlebars.Cli
 
 		public static void Main(string[] args)
 		{
-			var options = new CompilerOptions();
-			Console.WriteLine(Directory.GetCurrentDirectory());
+			var options = new CompilerOptions();			
 			if (!args.Any())
 			{
 				ShowUsage();
@@ -126,11 +125,23 @@ namespace CompiledHandlebars.Cli
 
 		private static void CompileProject(CompilerOptions options)
 		{
+			Console.WriteLine($"Loading project '{options.ProjectFile}'...");
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }
-			};
+			};			
 			var workspace = MSBuildWorkspace.Create(properties);
 			var project = (workspace as MSBuildWorkspace).OpenProjectAsync(options.ProjectFile).Result;
+			if (workspace.Diagnostics.IsEmpty)
+			{
+				Console.WriteLine("Ok!");
+			} else
+			{
+				Console.WriteLine("Following errors occured:");
+				foreach (var diag in workspace.Diagnostics) {
+					Console.WriteLine(diag.Message);
+				}
+				Console.WriteLine("Trying to continue...");
+			}
 			var handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
 			CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
 		}
@@ -141,11 +152,25 @@ namespace CompiledHandlebars.Cli
 		/// <param name="options"></param>
 		private static void CompileSolution(CompilerOptions options)
 		{
+			Console.WriteLine($"Loading solution '{options.SolutionFile}'...");
 			var properties = new Dictionary<string, string>() {
 				{ "AdditionalFileItemNames", "none" }
 			};
 			var workspace = MSBuildWorkspace.Create(properties);
 			var solution = (workspace as MSBuildWorkspace).OpenSolutionAsync(options.SolutionFile).Result;
+			if (workspace.Diagnostics.IsEmpty)
+			{
+				Console.WriteLine("Ok!");
+			}
+			else
+			{
+				Console.WriteLine("Following errors occured:");
+				foreach (var diag in workspace.Diagnostics)
+				{
+					Console.WriteLine(diag.Message);
+				}
+				Console.WriteLine("Trying to continue...");
+			}
 			foreach (var projectId in solution.ProjectIds)
 			{
 				var project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(projectId));
@@ -231,9 +256,10 @@ namespace CompiledHandlebars.Cli
 								 //Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
 									nextRound.Add(file);
 								}
-								else
+								else {									
 									foreach (var error in compilationResult.Item2)
 										PrintError(error);
+								}
 							}
 							else
 							{
@@ -345,7 +371,7 @@ namespace CompiledHandlebars.Cli
 			Console.WriteLine("      -f");
 			Console.WriteLine("         Force Compilation: compile handlebars-file even if it did not change");
 			Console.WriteLine("      -c");
-			Console.WriteLine("         .net core Project: The compiler will not add files to the project files");
+			Console.WriteLine("         .net core Project: The compiler will not add compiled files to its project file");
 			Console.WriteLine("");
 			Console.WriteLine("Directory Black-     and Whitelists:");
 			Console.WriteLine("-e<Exluded Directory> excludes a directory from compilation. Handlebars files in this folder will be ignored. Multiple statements possible.");

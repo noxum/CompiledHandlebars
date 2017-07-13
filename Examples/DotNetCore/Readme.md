@@ -13,3 +13,4 @@ Pay attention to the `-c` flag that tells the compiler to not add compiled files
 3. Create a Handlebars-Template (any file with '.hbs' extension) and make sure its `BuildAction` is set to `None`
 
 As soon as you build the project, the compiler will compile all Handlbars-Templates to their C#-counterpart.
+Possible compiler errors will show up in the `Output` of the build process.
