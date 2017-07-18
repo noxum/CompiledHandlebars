@@ -7,34 +7,44 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using CompiledHandlebars.ViewEngine.Core;
+using System.Reflection;
 
 namespace AspDotNetCore
 {
-    public class Startup
-    {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
+	public class Startup
+	{
+		// This method gets called by the runtime. Use this method to add services to the container.
+		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+		public void ConfigureServices(IServiceCollection services)
+		{
+			var ve_options = new CompiledHandlebarsViewEngineOptions()
+			{
+				ViewLocationFormats = new string[] { "~/Views/{1}/{0}", "~/Views/{0}", "~/{0}" }
+			};
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole();
+			services.AddMvc().AddViewOptions(options =>
+				{
+					options.ViewEngines.Add(new CompiledHandlebarsViewEngine(typeof(Startup).GetTypeInfo().Assembly, ve_options));
+				});
+		}
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		{
+			loggerFactory.AddConsole();
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync(Template.Render(new ViewModel()
-					 {
-						 Name = "Hans Peter"
-					 }));
-            });
-        }
-    }
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
+
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					 name: "default",
+					 template: "{controller=Test}/{action=Index}/{id?}");
+			});
+		}
+	}
 }
