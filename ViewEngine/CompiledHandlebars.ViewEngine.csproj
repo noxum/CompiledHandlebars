@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CompiledHandlebars.ViewEngine</RootNamespace>
     <AssemblyName>CompiledHandlebars.ViewEngine</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -75,15 +75,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj">
-      <Project>{fd451d35-50c9-4d52-9a53-3fd1a5b98227}</Project>
-      <Name>CompiledHandlebars.RuntimeUtils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="CompiledHandlebars.ViewEngine.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj">
+      <Project>{9ac7e389-aa9f-4e07-aba0-2112c449ccc6}</Project>
+      <Name>CompiledHandlebars.RuntimeUtils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

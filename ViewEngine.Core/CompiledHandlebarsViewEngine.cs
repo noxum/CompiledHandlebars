@@ -54,7 +54,14 @@ namespace CompiledHandlebars.ViewEngine.Core
 		/// <returns></returns>
 		private string GetVirtualPath(Assembly assembly, Type template)
 		{
-			return string.Concat("~/", template.Namespace.Substring(assembly.GetName().Name.Length + 1).Replace('.', '/'), "/", template.Name.Replace('.', '/'), ".hbs");
+			if (assembly.GetName().Name.Length == template.Namespace.Length)
+			{
+				return string.Concat("~/", template.Name.Replace('.', '/'), ".hbs");
+			}
+			else
+			{
+				return string.Concat("~/", template.Namespace.Substring(assembly.GetName().Name.Length + 1).Replace('.', '/'), "/", template.Name.Replace('.', '/'), ".hbs");
+			}
 		}
 
 		public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
@@ -73,9 +80,9 @@ namespace CompiledHandlebars.ViewEngine.Core
 
 		public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
 		{
-			if (_mappings.ContainsKey(viewPath))
+			if (_mappings.ContainsKey(viewPath.ToLower()))
 			{
-				return ViewEngineResult.Found(viewPath, new CompiledHandlebarsView(_mappings[viewPath], viewPath));
+				return ViewEngineResult.Found(viewPath, new CompiledHandlebarsView(_mappings[viewPath.ToLower()], viewPath));
 			} else
 			{
 				return ViewEngineResult.NotFound(viewPath, new string[] { viewPath});

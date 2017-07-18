@@ -11,7 +11,7 @@ namespace AspDotNetCore.Controllers
 
 		public IActionResult Index()
 		{
-			return View("Index.hbs");
+			return View("~/Template.hbs", new ViewModel() { Name = "HansPeter" });
 		}
 
 		public IActionResult Greet(string name)

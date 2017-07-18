@@ -25,6 +25,7 @@ namespace AspDotNetCore
 
 			services.AddMvc().AddViewOptions(options =>
 				{
+					options.ViewEngines.Clear();
 					options.ViewEngines.Add(new CompiledHandlebarsViewEngine(typeof(Startup).GetTypeInfo().Assembly, ve_options));
 				});
 		}
