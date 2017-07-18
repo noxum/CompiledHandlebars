@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.4;net45</TargetFrameworks>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>CompiledHandlebars.RuntimeUtils</AssemblyName>
     <RootNamespace>CompiledHandlebars.RuntimeUtils</RootNamespace>
   </PropertyGroup>
