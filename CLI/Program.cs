@@ -278,6 +278,7 @@ namespace CompiledHandlebars.Cli
 			{
 				successFullCompilation = false;
 				var nextRound = new List<string>();
+				var partialErrors = new List<string>();
 				foreach (var file in hbsFiles)
 				{
 					//For each template
@@ -310,7 +311,9 @@ namespace CompiledHandlebars.Cli
 							{//Errors occured
 								if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
 								{//Unresolvable Partial... could be due to compiling sequence
-								 //Console.WriteLine($"Unresolved partial call for template '{name}'. Try again!");
+									foreach (var error in compilationResult.Item2) {
+										partialErrors.Add($"Compilation of '{name}' failed: {error.Message}");
+									}
 									nextRound.Add(file);
 								}
 								else
@@ -347,6 +350,13 @@ namespace CompiledHandlebars.Cli
 					}
 				}
 				hbsFiles = nextRound;
+				if (partialErrors.Any() && !successFullCompilation)
+				{
+					foreach(var err in partialErrors)
+					{
+						Console.WriteLine(err);
+					}
+				}
 			}
 			return workspace;
 		}
