@@ -4,6 +4,11 @@
     <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <AssemblyName>CompiledHandlebars.ViewEngine.Core</AssemblyName>
     <RootNamespace>CompiledHandlebars.ViewEngine.Core</RootNamespace>
+    <Version>0.3.3</Version>
+    <Authors>CurrySoftware GmbH</Authors>
+    <Company>CurrySoftware GmbH</Company>
+    <Product>HanldebarsCompiler</Product>
+    <Description>A ViewEngine for asp.net core that renders compiled handlebars templates.</Description>
   </PropertyGroup>
 
   <ItemGroup>

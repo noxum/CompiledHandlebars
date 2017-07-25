@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+using CompiledHandlebars.RuntimeUtils;
+using static CompiledHandlebars.RuntimeUtils.RenderHelper;
 
 namespace AspDotNetCore
 {
@@ -16,39 +18,6 @@ namespace AspDotNetCore
 			sb.Append(WebUtility.HtmlEncode(viewModel.Name));
 			sb.Append("!</h1>\r\n</body>\r\n</html>");
 			return sb.ToString();
-		}
-
-		private static bool IsTruthy(bool b)
-		{
-			return b;
-		}
-
-		private static bool IsTruthy(string s)
-		{
-			return !string.IsNullOrEmpty(s);
-		}
-
-		private static bool IsTruthy(object o)
-		{
-			return o != null;
-		}
-
-		private static bool IsTruthy<T>(IEnumerable<T> ie)
-		{
-			return ie != null && ie.Any();
-		}
-
-		private static bool IsTruthy(int i)
-		{
-			return i != 0;
-		}
-
-		private class CompiledHandlebarsTemplateAttribute : Attribute
-		{
-		}
-
-		private class CompiledHandlebarsLayoutAttribute : Attribute
-		{
 		}
 	}
 }

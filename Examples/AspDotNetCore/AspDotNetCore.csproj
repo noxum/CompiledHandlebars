@@ -36,7 +36,7 @@
   </ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="HandlebarsCompiler.exe -c -f $(ProjectPath)" />
+		<Exec Command="HandlebarsCompiler.exe -c $(ProjectPath)" />
 	</Target>
 
 </Project>
