@@ -14,14 +14,16 @@ namespace AspDotNetCore.Controllers
 			return View("~/Template.hbs", new ViewModel() { Name = "HansPeter" });
 		}
 
+		[Route("Greet/{name}")]
 		public IActionResult Greet(string name)
-		{
-			return View("Greet.hbs", new ViewModel() { Name = name });
+		{	
+			return View("Greet", name);
 		}
 
+		[Route("Echo/{num}")]
 		public IActionResult echo(int num)
 		{
-			return View("Echo.hbs", num);
+			return View("Echo", num.ToString());
 		}
     }
 }

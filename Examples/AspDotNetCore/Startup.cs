@@ -20,7 +20,7 @@ namespace AspDotNetCore
 		{
 			var ve_options = new CompiledHandlebarsViewEngineOptions()
 			{
-				ViewLocationFormats = new string[] { "~/Views/{1}/{0}", "~/Views/{0}", "~/{0}" }
+				ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/{0}.hbs", "~/{0}.hbs" }
 			};
 
 			services.AddMvc().AddViewOptions(options =>

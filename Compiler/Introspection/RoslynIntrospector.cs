@@ -89,20 +89,25 @@ namespace CompiledHandlebars.Compiler.Introspection
 		public bool RuntimeUtilsReferenced()
 		{
 			//TODO: Not only check if the type exists... but also if it is the correct version and supports everything needed from it
-			return projectCompilations[ContainingProject].GetTypeByMetadataName("CompiledHandlebars.RuntimeUtils.RenderHelper") != null;
+			if (projectCompilations[ContainingProject].GetTypeByMetadataName("CompiledHandlebars.RuntimeUtils.RenderHelper") != null)
+			{
+				return true;
+			}
+			//This is a workaround for a bug in roslyn. (https://github.com/dotnet/roslyn/issues/20939)
+			return projectCompilations[ContainingProject].ReferencedAssemblyNames.Any(x => x.Name == "CompiledHandlebars.RuntimeUtils");
 		}
 
 		public INamedTypeSymbol GetPartialHbsTemplate(string templateName)
 		{
-			return FindClassesWithNameAndAttribute(templateName, StringConstants.TEMPLATEATTRIBUTEFULL);
+			return FindClassesWithNameAndAttribute(templateName, StringConstants.TEMPLATEATTRIBUTEFULL, StringConstants.TEMPLATEATTRIBUTE);
 		}
 
 		public INamedTypeSymbol GetLayoutHbsTemplate(string layoutName)
 		{
-			return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL);
+			return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL, StringConstants.LAYOUTATTRIBUTE);
 		}
 
-		private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attribute)
+		private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attributeFull, string attribute)
 		{
 			var name = fullName.Split('.').Last();
 			foreach (var comp in projectCompilations.Values)
@@ -111,7 +116,8 @@ namespace CompiledHandlebars.Compiler.Introspection
 														  .OfType<INamedTypeSymbol>()
 														  .Where(x => NamespaceUtility.IsPartOf(x.ToDisplayString(), fullName))
 														  .FirstOrDefault(x => x.GetAttributes()
-																						.Any(y => y.AttributeClass.Name.Equals(attribute)));
+																						.Any(y => y.AttributeClass.Name.Equals(attributeFull) || 
+																									 y.AttributeClass.Name.Equals(attribute)));
 				if (template != null)
 					return template;
 			}

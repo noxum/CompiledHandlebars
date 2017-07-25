@@ -4,17 +4,17 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
-namespace AspDotNetCore
+namespace AspDotNetCore.Views.Partials
 {
 	[CompiledHandlebarsTemplate]
-	public static class Template
+	public static class Footer
 	{
-		public static string Render(AspDotNetCore.ViewModel viewModel)
+		public static string Render(System.String viewModel)
 		{
 			var sb = new StringBuilder(64);
-			sb.Append("\r\n<html>\r\n<body>\r\n\t<h1>Hello ");
-			sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-			sb.Append("!</h1>\r\n</body>\r\n</html>");
+			sb.Append("\r\n<h2>This footer is embedded as ");
+			sb.Append(WebUtility.HtmlEncode(viewModel));
+			sb.Append("!</h2>");
 			return sb.ToString();
 		}
 

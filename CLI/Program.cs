@@ -309,7 +309,8 @@ namespace CompiledHandlebars.Cli
 						{
 							if (compilationResult?.Item2?.Any() ?? false)
 							{//Errors occured
-								if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial))
+								if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial || 
+																														 x.Kind == HandlebarsTypeErrorKind.UnknownLayout))
 								{//Unresolvable Partial... could be due to compiling sequence
 									foreach (var error in compilationResult.Item2) {
 										partialErrors.Add($"Compilation of '{name}' failed: {error.Message}");

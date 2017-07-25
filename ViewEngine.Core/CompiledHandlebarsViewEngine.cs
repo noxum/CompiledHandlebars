@@ -69,9 +69,9 @@ namespace CompiledHandlebars.ViewEngine.Core
 			var controllerName = RazorViewEngine.GetNormalizedRouteValue(context, ControllerKey);
 			var areaName = RazorViewEngine.GetNormalizedRouteValue(context, AreaKey);
 
-			var match = _options.PossibleVariants(viewName, controllerName, areaName).FirstOrDefault(x => _mappings.ContainsKey(x));
+			var match = _options.PossibleVariants(viewName, controllerName, areaName).FirstOrDefault(x => _mappings.ContainsKey(x.ToLower()));
 			if (!String.IsNullOrEmpty(match)) {
-				return ViewEngineResult.Found(viewName, new CompiledHandlebarsView(_mappings[match], match));
+				return ViewEngineResult.Found(viewName, new CompiledHandlebarsView(_mappings[match.ToLower()], match));
 			} else
 			{
 				return ViewEngineResult.NotFound(viewName, _options.PossibleVariants(viewName, controllerName, areaName));
