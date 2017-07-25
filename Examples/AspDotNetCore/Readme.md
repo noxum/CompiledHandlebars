@@ -2,7 +2,7 @@
 
 1. Add the CompiledHandlebars.ViewEngine.Core and CompiledHandlebars.RuntimeUtils Nuget Package
 2. Add the CompiledHandlebarsViewEngine to the MVC-Services and configure the ViewLocationFormats.
-```
+```csharp
 var ve_options = new CompiledHandlebarsViewEngineOptions()
 {
 	ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/{0}.hbs", "~/{0}.hbs" 
@@ -13,9 +13,9 @@ services.AddMvc().AddViewOptions(options =>
 		options.ViewEngines.Add(new CompiledHandlebarsViewEngine(typeof(Startup).GetTypeInfo().Assembly, ve_options));
 });
 ```	
-3. Call the View in the Controller by Name 
-```
-	return View("Greet", name);
+3. Call the View in the Controller by Name and pass any ViewModel
+```csharp
+	return View("ViewName", viewModel);
 ```
 
 # Using the HandlebarsCompiler in an asp.net core (.net core) project
