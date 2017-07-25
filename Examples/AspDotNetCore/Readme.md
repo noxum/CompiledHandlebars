@@ -1,4 +1,24 @@
-﻿# Using the HandlebarsCompiler in a asp.net core (.net core) project
+﻿# Using the HandlebarsCompiler.ViewEngine in a asp.net core mvc project
+
+1. Add the CompiledHandlebars.ViewEngine.Core and CompiledHandlebars.RuntimeUtils Nuget Package
+2. Add the CompiledHandlebarsViewEngine to the MVC-Services and configure the ViewLocationFormats.
+```
+var ve_options = new CompiledHandlebarsViewEngineOptions()
+{
+	ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/{0}.hbs", "~/{0}.hbs" 
+};
+
+services.AddMvc().AddViewOptions(options =>
+{
+		options.ViewEngines.Add(new CompiledHandlebarsViewEngine(typeof(Startup).GetTypeInfo().Assembly, ve_options));
+});
+```	
+3. Call the View in the Controller by Name 
+```
+	return View("Greet", name);
+```
+
+# Using the HandlebarsCompiler in an asp.net core (.net core) project
 
 Because of a [bug](https://github.com/dotnet/roslyn/issues/20808), the HandlebarsCompiler does not work correctly for asp.net core projects that target the .net core framework.
 
