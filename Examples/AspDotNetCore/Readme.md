@@ -1,4 +1,4 @@
-﻿# Using the HandlebarsCompiler.ViewEngine in a asp.net core mvc project
+﻿# Using the HandlebarsCompiler.ViewEngine.Core in a asp.net core mvc project
 
 1. Add the CompiledHandlebars.ViewEngine.Core and CompiledHandlebars.RuntimeUtils Nuget Package
 2. Add the CompiledHandlebarsViewEngine to the MVC-Services and configure the ViewLocationFormats.
