@@ -22,7 +22,6 @@ namespace CompiledHandlebars.ViewEngine.Core
 		{
 			_options = options;
 
-			//This part is close to magic.
 			//The basic idea: Search through the assembly, find all compiled HandlebarsTemplates and create Func<>-objects for their render methods.
 			//Wrap these Func<>-objects in a generic class and store it in a Dictionary to be able to access them at runtime            
 			//Then the View can call the wrapped Func<>-object without knowing the actual type of the viewModel and without using reflection!
@@ -64,6 +63,15 @@ namespace CompiledHandlebars.ViewEngine.Core
 			}
 		}
 
+		/// <summary>
+		/// Tries to find a View by name and context (controller and area name)
+		/// It uses the viewlocation formats passed in the options to generate possible locations and then looks in the mapping if they exist
+		/// First match wins!
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="viewName"></param>
+		/// <param name="isMainPage"></param>
+		/// <returns></returns>
 		public ViewEngineResult FindView(ActionContext context, string viewName, bool isMainPage)
 		{
 			var controllerName = RazorViewEngine.GetNormalizedRouteValue(context, ControllerKey);
@@ -78,6 +86,14 @@ namespace CompiledHandlebars.ViewEngine.Core
 			}
 		}
 
+		/// <summary>
+		/// Tries to find a View by its ViewPath.
+		/// Checks if the ViewPath exists in the mappings and then returns the View
+		/// </summary>
+		/// <param name="executingFilePath"></param>
+		/// <param name="viewPath"></param>
+		/// <param name="isMainPage"></param>
+		/// <returns></returns>
 		public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
 		{
 			if (_mappings.ContainsKey(viewPath.ToLower()))
