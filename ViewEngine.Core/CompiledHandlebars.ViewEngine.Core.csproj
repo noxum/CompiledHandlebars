@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.6;net46</TargetFrameworks>
     <AssemblyName>CompiledHandlebars.ViewEngine.Core</AssemblyName>
     <RootNamespace>CompiledHandlebars.ViewEngine.Core</RootNamespace>
-    <Version>0.3.3</Version>
+    <Version>0.3.4</Version>
     <Authors>CurrySoftware GmbH</Authors>
     <Company>CurrySoftware GmbH</Company>
     <Product>HanldebarsCompiler</Product>
