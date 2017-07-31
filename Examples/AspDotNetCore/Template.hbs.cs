@@ -16,7 +16,9 @@ namespace AspDotNetCore
 			var sb = new StringBuilder(64);
 			sb.Append("\r\n<html>\r\n<body>\r\n\t<h1>Hello ");
 			sb.Append(WebUtility.HtmlEncode(viewModel.Name));
-			sb.Append("!</h1>\r\n</body>\r\n</html>");
+			sb.Append("!</h1>\r\n\t<p>");
+			sb.Append(WebUtility.HtmlEncode(Startup.TestHelper(viewModel)));
+			sb.Append("</p>\r\n</body>\r\n</html>");
 			return sb.ToString();
 		}
 	}

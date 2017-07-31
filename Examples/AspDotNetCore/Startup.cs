@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CompiledHandlebars.ViewEngine.Core;
 using System.Reflection;
+using CompiledHandlebars.RuntimeUtils;
 
 namespace AspDotNetCore
 {
@@ -46,6 +47,12 @@ namespace AspDotNetCore
 					 name: "default",
 					 template: "{controller=Test}/{action=Index}/{id?}");
 			});
+		}
+
+		[CompiledHandlebarsHelperMethod]
+		public static string TestHelper(ViewModel vm)
+		{
+			return $"ViewModel(Name:{vm.Name})";
 		}
 	}
 }

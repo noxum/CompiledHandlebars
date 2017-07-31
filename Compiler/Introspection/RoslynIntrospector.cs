@@ -107,6 +107,17 @@ namespace CompiledHandlebars.Compiler.Introspection
 			return FindClassesWithNameAndAttribute(layoutName, StringConstants.LAYOUTATTRIBUTEFULL, StringConstants.LAYOUTATTRIBUTE);
 		}
 
+		/// <summary>
+		/// Finds a class with a certain name and attribute
+		/// Used to find layouts and partial templates
+		/// 
+		/// Alas we have to check against both the full and the nonfull attribute name because of inconsistencies in Roslyn
+		/// when working with asp.net core projects
+		/// </summary>
+		/// <param name="fullName"></param>
+		/// <param name="attributeFull"></param>
+		/// <param name="attribute"></param>
+		/// <returns></returns>
 		private INamedTypeSymbol FindClassesWithNameAndAttribute(string fullName, string attributeFull, string attribute)
 		{
 			var name = fullName.Split('.').Last();
@@ -142,7 +153,11 @@ namespace CompiledHandlebars.Compiler.Introspection
 				var candidates = comp.GetSymbolsWithName(x => x.Equals(funtionName))
 															 .OfType<IMethodSymbol>()
 															 .Where(x => x.IsStatic &&
-																			 x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)));
+															 // The check for both HelperMethodAttribute and HelperMethodAttributeFull because when loading a asp.net core project
+															 // we the attribute name is HelpermethodAttribute while when loading a .net framework project the attribute name is
+															 // HelperMethodAttribute
+																			 x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)
+																											 || y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTE)));
 				var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
 				if (helperMethod != null)
 					return helperMethod;
