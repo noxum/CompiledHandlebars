@@ -24,6 +24,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompiledHandlebars.ViewEngine.Core", "ViewEngine.Core\CompiledHandlebars.ViewEngine.Core.csproj", "{A023239D-139B-49E3-8875-14E763A49946}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandlebars.RuntimeUtils", "RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj", "{9AC7E389-AA9F-4E07-ABA0-2112C449CCC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompiledHandleBars.CompilerVSIX", "CompilerVSIX\CompiledHandleBars.CompilerVSIX.csproj", "{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +112,14 @@ Global
 		{9AC7E389-AA9F-4E07-ABA0-2112C449CCC6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9AC7E389-AA9F-4E07-ABA0-2112C449CCC6}.Release|x86.ActiveCfg = Release|Any CPU
 		{9AC7E389-AA9F-4E07-ABA0-2112C449CCC6}.Release|x86.Build.0 = Release|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Debug|x86.Build.0 = Debug|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Release|x86.ActiveCfg = Release|Any CPU
+		{23FA694C-AF99-4E50-AD16-8DF60EE82DEC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
