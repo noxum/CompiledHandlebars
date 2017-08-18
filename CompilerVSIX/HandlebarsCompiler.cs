@@ -43,7 +43,6 @@ namespace CompiledHandleBarsCompilerVSIX
 			sw.Start();
 #endif
 			var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
-			//TODO: fix casting issue in the following line (roslyvisualstudioworkspace -> visualstudioworkspace)
 			var workspace = (Workspace)componentModel.GetService<VisualStudioWorkspace>();
 			var docIds = workspace.CurrentSolution.GetDocumentIdsWithFilePath(wszInputFilePath);
 			var project = FindContainingProject(workspace.CurrentSolution.Projects.ToList(), wszInputFilePath);
