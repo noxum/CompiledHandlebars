@@ -22,7 +22,7 @@ namespace CompiledHandlebars.ViewEngine
 		public void Render(ViewContext viewContext, TextWriter writer)
 		{
 			//If there is no HtmlHelper in the HttpContext.Items yet, provide it
-			if (!viewContext.HttpContext.Items.Contains("CompiledHanldbearsHtmlHelper"))
+			if (!viewContext.HttpContext.Items.Contains("CompiledHandlebarsHtmlHelper"))
 			{
 				var helper = new HtmlHelper(viewContext, new ViewDataContainer(viewContext.ViewData));
 				viewContext.HttpContext.Items["CompiledHandlebarsHtmlHelper"] = helper;
