@@ -7,22 +7,22 @@ using CompiledHandlebars.Compiler.Visitors;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal abstract class BlockWithElse : ASTNode
-  {
-    protected readonly IList<ASTElementBase> _elseBlock;
+	internal abstract class BlockWithElse : ASTNode
+	{
+		protected readonly IList<ASTElementBase> _elseBlock;
 
-    internal readonly bool HasElseBlock;
+		internal readonly bool HasElseBlock;
 
-    internal BlockWithElse(IList<ASTElementBase> children, IList<ASTElementBase> elseBlock, int line, int column) 
-      : base(children, line, column)
-    {
-      HasElseBlock = true;
-      _elseBlock = elseBlock;
-    }
+		internal BlockWithElse(IList<ASTElementBase> children, IList<ASTElementBase> elseBlock, int line, int column)
+		  : base(children, line, column)
+		{
+			HasElseBlock = true;
+			_elseBlock = elseBlock;
+		}
 
-    internal BlockWithElse(IList<ASTElementBase> children, int line, int column) : base(children, line, column)
-    {
-      HasElseBlock = false;
-    }
-  }
+		internal BlockWithElse(IList<ASTElementBase> children, int line, int column) : base(children, line, column)
+		{
+			HasElseBlock = false;
+		}
+	}
 }

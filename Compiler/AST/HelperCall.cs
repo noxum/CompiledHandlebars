@@ -8,27 +8,27 @@ using CompiledHandlebars.Compiler.Visitors;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class HelperCall : EncodableHandlebarsLeaf
-  {
-    internal readonly IList<Expression> Parameters;
-    internal readonly string FunctionName;
+	internal class HelperCall : EncodableHandlebarsLeaf
+	{
+		internal readonly IList<Expression> Parameters;
+		internal readonly string FunctionName;
 
-    internal HelperCall(string functionName, IList<Expression> parameters, int line, int column) : base(line, column)
-    {
-      FunctionName = functionName;
-      Parameters = parameters;
-    }
+		internal HelperCall(string functionName, IList<Expression> parameters, int line, int column) : base(line, column)
+		{
+			FunctionName = functionName;
+			Parameters = parameters;
+		}
 
 
 
-    internal override void Accept(IASTVisitor visitor)
-    {
-      visitor.Visit(this);
-    }
+		internal override void Accept(IASTVisitor visitor)
+		{
+			visitor.Visit(this);
+		}
 
-    internal override bool HasExpressionOnLoopLevel<T>()
-    {
-      return Parameters.Any(x => x is T);
-    }
-  }
+		internal override bool HasExpressionOnLoopLevel<T>()
+		{
+			return Parameters.Any(x => x is T);
+		}
+	}
 }

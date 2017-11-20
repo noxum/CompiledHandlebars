@@ -8,25 +8,25 @@ using CompiledHandlebars.Compiler.AST.Expressions;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal class PartialCall : ASTElementBase
-  {
-    internal readonly Expression Expr;
-    internal readonly NamespaceOrTypeName TemplateName;    
+	internal class PartialCall : ASTElementBase
+	{
+		internal readonly Expression Expr;
+		internal readonly NamespaceOrTypeName TemplateName;
 
-    public PartialCall(NamespaceOrTypeName templateName, Expression expr, int line, int column) : base(line, column)
-    {     
-      Expr = expr;
-      TemplateName = templateName;
-    }
+		public PartialCall(NamespaceOrTypeName templateName, Expression expr, int line, int column) : base(line, column)
+		{
+			Expr = expr;
+			TemplateName = templateName;
+		}
 
-    internal override void Accept(IASTVisitor visitor)
-    {
-      visitor.Visit(this);
-    }
+		internal override void Accept(IASTVisitor visitor)
+		{
+			visitor.Visit(this);
+		}
 
-    internal override bool HasExpressionOnLoopLevel<T>()
-    {
-      return (Expr is T);
-    }
-  }
+		internal override bool HasExpressionOnLoopLevel<T>()
+		{
+			return (Expr is T);
+		}
+	}
 }

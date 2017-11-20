@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace CompiledHandlebars.Compiler.AST
 {
-  internal abstract class EncodableHandlebarsLeaf : ASTElementBase
-  {
+	internal abstract class EncodableHandlebarsLeaf : ASTElementBase
+	{
 
-    internal EncodableHandlebarsLeaf(int line, int column) : base(line, column) { }
+		internal EncodableHandlebarsLeaf(int line, int column) : base(line, column) { }
 
-    internal TokenType Type { get; set; } = TokenType.Encoded;
+		internal TokenType Type { get; set; } = TokenType.Encoded;
 
-    internal void SetTokenType(TokenType type)
-    {
-      Type = type;
-    }
-  }
+		internal void SetTokenType(TokenType type)
+		{
+			Type = type;
+		}
+	}
 
-  internal enum TokenType { Undefined, Encoded, Unencoded }
+	internal enum TokenType { Undefined, Encoded, Unencoded }
 
 }

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <PreBuildEvent></PreBuildEvent>
+  </PropertyGroup>
+
+   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="HandlebarsCompiler.exe -c $(ProjectPath)" />
+	</Target>
+
+</Project>
