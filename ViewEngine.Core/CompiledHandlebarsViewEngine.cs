@@ -96,9 +96,9 @@ namespace CompiledHandlebars.ViewEngine.Core
 		/// <returns></returns>
 		public ViewEngineResult GetView(string executingFilePath, string viewPath, bool isMainPage)
 		{
-			if (_mappings.ContainsKey(viewPath.ToLower()))
+            if(_mappings.TryGetValue(viewPath.ToLower(), out var view))
 			{
-				return ViewEngineResult.Found(viewPath, new CompiledHandlebarsView(_mappings[viewPath.ToLower()], viewPath));
+				return ViewEngineResult.Found(viewPath, new CompiledHandlebarsView(view, viewPath));
 			} else
 			{
 				return ViewEngineResult.NotFound(viewPath, new string[] { viewPath});
