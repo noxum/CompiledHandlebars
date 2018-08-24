@@ -62,16 +62,16 @@ namespace CompiledHandlebars.ViewEngine
 		protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)
 		{
 			partialPath = EnsureVirtualPathPrefixToLower(partialPath);
-			if (_mappings.ContainsKey(partialPath))
-				return new CompiledHandlebarsView(_mappings[partialPath]);
+            if(_mappings.TryGetValue(partialPath, out var partial))
+				return new CompiledHandlebarsView(partial);
 			return null;
 		}
 
 		protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath)
 		{
 			viewPath = EnsureVirtualPathPrefixToLower(viewPath);
-			if (_mappings.ContainsKey(viewPath))
-				return new CompiledHandlebarsView(_mappings[viewPath]);
+            if (_mappings.TryGetValue(viewPath, out var view))
+                return new CompiledHandlebarsView(view);
 			return null;
 		}
 
