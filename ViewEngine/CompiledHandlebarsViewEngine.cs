@@ -3,18 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web;
-using System.Web.Compilation;
-using System.Web.Hosting;
-using System.Web.WebPages;
 
 namespace CompiledHandlebars.ViewEngine
 {
 
-	public class CompiledHandlebarsViewEngine : VirtualPathProviderViewEngine
+    public class CompiledHandlebarsViewEngine : VirtualPathProviderViewEngine
 	{
 		private Dictionary<string, RenderMethodWrapperBase> _mappings { get; set; } = new Dictionary<string, RenderMethodWrapperBase>();
 		public CompiledHandlebarsViewEngine(Assembly assembly)

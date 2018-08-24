@@ -9,6 +9,7 @@
     <Company>CurrySoftware GmbH</Company>
     <Product>HanldebarsCompiler</Product>
     <Description>A ViewEngine for asp.net core that renders compiled handlebars templates.</Description>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net46;;net462;netstandard1.6;netstandard2</TargetFrameworks>
+    <TargetFrameworks>net45;net46;net462;netstandard2</TargetFrameworks>
     <AssemblyName>CompiledHandlebars.RuntimeUtils</AssemblyName>
     <RootNamespace>CompiledHandlebars.RuntimeUtils</RootNamespace>
     <Version>0.4.0</Version>
@@ -9,6 +9,7 @@
     <Authors>CurrySoftware GmbH</Authors>
     <Company>CurrySoftware GmbH</Company>
     <Product>HandlebarsCompiler</Product>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
 </Project>
