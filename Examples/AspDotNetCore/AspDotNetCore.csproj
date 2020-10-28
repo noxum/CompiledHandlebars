@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,8 +31,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj" />
-    <ProjectReference Include="..\..\ViewEngine.Core\CompiledHandlebars.ViewEngine.Core.csproj" />
     <ProjectReference Include="..\DummyProject\DummyProject.csproj" />
   </ItemGroup>
 

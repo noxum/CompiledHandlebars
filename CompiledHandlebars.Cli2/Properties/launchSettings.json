@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CompiledHandlebars.Cli2": {
+      "commandName": "Project",
+      "commandLineArgs": "-c -d -eC:\\dev\\sw.git\\StiftungWarentest.Website\\node_modules -eC:\\dev\\sw.git\\StiftungWarentest.Website\\assets C:\\dev\\sw.git\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
+    }
+  }
+}

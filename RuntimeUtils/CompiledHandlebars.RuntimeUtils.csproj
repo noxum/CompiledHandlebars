@@ -10,6 +10,7 @@
     <Company>CurrySoftware GmbH</Company>
     <Product>HandlebarsCompiler</Product>
     <IncludeSymbols>true</IncludeSymbols>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
 </Project>

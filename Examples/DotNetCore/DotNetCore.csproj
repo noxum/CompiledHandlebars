@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <PreBuildEvent></PreBuildEvent>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
