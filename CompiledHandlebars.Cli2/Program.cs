@@ -401,6 +401,11 @@ namespace CompiledHandlebars.Core.Cli
                                 if (doc != null)
                                 {//And change it if it does
                                     project = doc.WithSyntaxRoot(CSharpSyntaxTree.ParseText(SourceText.From(compilationResult.Item1)).GetRoot()).Project;
+                                    if (options.NetCoreProject)
+                                    {
+                                        //For .net core projects -> directly to the filesystem
+                                        File.WriteAllText($"{file}.cs", compilationResult.Item1);
+                                    }
                                 }
                                 else
                                 {//Otherwise add a new document
