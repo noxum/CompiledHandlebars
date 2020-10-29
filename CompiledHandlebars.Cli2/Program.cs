@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
@@ -174,23 +173,7 @@ namespace CompiledHandlebars.Core.Cli
             }
             else
             {
-                workspace = MSBuildWorkspace.Create(properties);
-                var msBuildWorkspace = workspace as MSBuildWorkspace;
-                project = msBuildWorkspace.OpenProjectAsync(options.ProjectFile).Result;
-                if (msBuildWorkspace.Diagnostics.IsEmpty)
-                {
-                    Console.WriteLine("Ok!");
-                }
-                else if (options.Debug)
-                {
-                    Console.WriteLine("Following errors occured:");
-                    foreach (var diag in msBuildWorkspace.Diagnostics)
-                    {
-                        Console.WriteLine(diag.Message);
-                    }
-                    Console.WriteLine("Trying to continue...");
-                }
-                handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
+                throw new NotImplementedException();
             }
             if (handlebarsFiles.Any())
             {
@@ -267,22 +250,7 @@ namespace CompiledHandlebars.Core.Cli
             }
             else
             {
-                workspace = MSBuildWorkspace.Create(properties);
-                MSBuildWorkspace msBuildWorkspace = (MSBuildWorkspace) workspace;
-                solution = msBuildWorkspace.OpenSolutionAsync(options.SolutionFile).Result;
-                if (msBuildWorkspace.Diagnostics.IsEmpty)
-                {
-                    Console.WriteLine("Ok!");
-                }
-                else if (options.Debug)
-                {
-                    Console.WriteLine("Following errors occured:");
-                    foreach (var diag in msBuildWorkspace.Diagnostics)
-                    {
-                        Console.WriteLine(diag.Message);
-                    }
-                    Console.WriteLine("Trying to continue...");
-                }
+                throw new NotImplementedException();
             }
 
             foreach (var projectId in solution.ProjectIds)
@@ -300,7 +268,7 @@ namespace CompiledHandlebars.Core.Cli
                 
                 if (handlebarsFiles.Any())
                 {
-                    workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options) as MSBuildWorkspace;
+                    workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
                 }
                 else
                 {

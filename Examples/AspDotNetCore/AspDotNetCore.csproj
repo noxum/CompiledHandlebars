@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
