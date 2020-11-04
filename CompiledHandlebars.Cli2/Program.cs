@@ -124,6 +124,7 @@ namespace CompiledHandlebars.Core.Cli
                 Console.WriteLine(outerEx);
                 return -1;
             }
+            Console.WriteLine($"Exit-Code: {_ExitCode}");
             return _ExitCode;
         }
 
@@ -347,6 +348,7 @@ namespace CompiledHandlebars.Core.Cli
                         {
                             if (compilationResult?.Item2?.Any() ?? false)
                             {//Errors occured
+                                _ExitCode = -1;
                                 if (compilationResult.Item2.OfType<HandlebarsTypeError>().Any(x => x.Kind == HandlebarsTypeErrorKind.UnknownPartial || x.Kind == HandlebarsTypeErrorKind.UnknownLayout))
                                 {//Unresolvable Partial... could be due to compiling sequence
                                     foreach (var error in compilationResult.Item2)
@@ -394,9 +396,12 @@ namespace CompiledHandlebars.Core.Cli
                     }
                 }
                 hbsFiles = nextRound;
-                if (partialErrors.Any() && !successFullCompilation)
+                if (!successFullCompilation)
                 {
                     _ExitCode = -1;
+                }
+                if (partialErrors.Any() && !successFullCompilation)
+                {
                     foreach (var err in partialErrors)
                     {
                         Console.WriteLine(err);
