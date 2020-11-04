@@ -291,7 +291,7 @@ TrimWhitespace = (TrimWhitespaceIdentifier #STATE{ state["trimStart"]=true; }) /
 TrimOpening = ("{{{{"/"{{{"/"{{")TrimWhitespaceIdentifier
 ParentPathLiteral = "../"
 NameDelimiter = "." / "/"
-LiteralDelimiter = "\""
+LiteralDelimiter = "\"" / "'"
 Whitespace = (" " / "\n" / "\r" / "\t")*
 ThisKeyword = "this" / ("."!".")
 
