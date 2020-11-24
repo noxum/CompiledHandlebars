@@ -404,7 +404,7 @@ namespace CompiledHandlebars.Core.Cli
                 {
                     foreach (var err in partialErrors)
                     {
-                        Console.WriteLine(err);
+                        Console.Error.WriteLine(err);
                     }
                 }
             }
@@ -413,7 +413,7 @@ namespace CompiledHandlebars.Core.Cli
 
         private static void PrintError(HandlebarsException error)
         {
-            Console.WriteLine($"Compilation failed: {error.Message}");
+            Console.Error.WriteLine($"Compilation failed: {error.Message}");
         }
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace CompiledHandlebars.Core.Cli
 
         private static void NoTemplates()
         {
-            Console.WriteLine("No handlebars templates found. Did you set build action to 'None' or 'C# analyzer additional file' (asp.net core for .net core)?");
+            Console.Error.WriteLine("No handlebars templates found. Did you set build action to 'None' or 'C# analyzer additional file' (asp.net core for .net core)?");
         }
 
         private static void ShowUsage()
