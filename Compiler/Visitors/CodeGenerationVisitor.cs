@@ -295,13 +295,13 @@ namespace CompiledHandlebars.Compiler.Visitors
 
 		public void VisitEnter(HandlebarsTemplate template)
 		{
-			state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+			//state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
 		}
 
 
 		public void VisitLeave(HandlebarsTemplate template)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitHandlebarsTemplate();
 		}
 
@@ -343,20 +343,20 @@ namespace CompiledHandlebars.Compiler.Visitors
 
 		public void VisitRenderBody(HandlebarsLayout layout)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			state.PushNewBlock();
-			state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+			//state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
 		}
 
 		public void VisitLeave(HandlebarsLayout layout)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitHandlebarsLayout();
 		}
 
 		public void VisitLeave(StaticHandlebarsTemplate staticTemplate)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitStaticTemplate();
 		}
 	}

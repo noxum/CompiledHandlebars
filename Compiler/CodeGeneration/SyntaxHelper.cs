@@ -13,7 +13,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// </summary>
     internal static class SyntaxHelper
     {
-        private static readonly TypeSyntax TaskOfString = SF.ParseTypeName("Task<string>");
+        private static readonly TypeSyntax taskType = SF.ParseTypeName("Task");
 
         /// <summary>
         /// Yields "sb.Append(argument)"
@@ -148,6 +148,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
               );
         }
 
+        private static TypeSyntax stringBuilderTypeSyntax = SF.ParseTypeName("StringBuilder");
+
         /// <summary>
         /// Yields the Render Method with ViewModel Parameter:
         /// public static string Render(TViewModel viewModel){}
@@ -161,16 +163,27 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                     SF.Token(SyntaxKind.PublicKeyword),
                     SF.Token(SyntaxKind.StaticKeyword),
                     SF.Token(SyntaxKind.AsyncKeyword)),
-                 TaskOfString,
+                 taskType,
                  default(ExplicitInterfaceSpecifierSyntax),
                  SF.Identifier(methodName),
                  default(TypeParameterListSyntax),
-                 SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>().Add(SF.Parameter(
-                    default(SyntaxList<AttributeListSyntax>),
-                    default(SyntaxTokenList),
-                    SF.ParseTypeName(typeName),
-                    SF.Identifier("viewModel"),
-                    default(EqualsValueClauseSyntax)))
+                 SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>()
+                     .Add(SF.Parameter
+                     (
+                         default(SyntaxList<AttributeListSyntax>),
+                         default(SyntaxTokenList),
+                         SF.ParseTypeName(typeName),
+                         SF.Identifier("viewModel"),
+                         default(EqualsValueClauseSyntax)
+                     ))
+                     .Add(SF.Parameter
+                     (
+                         default(SyntaxList<AttributeListSyntax>),
+                         default(SyntaxTokenList),
+                         stringBuilderTypeSyntax,
+                         SF.Identifier("sb"),
+                         default(EqualsValueClauseSyntax)
+                     ))
                  ),
                  default(SyntaxList<TypeParameterConstraintClauseSyntax>),
                  SF.Block(),
@@ -192,11 +205,20 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
                         SF.Token(SyntaxKind.PublicKeyword),
                         SF.Token(SyntaxKind.StaticKeyword),
                         SF.Token(SyntaxKind.AsyncKeyword)),
-                        TaskOfString,
+                        taskType,
                         default(ExplicitInterfaceSpecifierSyntax),
                         SF.Identifier(methodName),
                         default(TypeParameterListSyntax),
-                        SF.ParameterList(),
+                    SF.ParameterList(new SeparatedSyntaxList<ParameterSyntax>()
+                        .Add(SF.Parameter
+                        (
+                            default(SyntaxList<AttributeListSyntax>),
+                            default(SyntaxTokenList),
+                            stringBuilderTypeSyntax,
+                            SF.Identifier("sb"),
+                            default(EqualsValueClauseSyntax)
+                        ))
+                        ),
                         default(SyntaxList<TypeParameterConstraintClauseSyntax>),
                         SF.Block(),
                         default(SyntaxToken)
@@ -431,6 +453,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             );
         }
 
+        private static readonly ArgumentSyntax sbAsArgument = SF.Argument(SF.ParseExpression("sb"));
+
         /// <summary>
         /// sb.Append(Template.Render(membername))
         /// </summary>
@@ -441,19 +465,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         {
             return
               SF.ExpressionStatement(
-                 SF.InvocationExpression(
-                    SF.ParseExpression("sb.Append")
-                 )
-                 .AddArgumentListArguments(
-                    SF.Argument(
-                        SF.AwaitExpression(SF.Token(SyntaxKind.AwaitKeyword),
-                      SF.InvocationExpression(
-                         SF.ParseExpression($"{templateTypeName}.{methodName}")
-                      ).AddArgumentListArguments(
-                         SF.Argument(SF.ParseExpression(memberName))
-                      )
-                    ))
-                 )
+                     SF.AwaitExpression(SF.Token(SyntaxKind.AwaitKeyword),
+                         SF.InvocationExpression(
+                             SF.ParseExpression($"{templateTypeName}.{methodName}")
+                         ).AddArgumentListArguments(
+                             SF.Argument(SF.ParseExpression(memberName)),
+                             sbAsArgument
+                         )
+                     )
               );
         }
 
@@ -461,20 +480,14 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
         {
             return
              SF.ExpressionStatement(
-                SF.InvocationExpression(
-                  SF.ParseExpression("sb.Append")
-                )
-                .AddArgumentListArguments(
-                  SF.Argument(
-                      SF.AwaitExpression(
+                 SF.AwaitExpression(
                      SF.InvocationExpression(
-                        SF.ParseExpression("RenderAsync")
+                         SF.ParseExpression("RenderAsync")
                      ).AddArgumentListArguments(
-                        SF.Argument(SF.ParseExpression(memberName))
+                         SF.Argument(SF.ParseExpression(memberName)),
+                         sbAsArgument
                      )
-                  ))
-                )
-             );
+                 ));
         }
 
         /// <summary>
