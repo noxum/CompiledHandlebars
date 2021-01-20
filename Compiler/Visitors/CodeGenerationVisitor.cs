@@ -277,12 +277,13 @@ namespace CompiledHandlebars.Compiler.Visitors
 			if (helperMethod != null)
 			{
 				state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
-				state.PushStatement(
-				  SyntaxHelper.AppendFuntionCallResult(
+                state.PushStatement(
+                    SyntaxHelper.AppendFuntionCallResult(
 					 functionName: string.Concat(helperMethod.ContainingType.Name, ".", helperMethod.Name),
 					 parameters: paramContextList.Select(x => x.FullPath).ToList(),
 					 returnTypeIsString: helperMethod.ReturnType.IsString(),
-					 encoded: astLeaf.Type == TokenType.Encoded));
+					 encoded: astLeaf.Type == TokenType.Encoded, 
+                     doAwait: helperMethod.Name.EndsWith("Async", StringComparison.Ordinal)));
 			}
 			else
 			{//HelperMethod not found
