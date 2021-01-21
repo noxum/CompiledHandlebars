@@ -19,7 +19,7 @@ namespace CompiledHandlebars.ViewEngine
 			_funcWrapper = funcWrapper;
 		}
 
-		public void Render(ViewContext viewContext, TextWriter writer)
+        public void Render(ViewContext viewContext, TextWriter writer)
 		{
 			//If there is no HtmlHelper in the HttpContext.Items yet, provide it
 			if (!viewContext.HttpContext.Items.Contains("CompiledHandlebarsHtmlHelper"))
@@ -27,7 +27,10 @@ namespace CompiledHandlebars.ViewEngine
 				var helper = new HtmlHelper(viewContext, new ViewDataContainer(viewContext.ViewData));
 				viewContext.HttpContext.Items["CompiledHandlebarsHtmlHelper"] = helper;
 			}
-			string output = _funcWrapper.InvokeRender(viewContext.ViewData?.Model);
+            StringBuilder sb = new StringBuilder(4096);
+            Task.Run(async () => await _funcWrapper.InvokeRender(viewContext.ViewData?.Model, sb)).GetAwaiter().GetResult();
+            string output = sb.ToString();
+
 			writer.Write(output);
 		}
 

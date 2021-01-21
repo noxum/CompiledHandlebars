@@ -19,7 +19,10 @@ namespace AspDotNetCore
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var ve_options = new CompiledHandlebarsViewEngineOptions()
+            // StringFilterStream (mandatory for using ViewEngine.Core!)
+            services.AddStringFilterStream();
+
+            var ve_options = new CompiledHandlebarsViewEngineOptions()
 			{
 				ViewLocationFormats = new string[] { "~/Views/{1}/{0}.hbs", "~/Views/{0}.hbs", "~/{0}.hbs" }
 			};
@@ -41,7 +44,9 @@ namespace AspDotNetCore
 				app.UseDeveloperExceptionPage();
 			}
 
-			app.UseMvc(routes =>
+            CompiledHandlebarsViewEngine.Initialize(app.ApplicationServices);
+			
+            app.UseMvc(routes =>
 			{
 				routes.MapRoute(
 					 name: "default",

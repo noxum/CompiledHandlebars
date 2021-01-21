@@ -9,11 +9,16 @@ namespace DotNetFramework
 	class Program
 	{
 		static void Main(string[] args)
-		{
-			Console.WriteLine(Template.Render(new ViewModel()
-			{
-				Name = "Hans Peter"
-			}));
+        {
+            StringBuilder sb = new StringBuilder();
+            Task.Run(async () => 
+                await  Template.RenderAsync(new ViewModel
+                {
+                    Name = "Hans Peter"
+                }, sb)
+            ).Wait();
+
+			Console.WriteLine(sb.ToString());
 		}
 	}
 }

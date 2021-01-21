@@ -277,12 +277,13 @@ namespace CompiledHandlebars.Compiler.Visitors
 			if (helperMethod != null)
 			{
 				state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
-				state.PushStatement(
-				  SyntaxHelper.AppendFuntionCallResult(
+                state.PushStatement(
+                    SyntaxHelper.AppendFuntionCallResult(
 					 functionName: string.Concat(helperMethod.ContainingType.Name, ".", helperMethod.Name),
 					 parameters: paramContextList.Select(x => x.FullPath).ToList(),
 					 returnTypeIsString: helperMethod.ReturnType.IsString(),
-					 encoded: astLeaf.Type == TokenType.Encoded));
+					 encoded: astLeaf.Type == TokenType.Encoded, 
+                     doAwait: helperMethod.Name.EndsWith("Async", StringComparison.Ordinal)));
 			}
 			else
 			{//HelperMethod not found
@@ -294,13 +295,13 @@ namespace CompiledHandlebars.Compiler.Visitors
 
 		public void VisitEnter(HandlebarsTemplate template)
 		{
-			state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+			//state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
 		}
 
 
 		public void VisitLeave(HandlebarsTemplate template)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitHandlebarsTemplate();
 		}
 
@@ -342,20 +343,20 @@ namespace CompiledHandlebars.Compiler.Visitors
 
 		public void VisitRenderBody(HandlebarsLayout layout)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			state.PushNewBlock();
-			state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
+			//state.PushStatement(SyntaxHelper.DeclareAndCreateStringBuilder);
 		}
 
 		public void VisitLeave(HandlebarsLayout layout)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitHandlebarsLayout();
 		}
 
 		public void VisitLeave(StaticHandlebarsTemplate staticTemplate)
 		{
-			state.PushStatement(SyntaxHelper.ReturnSBToString);
+			//state.PushStatement(SyntaxHelper.ReturnSBToString);
 			resultingCompilationUnit = state.GetCompilationUnitStaticTemplate();
 		}
 	}

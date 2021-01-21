@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace CompiledHandlebars.ViewEngine
@@ -23,21 +25,34 @@ namespace CompiledHandlebars.ViewEngine
 			//Then the View can call the wrapped Func<>-object without knowing the actual type of the viewModel and without using reflection!
 			foreach (var template in assembly.GetTypes().Where(x => x.GetCustomAttribute(typeof(CompiledHandlebarsTemplateAttribute), false) != null))
 			{
-				var renderMethod = template.GetMethod("Render");
-				Type wrapperType;
-				if (!renderMethod.GetParameters().Any())
-				{
-					wrapperType = typeof(StaticRenderMethodWrapper);
-				}
-				else if (renderMethod.GetParameters().Count() == 1)
-				{
-					wrapperType = typeof(RenderMethodWrapper<>).MakeGenericType(renderMethod.GetParameters().First().ParameterType);
-				}
-				else
-				{
-					continue;
-				}
-				_mappings.Add(GetVirtualPath(assembly, template).ToLower(), Activator.CreateInstance(wrapperType, renderMethod) as RenderMethodWrapperBase);
+                var renderMethod = template.GetMethod("RenderAsync");
+                Type wrapperType;
+
+                if (renderMethod == null || renderMethod.ReturnType != typeof(Task))
+                {
+                    continue;
+                }
+
+                var parameters = renderMethod.GetParameters().ToArray();
+
+                if (parameters.Length == 0)
+                {
+                    continue;
+                }
+
+                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(StringBuilder))
+                {
+                    wrapperType = typeof(StaticRenderMethodWrapper);
+                }
+                else if (parameters.Length == 2 && parameters[1].ParameterType == typeof(StringBuilder))
+                {
+                    wrapperType = typeof(RenderMethodWrapper<>).MakeGenericType(renderMethod.GetParameters().First().ParameterType);
+                }
+                else
+                {
+                    continue;
+                }
+                _mappings.Add(GetVirtualPath(assembly, template).ToLower(), Activator.CreateInstance(wrapperType, renderMethod) as RenderMethodWrapperBase);
 			}
 
 		}

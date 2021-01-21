@@ -16,7 +16,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 		private int line { get; set; }
 		private int column { get; set; }
 		private Stack<List<StatementSyntax>> resultStack { get; set; } = new Stack<List<StatementSyntax>>();
-		private List<string> usings { get; set; } = new List<string>() { "System", "System.Linq", "System.Net", "System.Text", "System.Collections.Generic" };
+		private List<string> usings { get; set; } = new List<string>() { "System", "System.Linq", "System.Net", "System.Text", "System.Collections.Generic", "System.Threading.Tasks" };
 		internal int LoopLevel { get; set; } = 0;
 		internal RoslynIntrospector Introspector { get; set; }
 		internal HandlebarsTemplate Template { get; private set; }

@@ -10,4 +10,10 @@
 		<Exec Command="HandlebarsCompiler.exe -c $(ProjectPath)" />
 	</Target>
 
+   <ItemGroup>
+     <None Update="Template.hbs">
+       <Generator></Generator>
+     </None>
+   </ItemGroup>
+
 </Project>

@@ -10,6 +10,7 @@
     <Product>HanldebarsCompiler</Product>
     <Description>A ViewEngine for asp.net core that renders compiled handlebars templates.</Description>
     <IncludeSymbols>true</IncludeSymbols>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

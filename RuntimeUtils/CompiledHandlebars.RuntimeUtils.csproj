@@ -10,6 +10,7 @@
     <Company>CurrySoftware GmbH</Company>
     <Product>HandlebarsCompiler</Product>
     <IncludeSymbols>true</IncludeSymbols>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Template.hbs" />
+    <AdditionalFiles Include="Template.hbs">
+      <Generator></Generator>
+    </AdditionalFiles>
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +35,20 @@
     <ProjectReference Include="..\..\RuntimeUtils\CompiledHandlebars.RuntimeUtils.csproj" />
     <ProjectReference Include="..\..\ViewEngine.Core\CompiledHandlebars.ViewEngine.Core.csproj" />
     <ProjectReference Include="..\DummyProject\DummyProject.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\Echo.hbs">
+      <Generator></Generator>
+    </None>
+    <None Update="Views\Greet.hbs">
+      <Generator></Generator>
+    </None>
+    <None Update="Views\Layouts\Main.hbs">
+      <Generator></Generator>
+    </None>
+    <None Update="Views\Partials\Footer.hbs">
+      <Generator></Generator>
+    </None>
   </ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
