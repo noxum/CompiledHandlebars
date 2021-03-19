@@ -4,7 +4,7 @@
     <TargetFrameworks>net45;net46;net462;netstandard2</TargetFrameworks>
     <AssemblyName>CompiledHandlebars.RuntimeUtils</AssemblyName>
     <RootNamespace>CompiledHandlebars.RuntimeUtils</RootNamespace>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <Description>RuntimeUtils for the HandlebarsCompiler.</Description>
     <Authors>CurrySoftware GmbH</Authors>
     <Company>CurrySoftware GmbH</Company>
