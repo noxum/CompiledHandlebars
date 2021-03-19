@@ -255,10 +255,10 @@ namespace CompiledHandlebars.Compiler.Visitors
 						state.AddTypeError($"Could not find partial '{astLeaf.TemplateName}'", HandlebarsTypeErrorKind.UnknownPartial);
 						return;
 					}
-					state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
+					//state.RegisterUsing(partial.ContainingNamespace.ToDisplayString());
 					state.PushStatement(
 					  SyntaxHelper.HbsTemplateCall(
-						 partial.Name,
+						 $"{partial.ContainingNamespace.ToDisplayString()}.{partial.Name}",
 						 argumentContext.FullPath));
 				}
 			}
