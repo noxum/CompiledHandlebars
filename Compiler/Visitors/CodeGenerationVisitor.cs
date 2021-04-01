@@ -273,15 +273,23 @@ namespace CompiledHandlebars.Compiler.Visitors
 				if (param.TryEvaluate(state, out Context paramContext))
 					paramContextList.Add(paramContext);
 			}
-			var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, paramContextList.Select(x => x.Symbol).ToList());
+
+            bool acceptsStringBuilder;
+			var helperMethod = state.Introspector.GetHelperMethod(astLeaf.FunctionName, paramContextList.Select(x => x.Symbol).ToList(), out acceptsStringBuilder);
 			if (helperMethod != null)
 			{
 				state.RegisterUsing(helperMethod.ContainingNamespace.ToDisplayString());
-                state.PushStatement(
+                bool returnTypeIsString = helperMethod.ReturnType.IsString() || helperMethod.ReturnType.IsTaskOfString();
+				var paramList = paramContextList.Select(x => x.FullPath).ToList();
+                if (acceptsStringBuilder && !returnTypeIsString)
+                {
+					paramList.Add("sb");
+                }
+				state.PushStatement(
                     SyntaxHelper.AppendFuntionCallResult(
 					 functionName: string.Concat(helperMethod.ContainingType.Name, ".", helperMethod.Name),
-					 parameters: paramContextList.Select(x => x.FullPath).ToList(),
-					 returnTypeIsString: helperMethod.ReturnType.IsString(),
+					 parameters: paramList,
+					 returnTypeIsString: returnTypeIsString,
 					 encoded: astLeaf.Type == TokenType.Encoded, 
                      doAwait: helperMethod.Name.EndsWith("Async", StringComparison.Ordinal)));
 			}
