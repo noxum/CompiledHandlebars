@@ -36,7 +36,7 @@ namespace CompiledHandlebars.Compiler.Introspection
                 {
                     //Bruteforce way: Just get the new compilation...
                     //If that does not scale try adding documents to the compilation (incremental update)
-                    projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
+                    //projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
                 }
                 solution = project.Solution;
             }
