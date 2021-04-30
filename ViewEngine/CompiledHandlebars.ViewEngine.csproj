@@ -4,7 +4,7 @@
     <TargetFrameworks>net45;net46;net462</TargetFrameworks>
     <AssemblyName>CompiledHandlebars.ViewEngine</AssemblyName>
     <RootNamespace>CompiledHandlebars.ViewEngine</RootNamespace>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <Authors>CurrySoftware GmbH</Authors>
     <Company>CurrySoftware GmbH</Company>
     <Product>HanldebarsCompiler</Product>

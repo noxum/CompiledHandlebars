@@ -33,9 +33,11 @@ namespace CompiledHandlebars.Compiler.Introspection
                 foreach (var addedProject in changes.GetAddedProjects())
                     projectCompilations.Add(addedProject.Id, GetCompilationForProject(addedProject));
                 foreach (var projectChanges in changes.GetProjectChanges())
+                {
                     //Bruteforce way: Just get the new compilation...
                     //If that does not scale try adding documents to the compilation (incremental update)
-                    projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
+                    //projectCompilations[projectChanges.ProjectId] = GetCompilationForProject(projectChanges.NewProject);
+                }
                 solution = project.Solution;
             }
             else
@@ -132,11 +134,53 @@ namespace CompiledHandlebars.Compiler.Introspection
                                     (y.AttributeClass != null && y.AttributeClass.Name.Equals(attribute)))))
                     .OrderByDescending(x => x.ContainingNamespace.ToDisplayString())
                     .FirstOrDefault();
+                //var y = comp.GetSymbolsWithName(x => x.Equals(name, System.StringComparison.Ordinal))
+                //    .OfType<INamedTypeSymbol>()
+                //    .Where(x => NamespaceUtility.IsPartOf(x.ToDisplayString(), fullName)
+                //                && (x.GetAttributes().Any(y =>
+                //                    (y.AttributeClass != null && y.AttributeClass.Name.Equals(attributeFull)) ||
+                //                    (y.AttributeClass != null && y.AttributeClass.Name.Equals(attribute)))))
+                //    .OrderByDescending(x => x.ContainingNamespace.ToDisplayString())
+                //    .ToList();
+
+                //if (name == "_DyloAttributes")
+                //{
+                //    var z1 = comp.GetSymbolsWithName(x => x.Equals(name, System.StringComparison.Ordinal)).OfType<INamedTypeSymbol>().ToList();
+                //    var z2 = comp.GetSymbolsWithName(x => x.Equals(name, System.StringComparison.Ordinal)).ToList();
+                //    var z3 = comp.GetSymbolsWithName(x => x.IndexOf("_DyloAttributes", StringComparison.OrdinalIgnoreCase) != -1).ToList();
+                //    var z4 = comp.GetSymbolsWithName(n => true).ToList();
+                //    //StiftungWarentest.Website.ViewsRelaunch.Shared._DyloAttributes
+                //    var z5 = z4.Where(n => n.ContainingNamespace.ToString().StartsWith("StiftungWarentest.Website.ViewsRelaunch", StringComparison.OrdinalIgnoreCase)).ToList();
+                //    Console.WriteLine(z1.Count);
+                //}
+
                 if (template != null)
                     return template;
             }
             return null;
         }
+
+        private IMethodSymbol findHelperMethod(string funtionName, List<ITypeSymbol> parameters)
+        {
+            foreach (var comp in projectCompilations.Values)
+            {
+                var candidates = comp.GetSymbolsWithName(x => x.Equals(funtionName))
+                    .OfType<IMethodSymbol>()
+                    .Where(x => x.IsStatic &&
+                                // The check for both HelperMethodAttribute and HelperMethodAttributeFull because when loading a asp.net core project
+                                // we the attribute name is HelpermethodAttribute while when loading a .net framework project the attribute name is
+                                // HelperMethodAttribute
+                                x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)
+                                                           || y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTE)));
+                var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
+                if (helperMethod != null)
+                {
+                    return helperMethod;
+                }
+            }
+            return null;
+        }
+
 
         /// <summary>
         /// Searches each referenced project for helper methods. 
@@ -149,23 +193,23 @@ namespace CompiledHandlebars.Compiler.Introspection
         /// <param name="funtionName">Name of the Helper as declared in the handlebars-template</param>
         /// <param name="parameters">Types of the Parameters that are passed to the helper method</param>
         /// <returns>The MethodSymbol for the called HelperMethod or null if it could not be found</returns>
-        public IMethodSymbol GetHelperMethod(string funtionName, List<ITypeSymbol> parameters)
+        public IMethodSymbol GetHelperMethod(string funtionName, List<ITypeSymbol> parameters, out bool acceptsStringBuilder)
         {
-            foreach (var comp in projectCompilations.Values)
+            //acceptsStringBuilder = false;
+            //return findHelperMethod(funtionName, parameters);
+
+            var sbSymbol = GetStringBuilderTypeSymbol();
+            parameters.Add(sbSymbol);
+
+            IMethodSymbol helperMethod = findHelperMethod(funtionName, parameters);
+            acceptsStringBuilder = true;
+            if (helperMethod == null)
             {
-                var candidates = comp.GetSymbolsWithName(x => x.Equals(funtionName))
-                                                             .OfType<IMethodSymbol>()
-                                                             .Where(x => x.IsStatic &&
-                                                                             // The check for both HelperMethodAttribute and HelperMethodAttributeFull because when loading a asp.net core project
-                                                                             // we the attribute name is HelpermethodAttribute while when loading a .net framework project the attribute name is
-                                                                             // HelperMethodAttribute
-                                                                             x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)
-                                                                                                             || y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTE)));
-                var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
-                if (helperMethod != null)
-                    return helperMethod;
+                acceptsStringBuilder = false;
+                parameters.Remove(sbSymbol);
+                helperMethod = findHelperMethod(funtionName, parameters);
             }
-            return null;
+            return helperMethod;
         }
 
         private static bool DoParametersMatch(IMethodSymbol methodSymbol, List<ITypeSymbol> parameters)
@@ -206,6 +250,11 @@ namespace CompiledHandlebars.Compiler.Introspection
         public INamedTypeSymbol GetStringTypeSymbol()
         {
             return projectCompilations.First().Value.GetSpecialType(SpecialType.System_String);
+        }
+
+        public INamedTypeSymbol GetStringBuilderTypeSymbol()
+        {
+            return projectCompilations.First().Value.GetTypeByMetadataName(@"System.Text.StringBuilder");
         }
     }
 }

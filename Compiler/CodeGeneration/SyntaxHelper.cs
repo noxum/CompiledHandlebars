@@ -276,21 +276,16 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
             }
             else
             {
+                //ExpressionStatementSyntax
                 ExpressionSyntax expr = SF.InvocationExpression(SF.ParseExpression(functionName))
                     .AddArgumentListArguments(
                         parameters.Select(x => SF.Argument(SF.ParseExpression(x))).ToArray()
                     );
                 if (doAwait)
                 {
-                    expr = SF.ParenthesizedExpression(SF.AwaitExpression(expr));
+                    expr = SF.AwaitExpression(expr);
                 }
-                expr = ExpressionToString(expr);
-
-                return
-                  SbAppend(
-                     SF.Argument(expr),
-                     encoded: encoded
-                  );
+                return SF.ExpressionStatement(expr);
             }
         }
 

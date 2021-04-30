@@ -60,11 +60,16 @@ namespace CompiledHandlebars.Compiler.Introspection
 		/// <param name="name"></param>
 		/// <returns></returns>
 		public static bool IsString(this ITypeSymbol symbol)
-		{
+        {
 			return (symbol as INamedTypeSymbol).SpecialType.HasFlag(SpecialType.System_String);
 		}
 
-		private static ITypeSymbol FindMemberRec(this ITypeSymbol symbol, string name)
+        public static bool IsTaskOfString(this ITypeSymbol symbol)
+        {
+            return symbol != null && symbol.ToDisplayString().Equals(@"System.Threading.Tasks.Task<string>", StringComparison.Ordinal);
+        }
+
+        private static ITypeSymbol FindMemberRec(this ITypeSymbol symbol, string name)
 		{
 			var result = symbol.GetMembers(name).FirstOrDefault();
 			if (result == null && symbol.BaseType != null)
