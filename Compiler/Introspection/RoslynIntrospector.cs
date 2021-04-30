@@ -160,6 +160,28 @@ namespace CompiledHandlebars.Compiler.Introspection
             return null;
         }
 
+        private IMethodSymbol findHelperMethod(string funtionName, List<ITypeSymbol> parameters)
+        {
+            foreach (var comp in projectCompilations.Values)
+            {
+                var candidates = comp.GetSymbolsWithName(x => x.Equals(funtionName))
+                    .OfType<IMethodSymbol>()
+                    .Where(x => x.IsStatic &&
+                                // The check for both HelperMethodAttribute and HelperMethodAttributeFull because when loading a asp.net core project
+                                // we the attribute name is HelpermethodAttribute while when loading a .net framework project the attribute name is
+                                // HelperMethodAttribute
+                                x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)
+                                                           || y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTE)));
+                var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
+                if (helperMethod != null)
+                {
+                    return helperMethod;
+                }
+            }
+            return null;
+        }
+
+
         /// <summary>
         /// Searches each referenced project for helper methods. 
         /// These must serve following conditions:
@@ -173,27 +195,6 @@ namespace CompiledHandlebars.Compiler.Introspection
         /// <returns>The MethodSymbol for the called HelperMethod or null if it could not be found</returns>
         public IMethodSymbol GetHelperMethod(string funtionName, List<ITypeSymbol> parameters, out bool acceptsStringBuilder)
         {
-            IMethodSymbol findHelperMethod(string functionName, List<ITypeSymbol> parameters)
-            {
-                foreach (var comp in projectCompilations.Values)
-                {
-                    var candidates = comp.GetSymbolsWithName(x => x.Equals(funtionName))
-                        .OfType<IMethodSymbol>()
-                        .Where(x => x.IsStatic &&
-                                    // The check for both HelperMethodAttribute and HelperMethodAttributeFull because when loading a asp.net core project
-                                    // we the attribute name is HelpermethodAttribute while when loading a .net framework project the attribute name is
-                                    // HelperMethodAttribute
-                                    x.GetAttributes().Any(y => y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTEFULL)
-                                                               || y.AttributeClass.Name.Equals(StringConstants.HELPERMETHODATTRIBUTE)));
-                    var helperMethod = candidates.FirstOrDefault(x => DoParametersMatch(x, parameters));
-                    if (helperMethod != null)
-                    {
-                        return helperMethod;
-                    }
-                }
-                return null;
-            }
-
             //acceptsStringBuilder = false;
             //return findHelperMethod(funtionName, parameters);
 
