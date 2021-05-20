@@ -37,16 +37,16 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 			{
 				INamedTypeSymbol modelSymbol = Template.ModelFullyQualifiedName.Evaluate(Introspector);
 				if (modelSymbol == null)
-					Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.ModelFullyQualifiedName}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1));
+					Errors.Add(new HandlebarsTypeError($"Could not find Type in ModelToken '{Template.ModelFullyQualifiedName}'!", HandlebarsTypeErrorKind.UnknownViewModel, 1, 1, null));
 				ContextStack.Push(new Context("viewModel", modelSymbol));
 			}
 			resultStack.Push(new List<StatementSyntax>());
 		}
 
 
-		internal void AddTypeError(string message, HandlebarsTypeErrorKind kind)
+		internal void AddTypeError(string message, HandlebarsTypeErrorKind kind, string memberName = null)
 		{
-			Errors.Add(new HandlebarsTypeError(message, kind, line, column));
+			Errors.Add(new HandlebarsTypeError(message, kind, line, column, memberName));
 		}
 
 		internal void AddTypeError(HandlebarsTypeError error)

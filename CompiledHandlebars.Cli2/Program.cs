@@ -63,6 +63,7 @@ namespace CompiledHandlebars.Core.Cli
                     // Remove the flag from the arguments list
                     args = args.Skip(1).ToArray();
                 }
+                options.ForceRecompilation = true;
                 // We have more than one argument left. So there must be some black/whitelisting going on!
                 if (args.Length > 1)
                 {//Handle blacklisted and whitelisted directories

@@ -10,10 +10,14 @@ namespace CompiledHandlebars.Compiler
 	public class HandlebarsTypeError : HandlebarsException
 	{
 		public HandlebarsTypeErrorKind Kind { get; set; }
-		public HandlebarsTypeError(string message, HandlebarsTypeErrorKind kind, int line, int column) : base(message, line, column)
+
+        public string MemberName { get; set; }
+
+        public HandlebarsTypeError(string message, HandlebarsTypeErrorKind kind, int line, int column, string memberName) : base(message, line, column)
 		{
 			Kind = kind;
-		}
+            MemberName = memberName;
+        }
 
 
 	}
