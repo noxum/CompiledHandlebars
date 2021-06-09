@@ -22,7 +22,7 @@ namespace CompiledHandlebars.Compiler
 				if (!codeGenerator.ErrorList.Any())
 				{//No code generator initialization errors
 					return new Tuple<string, IEnumerable<HandlebarsException>>(
-					  codeGenerator.GenerateCode().NormalizeWhitespace(indentation: "\t").ToFullString(), codeGenerator.ErrorList);
+					  codeGenerator.GenerateCode().NormalizeWhitespace(indentation: "\t", eol: "\n").ToFullString(), codeGenerator.ErrorList);
 				}
 				return new Tuple<string, IEnumerable<HandlebarsException>>(string.Empty, codeGenerator.ErrorList);
 			}
