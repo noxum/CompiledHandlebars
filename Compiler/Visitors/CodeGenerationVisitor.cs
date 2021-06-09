@@ -73,9 +73,14 @@ namespace CompiledHandlebars.Compiler.Visitors
 			}
 			else
 			{
-				//Unknown Member could also be a HelperCall with implied this as Parameter
-				if (astLeaf.Expr is MemberExpression)
-					astLeaf.TransformToHelperCall().Accept(this);
+                //Unknown Member could also be a HelperCall with implied this as Parameter
+                if (astLeaf.Expr is MemberExpression)
+                {
+                    var lastError = state.Errors?.LastOrDefault(e => e is HandlebarsTypeError typeError && typeError.MemberName != null && typeError.MemberName.Equals($"{state.Template.Namespace}.{state.Template.Name}|{astLeaf.Expr}", StringComparison.Ordinal));
+                    if (lastError != null)
+                        state.Errors.Remove(lastError);
+                    astLeaf.TransformToHelperCall().Accept(this);
+                }
 			}
 		}
 

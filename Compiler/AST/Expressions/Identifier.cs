@@ -75,7 +75,7 @@ namespace CompiledHandlebars.Compiler.AST.Expressions
 			}
 			else
 			{
-				state.AddTypeError($"Could not find Member '{_value}' in Type '{contextStack.Peek().Symbol.ToDisplayString()}'!", HandlebarsTypeErrorKind.UnknownMember);
+				state.AddTypeError($"Could not find Member '{_value}' in Type '{contextStack.Peek().Symbol.ToDisplayString()}'!", HandlebarsTypeErrorKind.UnknownMember, $"{state.Template.Namespace}.{state.Template.Name}|{_value}");
 				context = null;
 				return false;
 			}
