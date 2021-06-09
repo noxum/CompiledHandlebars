@@ -13,7 +13,7 @@ namespace CompiledHandlebars.Compiler
 		public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string content, string @namespace, string name, Project containingProject)
 		{
 			var parser = new HbsParser();
-			var template = parser.Parse(content);
+			var template = parser.Parse(content != null ? content.Replace("\r\n", "\n") : content);
 			template.Namespace = @namespace;
 			template.Name = name;
 			if (!(template.ParseErrors?.Any() ?? false))
