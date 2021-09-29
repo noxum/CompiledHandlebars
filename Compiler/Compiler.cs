@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CompiledHandlebars.Compiler
 {
 	public static class HbsCompiler
 	{
+		private static readonly Regex mandatoryNameSpacePrefixPattern = new Regex(@"^(?<mandatoryNameSpacePrefix>.+?\.Views.*?)\..*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		
 		public static Tuple<string, IEnumerable<HandlebarsException>> Compile(string content, string @namespace, string name, Project containingProject)
 		{
 			var parser = new HbsParser();
@@ -18,7 +21,11 @@ namespace CompiledHandlebars.Compiler
 			template.Name = name;
 			if (!(template.ParseErrors?.Any() ?? false))
 			{//No parser errors
-				var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(containingProject), template);
+				Match m = mandatoryNameSpacePrefixPattern.Match(@namespace);
+				string mandatoryNamespacePrefix = null;
+				if (m.Success)
+					mandatoryNamespacePrefix = m.Groups["mandatoryNameSpacePrefix"].Value;
+				var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(containingProject, mandatoryNamespacePrefix), template);
 				if (!codeGenerator.ErrorList.Any())
 				{//No code generator initialization errors
 					return new Tuple<string, IEnumerable<HandlebarsException>>(

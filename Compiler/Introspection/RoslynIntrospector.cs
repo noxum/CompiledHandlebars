@@ -15,9 +15,12 @@ namespace CompiledHandlebars.Compiler.Introspection
         private static ProjectId ContainingProject { get; set; }
         private static Dictionary<ProjectId, Compilation> projectCompilations { get; set; } = new Dictionary<ProjectId, Compilation>();
 
+        private readonly string _mandatoryNamespacePrefixForParitialCalls;
+        
         //TODO: Test what happens if multiple instances of VisualStudio run...
-        public RoslynIntrospector(Project project)
+        public RoslynIntrospector(Project project, string mandatoryNamespacePrefixForParitialCalls)
         {
+            _mandatoryNamespacePrefixForParitialCalls = mandatoryNamespacePrefixForParitialCalls;
             if (workspace == null)
                 workspace = project.Solution.Workspace;
             if (solution == null)
@@ -129,6 +132,7 @@ namespace CompiledHandlebars.Compiler.Introspection
                 INamedTypeSymbol template = comp.GetSymbolsWithName(x => x.Equals(name, System.StringComparison.Ordinal))
                     .OfType<INamedTypeSymbol>()
                     .Where(x => NamespaceUtility.IsPartOf(x.ToDisplayString(), fullName) 
+                                && (_mandatoryNamespacePrefixForParitialCalls == null || x.ToDisplayString().StartsWith(_mandatoryNamespacePrefixForParitialCalls, StringComparison.Ordinal))
                                 && (x.GetAttributes().Any(y => 
                                     (y.AttributeClass != null && y.AttributeClass.Name.Equals(attributeFull)) || 
                                     (y.AttributeClass != null && y.AttributeClass.Name.Equals(attribute)))))
