@@ -24,7 +24,7 @@ namespace CompiledHandlebars.Compiler
 				Match m = mandatoryNameSpacePrefixPattern.Match(@namespace);
 				string mandatoryNamespacePrefix = null;
 				if (m.Success)
-					mandatoryNamespacePrefix = m.Groups["mandatoryNameSpacePrefix"].Value;
+					mandatoryNamespacePrefix = m.Groups["mandatoryNameSpacePrefix"].Value + ".";
 				var codeGenerator = new CodeGenerationVisitor(new RoslynIntrospector(containingProject, mandatoryNamespacePrefix), template);
 				if (!codeGenerator.ErrorList.Any())
 				{//No code generator initialization errors
