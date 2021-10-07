@@ -110,6 +110,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 				  SyntaxHelper.HandlebarsNamespace(Template.Namespace)
 					 .AddMembers(
 						SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.TEMPLATEATTRIBUTE)
+							.WithLeadingTrivia(SyntaxHelper.PragmaDisableWarning("1998"))
+							.WithTrailingTrivia(SyntaxHelper.PragmaRestoreWarning("1998"))
 						  .AddMembers(
 							 SyntaxHelper.RenderWithoutParameter()
 								.AddBodyStatements(
@@ -139,6 +141,8 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 				  SyntaxHelper.HandlebarsNamespace(Template.Namespace)
 					 .AddMembers(
 						SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.LAYOUTATTRIBUTE)
+							.WithLeadingTrivia(SyntaxHelper.PragmaDisableWarning("1998"))
+							.WithTrailingTrivia(SyntaxHelper.PragmaRestoreWarning("1998"))
 						  .AddMembers(
 							 SyntaxHelper.RenderWithParameter(Template.ModelFullyQualifiedName.ToString(), "PostRender")
 								.AddBodyStatements(
@@ -170,9 +174,11 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
 				  usingsSyntax.ToArray()
 				)
 				.AddMembers(
-				  SyntaxHelper.HandlebarsNamespace(Template.Namespace)
-					 .AddMembers(
+					SyntaxHelper.HandlebarsNamespace(Template.Namespace)
+						.AddMembers(
 						SyntaxHelper.CompiledHandlebarsClassDeclaration(Template.Name, StringConstants.TEMPLATEATTRIBUTE)
+							.WithLeadingTrivia(SyntaxHelper.PragmaDisableWarning("1998"))
+							.WithTrailingTrivia(SyntaxHelper.PragmaRestoreWarning("1998"))
 						  .AddMembers(
 							 SyntaxHelper.RenderWithParameter(Template.ModelFullyQualifiedName.ToString())
 								.AddBodyStatements(
