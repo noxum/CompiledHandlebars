@@ -109,6 +109,17 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
              SF.Token(SyntaxKind.SemicolonToken)
           );
 
+        internal static SyntaxTrivia PragmaDisableWarning(string code)
+        {
+            var ids = new SeparatedSyntaxList<ExpressionSyntax>().Add(SyntaxFactory.IdentifierName(code));
+            return SF.Trivia(SF.PragmaWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.DisableKeyword), ids, true));
+        }
+
+        internal static SyntaxTrivia PragmaRestoreWarning(string code)
+        {
+            var ids = new SeparatedSyntaxList<ExpressionSyntax>().Add(SyntaxFactory.IdentifierName(code));
+            return SF.Trivia(SF.PragmaWarningDirectiveTrivia(SyntaxFactory.Token(SyntaxKind.RestoreKeyword), ids, true));
+        }
 
         internal static UsingDirectiveSyntax UsingStatic(string name)
         {
