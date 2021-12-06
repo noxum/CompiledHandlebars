@@ -255,28 +255,33 @@ namespace CompiledHandlebars.Core.Cli
                 throw new NotImplementedException();
             }
 
+            solution = workspace.CurrentSolution;
+            bool anyHbsFilesFound = false;
             foreach (var projectId in solution.ProjectIds)
             {
                 var project = workspace.CurrentSolution.Projects.First(x => x.Id.Equals(projectId));
                 List<string> handlebarsFiles;
                 if (options.NetCoreProject)
                 {
-                    handlebarsFiles = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), options.ProjectFile)))).GetFiles("*.hbs", SearchOption.AllDirectories).Where(f => ShouldCompileFile(f.FullName, options)).Select(f => f.FullName).ToList();
+                    string projectFile = project.FilePath;
+                    handlebarsFiles = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), projectFile)))).GetFiles("*.hbs", SearchOption.AllDirectories).Where(f => ShouldCompileFile(f.FullName, options)).Select(f => f.FullName).ToList();
+                    if (handlebarsFiles.Count > 0)
+                        anyHbsFilesFound = true;
                 }
                 else
                 {
                     handlebarsFiles = project.AdditionalDocuments.Where(x => Path.GetExtension(x.FilePath).Equals(".hbs")).Select(x => x.FilePath).Where(x => ShouldCompileFile(x, options)).ToList();
+                    if (handlebarsFiles.Count > 0)
+                        anyHbsFilesFound = true;
                 }
                 
                 if (handlebarsFiles.Any())
                 {
                     workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
                 }
-                else
-                {
-                    NoTemplates();
-                }
             }
+            if (!anyHbsFilesFound)
+                NoTemplates();
         }
 
         /// <summary>
@@ -435,7 +440,7 @@ namespace CompiledHandlebars.Core.Cli
             }
             else
             {
-                Console.WriteLine($"Compiling '{name}'...");
+                Console.WriteLine($"Compiling '{name}' ({@namespace})");
                 return HbsCompiler.Compile(content, @namespace, name, containingProject);
             }
         }
