@@ -13,7 +13,7 @@ namespace CompiledHandlebars.Compiler.CodeGeneration
     /// </summary>
     internal static class SyntaxHelper
     {
-        private static readonly TypeSyntax taskType = SF.ParseTypeName("Task");
+        private static readonly TypeSyntax taskType = SF.ParseTypeName("ValueTask");
 
         /// <summary>
         /// Yields "sb.Append(argument)"
