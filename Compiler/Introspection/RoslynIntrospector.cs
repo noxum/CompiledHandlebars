@@ -230,12 +230,12 @@ namespace CompiledHandlebars.Compiler.Introspection
 
         private static bool DoesParameterMatchType(IParameterSymbol param, ITypeSymbol type)
         {
-            if (param.Type.Equals(type))
+            if (SymbolEqualityComparer.Default.Equals(param.Type, type))
                 return true;
             if (type.BaseType != null && DoesParameterMatchType(param, type.BaseType))
                 return true;
             if (param.Type.TypeKind == TypeKind.Interface)
-                return type.AllInterfaces.Any(x => x.Equals(param.Type));
+                return type.AllInterfaces.Any(x => SymbolEqualityComparer.Default.Equals(param.Type, x));
             if (param.Type.SpecialType.Equals(type.SpecialType))
                 return true;
             return false;
