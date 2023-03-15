@@ -161,6 +161,7 @@ namespace CompiledHandlebars.Core.Cli
                 try
                 {
                     AnalyzerManager manager = new AnalyzerManager();
+
                     IProjectAnalyzer analyzer = manager.GetProject(options.ProjectFile);
                     workspace = analyzer.GetWorkspace();
                     project = workspace.CurrentSolution.Projects.ElementAt(0);
