@@ -68,7 +68,7 @@ namespace CompiledHandlebars.Compiler.Introspection
             Compilation comp;
             if (proj.TryGetCompilation(out comp))
                 return comp;
-            else return proj.GetCompilationAsync().Result;
+            else return proj.GetCompilationAsync().GetAwaiter().GetResult();
         }
 
         public INamedTypeSymbol GetTypeSymbol(string fullTypeName)
