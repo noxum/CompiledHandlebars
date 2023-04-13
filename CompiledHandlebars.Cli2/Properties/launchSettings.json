@@ -2,7 +2,12 @@
   "profiles": {
     "CompiledHandlebars.Cli2": {
       "commandName": "Project",
-      "commandLineArgs": "-c -d -f -eC:\\dev\\sw.git\\StiftungWarentest.Website\\node_modules -eC:\\dev\\sw.git\\StiftungWarentest.Website\\assets C:\\dev\\sw.git\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
+      "commandLineArgs": "-c -d -eC:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\node_modules -eC:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\assets C:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": "",
+      "commandLineArgs": "CompiledHandlebars.Core.Cli.dll -c -d -e/mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/node_modules -e/mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/assets /mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/StiftungWarentest.Website.csproj"
     }
   }
 }

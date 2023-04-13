@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using Buildalyzer.Workspaces;
 using Buildalyzer;
+using Buildalyzer.Environment;
+using Microsoft.Extensions.Logging;
 
 namespace CompiledHandlebars.Core.Cli
 {
@@ -149,6 +151,9 @@ namespace CompiledHandlebars.Core.Cli
         private static void CompileProject(CompilerOptions options)
         {
             Console.WriteLine($"Loading project '{options.ProjectFile}'...");
+            //string x = Console.ReadLine();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             var properties = new Dictionary<string, string>() {
                 { "AdditionalFileItemNames", "none" }
             };
@@ -158,18 +163,33 @@ namespace CompiledHandlebars.Core.Cli
             List<string> handlebarsFiles;
             if (options.NetCoreProject)
             {
+                StringWriter log = new StringWriter();
                 try
                 {
-                    AnalyzerManager manager = new AnalyzerManager();
+                    AnalyzerManagerOptions analyzerOptions = new AnalyzerManagerOptions
+                    {
+                        LogWriter = log
+                    };
+                    AnalyzerManager manager = new AnalyzerManager(analyzerOptions);
+
                     IProjectAnalyzer analyzer = manager.GetProject(options.ProjectFile);
+
                     workspace = analyzer.GetWorkspace();
+                    //ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+                    //workspace = new AdhocWorkspace();
+                    //workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+                    //workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+                    //analyzer.Build(new EnvironmentOptions() { Restore = true }).FirstOrDefault().AddToWorkspace(workspace);
+
                     project = workspace.CurrentSolution.Projects.ElementAt(0);
-                    Console.WriteLine("Ok!");
+                    sw.Stop();
+                    Console.WriteLine($"Ok! {sw.Elapsed}");
+                    Console.WriteLine($"Log: {log.ToString()}");
                     handlebarsFiles = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), options.ProjectFile)))).GetFiles("*.hbs", SearchOption.AllDirectories).Where(f => ShouldCompileFile(f.FullName, options)).Select(f => f.FullName).ToList();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Following errors occured: {Environment.NewLine}{ex}");
+                    Console.WriteLine($"Following errors occured: {Environment.NewLine}{ex} - {log.ToString()}");
                     throw;
                 }
             }
@@ -274,7 +294,7 @@ namespace CompiledHandlebars.Core.Cli
                     if (handlebarsFiles.Count > 0)
                         anyHbsFilesFound = true;
                 }
-                
+
                 if (handlebarsFiles.Any())
                 {
                     workspace = CompileHandlebarsFiles(project, workspace, handlebarsFiles, options);
@@ -419,7 +439,7 @@ namespace CompiledHandlebars.Core.Cli
 
         private static void PrintError(HandlebarsException error)
         {
-            Console.Error.WriteLine($"Compilation failed: {error.Message}");
+            Console.Error.WriteLine($"*** Compilation failed: {error.Message}");
         }
 
         /// <summary>
