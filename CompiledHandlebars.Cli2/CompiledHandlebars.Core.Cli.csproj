@@ -2,23 +2,23 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
     <StartupObject>CompiledHandlebars.Core.Cli.Program</StartupObject>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Buildalyzer" Version="5.0.0" />
-    <PackageReference Include="Buildalyzer.Logger" Version="5.0.0" />
-    <PackageReference Include="Buildalyzer.Workspaces" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Build" Version="17.5.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+    <PackageReference Include="Buildalyzer" Version="7.0.2" />
+    <PackageReference Include="Buildalyzer.Logger" Version="7.0.2" />
+    <PackageReference Include="Buildalyzer.Workspaces" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Build" Version="17.11.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
     <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />

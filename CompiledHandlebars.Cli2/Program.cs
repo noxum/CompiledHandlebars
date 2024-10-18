@@ -127,6 +127,16 @@ namespace CompiledHandlebars.Core.Cli
                 Console.WriteLine(outerEx);
                 return -1;
             }
+
+            if (_ExitCode == 0)
+                Console.WriteLine("Compilation successful!");
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine($"Compilation failed");
+                Console.ResetColor();
+            }
+
             Console.WriteLine($"Exit-Code: {_ExitCode}");
             return _ExitCode;
         }
@@ -174,17 +184,50 @@ namespace CompiledHandlebars.Core.Cli
 
                     IProjectAnalyzer analyzer = manager.GetProject(options.ProjectFile);
 
-                    workspace = analyzer.GetWorkspace();
-                    //ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
-                    //workspace = new AdhocWorkspace();
-                    //workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
-                    //workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
-                    //analyzer.Build(new EnvironmentOptions() { Restore = true }).FirstOrDefault().AddToWorkspace(workspace);
+                    //workspace = analyzer.GetWorkspace();
+                    ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+                    workspace = new AdhocWorkspace();
+                    workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+                    workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+                    IAnalyzerResult ar = analyzer.Build(new EnvironmentOptions() { Restore = true }).FirstOrDefault();
+                    ar.AddToWorkspace(workspace);
+                    Console.WriteLine($"AR: {ar.References.Length}");
+                    //foreach (string s in ar.References)
+                    //{
+                    //    if (File.Exists(s))
+                    //    {
+                    //        PortableExecutableReference ss = MetadataReference.CreateFromFile(s);
+                    //        if (ss != null)
+                    //        {//    Console.WriteLine($"MeRef: {ss.FilePath}");
+                    //        }
+                    //        else
+                    //            Console.WriteLine($"*no Ref: {s}");
+                    //    }
+                    //    else
+                    //        Console.WriteLine($"*not exist: {s}");                      
+                    //}
 
                     project = workspace.CurrentSolution.Projects.ElementAt(0);
                     sw.Stop();
                     Console.WriteLine($"Ok! {sw.Elapsed}");
-                    Console.WriteLine($"Log: {log.ToString()}");
+                    //Console.WriteLine($"Log: {log}");
+                    //Console.WriteLine($"Project document count: {project.DocumentIds.Count}");
+                    //Console.WriteLine($"MetadataReferences count: {project.MetadataReferences.Count}");
+
+                    ////test stiwa
+                    //Document d1 = project.Documents.FirstOrDefault(i => i.Name == "IPageModel.cs");
+                    //Document d2 = project.Documents.FirstOrDefault(i => i.Name == "AdminController.cs");
+
+                    //Console.WriteLine($"d1: {d1 != null}");
+                    //Console.WriteLine($"d2: {d2 != null}");
+
+                    //Compilation c1 = project.GetCompilationAsync().GetAwaiter().GetResult();
+                    //INamedTypeSymbol symbol = c1.GetTypeByMetadataName("StiftungWarentest.Website.Models.Page.IPageModel");
+                    //Console.WriteLine($"symbol: {symbol != null}");
+
+                    //MetadataReference a = project.MetadataReferences.FirstOrDefault(m => m.Display.Contains("StiftungWarentest.Website.Models.dll"));
+                    //Console.WriteLine($"MetadataReference: {a != null}");
+
                     handlebarsFiles = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), options.ProjectFile)))).GetFiles("*.hbs", SearchOption.AllDirectories).Where(f => ShouldCompileFile(f.FullName, options)).Select(f => f.FullName).ToList();
                 }
                 catch (Exception ex)
@@ -430,7 +473,9 @@ namespace CompiledHandlebars.Core.Cli
                 {
                     foreach (var err in partialErrors)
                     {
-                        Console.Error.WriteLine(err);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Error.WriteLine($"*** {err}");
+                        Console.ResetColor();
                     }
                 }
             }
@@ -439,7 +484,9 @@ namespace CompiledHandlebars.Core.Cli
 
         private static void PrintError(HandlebarsException error)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine($"*** Compilation failed: {error.Message}");
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -460,8 +507,18 @@ namespace CompiledHandlebars.Core.Cli
             }
             else
             {
-                Console.WriteLine($"Compiling '{name}' ({@namespace})");
-                return HbsCompiler.Compile(content, @namespace, name, containingProject);
+                Tuple<string, IEnumerable<HandlebarsException>> result = HbsCompiler.Compile(content, @namespace, name, containingProject);
+                bool hasError = !options.DryRun && (result?.Item2?.Any() ?? false);
+                if (hasError)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"*** Compiling '{name}' ({@namespace})");
+                    Console.ResetColor();
+                }
+                else
+                    Console.WriteLine($"Compiling '{name}' ({@namespace})");
+
+                return result;
             }
         }
 
