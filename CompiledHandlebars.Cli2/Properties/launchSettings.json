@@ -8,6 +8,8 @@
       "commandName": "WSL2",
       "distributionName": "",
       "commandLineArgs": "CompiledHandlebars.Core.Cli.dll -c -d -r /mnt/c/dev/Repos/Stiwa/mono/website/src/StiftungWarentest.Website/StiftungWarentest.Website.csproj"
+
+        //es muss vorher rebuilded sein (falls rebuild unter windows, daten in wsl anpassen).
     }
   }
 }

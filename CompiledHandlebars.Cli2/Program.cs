@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 
 using Buildalyzer;
-using Buildalyzer.Environment;
+// using Buildalyzer.Environment;
 using Buildalyzer.Workspaces;
 
 using CompiledHandlebars.Compiler;
@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 
 namespace CompiledHandlebars.Core.Cli
 {
@@ -181,6 +181,10 @@ namespace CompiledHandlebars.Core.Cli
                 StringWriter log = new StringWriter();
                 try
                 {
+                    project = BuildWorkspaceViaDirectMsbuild(options, log, out workspace);
+
+                    /* Geht in Windows, aber in Linux wird die LoggingPipe geschlossen, sobald der Prozess endet. Da Buildalyzer den Prozess aber nicht selbst startet, sondern msbuild direkt, haben wir keinen Einfluss darauf. Deshalb hier die direkte msbuild Variante, die auch in Linux funktioniert.
+
                     AnalyzerManagerOptions analyzerOptions = new AnalyzerManagerOptions
                     {
                         LogWriter = log
@@ -212,44 +216,13 @@ namespace CompiledHandlebars.Core.Cli
                     ar.AddToWorkspace(workspace);
                     Console.WriteLine($"AR: {ar.References.Length}");
 
-                    if (!ar.Succeeded || ar.References.Length == 0)
+                    if (ar.References.Length == 0)
                         throw new InvalidDataException($"No references found in the project: {log}");
-
-                    //foreach (string s in ar.References)
-                    //{
-                    //    if (File.Exists(s))
-                    //    {
-                    //        PortableExecutableReference ss = MetadataReference.CreateFromFile(s);
-                    //        if (ss != null)
-                    //        {//    Console.WriteLine($"MeRef: {ss.FilePath}");
-                    //        }
-                    //        else
-                    //            Console.WriteLine($"*no Ref: {s}");
-                    //    }
-                    //    else
-                    //        Console.WriteLine($"*not exist: {s}");                      
-                    //}
 
                     project = workspace.CurrentSolution.Projects.ElementAt(0);
                     sw.Stop();
                     Console.WriteLine($"Ok! {sw.Elapsed}");
-                    //Console.WriteLine($"Log: {log}");
-                    //Console.WriteLine($"Project document count: {project.DocumentIds.Count}");
-                    //Console.WriteLine($"MetadataReferences count: {project.MetadataReferences.Count}");
-
-                    ////test stiwa
-                    //Document d1 = project.Documents.FirstOrDefault(i => i.Name == "IPageModel.cs");
-                    //Document d2 = project.Documents.FirstOrDefault(i => i.Name == "AdminController.cs");
-
-                    //Console.WriteLine($"d1: {d1 != null}");
-                    //Console.WriteLine($"d2: {d2 != null}");
-
-                    //Compilation c1 = project.GetCompilationAsync().GetAwaiter().GetResult();
-                    //INamedTypeSymbol symbol = c1.GetTypeByMetadataName("StiftungWarentest.Website.Models.Page.IPageModel");
-                    //Console.WriteLine($"symbol: {symbol != null}");
-
-                    //MetadataReference a = project.MetadataReferences.FirstOrDefault(m => m.Display.Contains("StiftungWarentest.Website.Models.dll"));
-                    //Console.WriteLine($"MetadataReference: {a != null}");
+                    */
 
                     handlebarsFiles = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), options.ProjectFile)))).GetFiles("*.hbs", SearchOption.AllDirectories).Where(f => ShouldCompileFile(f.FullName, options)).Select(f => f.FullName).ToList();
                 }
@@ -614,6 +587,102 @@ namespace CompiledHandlebars.Core.Cli
         private static void FileDoesNotExist(string file)
         {
             Console.WriteLine($"File '{file}' does not exist!");
+        }
+
+        private static Project BuildWorkspaceViaDirectMsbuild(
+            CompilerOptions options, StringWriter log, out Workspace workspace)
+        {
+            var psi = new ProcessStartInfo("dotnet")
+            {
+                Arguments = string.Join(" ",
+                    "msbuild",
+                    $"\"{Path.GetFullPath(options.ProjectFile)}\"",
+                    "-target:ResolveAssemblyReferences",
+                    "-nologo",
+                    options.Restore ? "/restore" : "-p:NuGetAudit=false -p:FallbackPackageFolders=\"\"",
+                    "-p BuildProjectReferences=false",
+                    "-p:UseAppHost=false",
+                    "-p:SkipCopyBuildProduct=true",
+                    "-p SkipCompilerExecution=true",
+                    "-p:DesignTimeBuild=true",
+                    "-p:DisableRarCache=true",
+                    "-p:AutoGenerateBindingRedirects=false",
+                    "-p:ComputeNETCoreBuildOutputFiles=false",
+                    "-p:GeneratePackageOnBuild=false",
+                    "-p:CopyBuildOutputToOutputDirectory=false",
+                    "-p:UseCommonOutputDirectory=true",
+                    "-p:Platform=x64", //Projektspezifisch!
+                    "-p:Configuration=Debug",
+                    "-getItem:ReferencePath"),
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            var proc = Process.Start(psi)!;
+            string stdout = proc.StandardOutput.ReadToEnd();
+            string stderr = proc.StandardError.ReadToEnd();
+            proc.WaitForExit();
+
+            log.WriteLine(stderr);
+            if (proc.ExitCode != 0)
+                throw new InvalidOperationException($"msbuild failed:\n{stderr}\n{stdout}");
+
+            using var doc = System.Text.Json.JsonDocument.Parse(stdout);
+            var refs = doc.RootElement
+                .GetProperty("Items")
+                .GetProperty("ReferencePath")
+                .EnumerateArray()
+                .Select(e => e.GetProperty("Identity").GetString())
+                .Where(p => !string.IsNullOrEmpty(p) && File.Exists(p))
+                .Select(p => (MetadataReference)MetadataReference.CreateFromFile(p))
+                .ToList();
+
+            //        var allPaths = doc.RootElement
+            //.GetProperty("Items")
+            //.GetProperty("ReferencePath")
+            //.EnumerateArray()
+            //.Select(e => e.GetProperty("Identity").GetString())
+            //.Where(p => !string.IsNullOrEmpty(p))
+            //.ToList();
+
+            //        Console.WriteLine($"Total ReferencePath items: {allPaths.Count}");
+            //        foreach (var p in allPaths.Where(p => !File.Exists(p)))
+            //            Console.WriteLine($"  MISSING: {p}");
+
+
+            Console.WriteLine($"AR: {refs.Count}");
+            if (refs.Count == 0)
+                throw new InvalidOperationException($"No references found.\n{stderr}");
+
+            var adhoc = new AdhocWorkspace();
+            var projectInfo = Microsoft.CodeAnalysis.ProjectInfo.Create(
+                ProjectId.CreateNewId(), VersionStamp.Create(),
+                name: Path.GetFileNameWithoutExtension(options.ProjectFile),
+                assemblyName: Path.GetFileNameWithoutExtension(options.ProjectFile),
+                language: LanguageNames.CSharp,
+                filePath: Path.GetFullPath(options.ProjectFile),
+                metadataReferences: refs);
+
+            var proj = adhoc.AddProject(projectInfo);
+
+            // Source-Files des Projekts hinzufügen
+            string projectDir = Path.GetDirectoryName(Path.GetFullPath(options.ProjectFile));
+            var csFiles = Directory.GetFiles(projectDir, "*.cs", SearchOption.AllDirectories)
+                .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+                .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"));
+
+            foreach (var csFile in csFiles)
+            {
+                proj = proj.AddDocument(
+                    Path.GetFileName(csFile),
+                    Microsoft.CodeAnalysis.Text.SourceText.From(File.ReadAllText(csFile)),
+                    filePath: csFile).Project;
+            }
+
+            adhoc.TryApplyChanges(proj.Solution);
+            workspace = adhoc;
+            return workspace.CurrentSolution.Projects.First();
         }
     }
 }
