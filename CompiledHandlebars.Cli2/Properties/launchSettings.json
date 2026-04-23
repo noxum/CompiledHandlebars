@@ -2,19 +2,14 @@
   "profiles": {
     "CompiledHandlebars.Cli2": {
       "commandName": "Project",
-      // "commandLineArgsOld": "-c -d -eC:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\node_modules -eC:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\assets C:\\dev\\Repos\\StiftungWarentest.Web\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj",
-
-      // "commandLineArgs": "-c -d C:\\dev\\Repos\\Stiwa2\\website\\src\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
-      "commandLineArgs": "-c -d C:\\dev\\Repos\\Stiwa3\\mono\\website\\src\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
+      "commandLineArgs": "-c -d C:\\dev\\Repos\\Stiwa\\mono\\website\\src\\StiftungWarentest.Website\\StiftungWarentest.Website.csproj"
     },
     "WSL": {
       "commandName": "WSL2",
       "distributionName": "",
-      // "commandLineArgsOld": "CompiledHandlebars.Core.Cli.dll -c -d -e/mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/ViewsRelaunch -e/mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/Views/Module -e/mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/Views/Shared /mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/StiftungWarentest.Website.csproj",
-      // "commandLineArgsNew": "CompiledHandlebars.Core.Cli.dll -c -d -e/mnt/c/dev/Repos/Stiwa/Web/website/src/StiftungWarentest.Website/ViewsRelaunch -e/mnt/c/dev/Repos/Stiwa/Web/website/src/StiftungWarentest.Website/Views/Module -e/mnt/c/dev/Repos/Stiwa/Web/website/src/StiftungWarentest.Website/Views/Shared /mnt/c/dev/Repos/Stiwa/Web/website/src/StiftungWarentest.Website/StiftungWarentest.Website.csproj",
-      //"commandLineArgs": "CompiledHandlebars.Core.Cli.dll -c -d /mnt/c/dev/Repos/Stiwa2/website/src/StiftungWarentest.Website/StiftungWarentest.Website.csproj",
-      "commandLineArgs": "CompiledHandlebars.Core.Cli.dll -c -d /mnt/c/dev/Repos/Stiwa3/mono/website/src/StiftungWarentest.Website/StiftungWarentest.Website.csproj"
-      //  "commandLineArgsAllOld": "CompiledHandlebars.Core.Cli.dll -c -d /mnt/c/dev/Repos/StiftungWarentest.Web/StiftungWarentest.Website/StiftungWarentest.Website.csproj"
+      "commandLineArgs": "CompiledHandlebars.Core.Cli.dll -c -d -r /mnt/c/dev/Repos/Stiwa/mono/website/src/StiftungWarentest.Website/StiftungWarentest.Website.csproj"
+
+        //es muss vorher rebuilded sein (falls rebuild unter windows, daten in wsl anpassen).
     }
   }
 }
