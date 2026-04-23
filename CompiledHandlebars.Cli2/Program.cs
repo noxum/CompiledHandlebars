@@ -1,23 +1,26 @@
-﻿using CompiledHandlebars.Compiler;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Buildalyzer.Workspaces;
+
 using Buildalyzer;
 using Buildalyzer.Environment;
+using Buildalyzer.Workspaces;
+
+using CompiledHandlebars.Compiler;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Logging;
 
 namespace CompiledHandlebars.Core.Cli
 {
     public class Program
     {
-        private static readonly char[] validFlags = { 'n', 'f', 'c', 'd', 'w' };
+        private static readonly char[] validFlags = { 'n', 'f', 'c', 'd', 'w', 'r' };
         private static CompilerOptions _options;
         private static Workspace _workspace;
         private static Project _project;
@@ -35,6 +38,7 @@ namespace CompiledHandlebars.Core.Cli
             public bool Debug { get; set; }
             public bool DryRun { get; set; }
             public bool Watch { get; set; }
+            public bool Restore { get; set; } = true;
             public bool ForceRecompilation { get; set; }
         }
 
@@ -59,6 +63,7 @@ namespace CompiledHandlebars.Core.Cli
                             case 'n': options.DryRun = true; break;
                             case 'd': options.Debug = true; break;
                             case 'w': options.Watch = true; break;
+                            case 'r': options.Restore = false; break;
                             default: ShowUsage(); return -1;
                         }
                     }
@@ -184,14 +189,32 @@ namespace CompiledHandlebars.Core.Cli
 
                     IProjectAnalyzer analyzer = manager.GetProject(options.ProjectFile);
 
+                    if (!options.Restore)
+                    {
+                        analyzer.SetGlobalProperty("NuGetAudit", "false");
+                        analyzer.SetGlobalProperty("FallbackPackageFolders", "");
+                    }
                     //workspace = analyzer.GetWorkspace();
                     ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
                     workspace = new AdhocWorkspace();
-                    workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
-                    workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
-                    IAnalyzerResult ar = analyzer.Build(new EnvironmentOptions() { Restore = true }).FirstOrDefault();
+                    //workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+                    //workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+                    IAnalyzerResult ar = analyzer.Build(new EnvironmentOptions() { Restore = options.Restore }).FirstOrDefault();
+
+                    if (ar == null)
+                    {
+                        Console.Error.WriteLine("=== Buildalyzer Log ===");
+                        Console.Error.WriteLine(log.ToString());
+                        Console.Error.WriteLine("======================");
+                        throw new InvalidOperationException("Buildalyzer returned no result (pipe failed on Linux).");
+                    }
+
                     ar.AddToWorkspace(workspace);
                     Console.WriteLine($"AR: {ar.References.Length}");
+
+                    if (!ar.Succeeded || ar.References.Length == 0)
+                        throw new InvalidDataException($"No references found in the project: {log}");
+
                     //foreach (string s in ar.References)
                     //{
                     //    if (File.Exists(s))
